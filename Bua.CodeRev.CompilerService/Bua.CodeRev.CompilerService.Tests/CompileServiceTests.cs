@@ -1,7 +1,4 @@
-using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Bua.CodeRev.CompilerService.Core.Services;
 using Bua.CodeRev.CompilerService.Core.Services.CompileService;
 using NUnit.Framework;
 

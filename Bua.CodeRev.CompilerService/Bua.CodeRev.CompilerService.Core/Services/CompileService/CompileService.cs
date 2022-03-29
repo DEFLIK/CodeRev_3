@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
-using System.CodeDom.Compiler;
-using System.CodeDom;
-using System.Collections.ObjectModel;
-using Microsoft.CSharp;
 
 namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
 {
