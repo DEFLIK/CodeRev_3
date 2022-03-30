@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Bua.CodeRev.CompilerService.Core.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -24,11 +25,12 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
 
         private readonly string _assemblyPath;
 
-        private MetadataReference[] GetMetadataReferences() => 
-            Dependencies.Select(refString => 
-                MetadataReference
-                    .CreateFromFile(Path.Combine(_assemblyPath, refString)))
-                .ToArray<MetadataReference>();
+        public CompileService()
+        {
+            _assemblyPath = Path
+                .GetDirectoryName(typeof(object).Assembly.Location) 
+                ?? throw new NullReferenceException("Failed to create CompileService instance: unable to get assembly location");
+        }
 
         private static IEnumerable<Diagnostic> GetDiagnostics(EmitResult emitResult) =>
             emitResult
@@ -38,18 +40,18 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
                     diagnostic.Severity == DiagnosticSeverity.Error);
 
         /// <returns>Консольный вывод запущенной сборки</returns>
-        private static string RunAssemblyFromStream(MemoryStream ms)
+        private static IEnumerable<string> RunAssemblyFromStream(MemoryStream ms)
         {
             ms.Seek(0, SeekOrigin.Begin);
             var assembly = Assembly.Load(ms.ToArray());
             var entryClassInstance = assembly
-                .CreateInstance($"{InputProgramEntryNamespace}.{InputProgramEntryClass}")
+                .CreateInstance($"{InputProgramEntryNamespace}.{InputProgramEntryClass}") 
                 ?? throw new NullReferenceException(
                     $"Unable to create instance of '{InputProgramEntryClass}' at {InputProgramEntryNamespace} from input solution");
 
             var methodInfo = entryClassInstance
                 .GetType()
-                .GetMethod(InputProgramEntryMethod) 
+                .GetMethod(InputProgramEntryMethod)
                 ?? throw new NullReferenceException(
                     $"Unable to invoke '{InputProgramEntryMethod}' at {InputProgramEntryClass} from input solution");
 
@@ -57,35 +59,47 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
             Console.SetOut(sw);
             methodInfo.Invoke(null, null);
 
-            return sw.ToString();
+            return sw.ToString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public CompileService()
+        public ExecutionResult CompileAndExecute(string code)
         {
-            _assemblyPath = Path
-                .GetDirectoryName(typeof(object).Assembly.Location) 
-                ?? throw new NullReferenceException("Failed to create CompileService instance: unable to get assembly location");
-        }
+            if (code is null)
+                throw new ArgumentException("Expected code string value, got null");
 
-
-        public IEnumerable<string> Compile(string code)
-        {
-            var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var assemblyName = Path.GetRandomFileName();
-            var compilation = CSharpCompilation.Create(
-                assemblyName,
-                syntaxTrees: new[] { syntaxTree },
-                references: GetMetadataReferences(),
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            var compilation = GetCompilation(code);
 
             using var ms = new MemoryStream();
             var emitResult = compilation.Emit(ms);
 
+            var errors = new List<CompilationError>();
+            IEnumerable<string> output = new List<string>();
+
             if (!emitResult.Success)
                 foreach (var diagnostic in GetDiagnostics(emitResult))
-                    yield return $"{diagnostic.Id}: {diagnostic.GetMessage()}";
+                    errors.Add(new CompilationError(diagnostic));
             else
-                yield return RunAssemblyFromStream(ms);
+                output = RunAssemblyFromStream(ms);
+
+            return new ExecutionResult()
+            {
+                Success = emitResult.Success,
+                Output = output,
+                Errors = errors
+            };
         }
+
+        private CSharpCompilation GetCompilation(string code) =>
+            CSharpCompilation.Create(
+                Path.GetRandomFileName(),
+                new[] { CSharpSyntaxTree.ParseText(code) },
+                GetMetadataReferences(),
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+        private MetadataReference[] GetMetadataReferences() =>
+            Dependencies.Select(refString =>
+                    MetadataReference
+                        .CreateFromFile(Path.Combine(_assemblyPath, refString)))
+                .ToArray<MetadataReference>();
     }
 }

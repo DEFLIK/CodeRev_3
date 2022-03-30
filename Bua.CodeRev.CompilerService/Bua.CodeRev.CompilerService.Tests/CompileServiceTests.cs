@@ -13,7 +13,7 @@ namespace Bua.CodeRev.CompilerService.Tests
         {
             var compiler = new CompileService();
 
-            var actual = compiler.Compile(@"
+            var actual = compiler.CompileAndExecute(@"
                 using System;
                 namespace CodeRevSolution
                 {
@@ -24,18 +24,19 @@ namespace Bua.CodeRev.CompilerService.Tests
                             Console.WriteLine(""" + text + @""");
                         }
                     }
-                }").First();
+                }");
 
-            Assert.AreEqual(text, actual.Trim());
+            Assert.AreEqual(1, actual.Output.Count());
+            Assert.AreEqual(text, actual.Output.First());
         }
 
         [Test]
         public void Compile_UseWrongLibrary_ShouldReturnError()
         {
             var compiler = new CompileService();
-            var expected = "CS0246:";
+            var expected = "CS0246";
 
-            var actual = compiler.Compile(@"
+            var actual = compiler.CompileAndExecute(@"
                 using System123;
                 namespace CodeRevSolution
                 {
@@ -43,21 +44,21 @@ namespace Bua.CodeRev.CompilerService.Tests
                     {
                         public static void Main()
                         {
-                            Console.WriteLine("">:("");
                         }
                     }
-                }").First();
+                }");
 
-            Assert.AreEqual(expected, actual.Substring(0, 7));
+            Assert.AreEqual(1, actual.Errors.Count());
+            Assert.AreEqual(expected, actual.Errors.First().ErrorCode);
         }
 
         [Test]
         public void Compile_UseUnassignedVariable_ShouldReturnError()
         {
             var compiler = new CompileService();
-            var expected = "CS0103:";
+            var expected = "CS0103";
 
-            var actual = compiler.Compile(@"
+            var actual = compiler.CompileAndExecute(@"
                 using System;
                 namespace CodeRevSolution
                 {
@@ -68,9 +69,10 @@ namespace Bua.CodeRev.CompilerService.Tests
                             Console.WriteLine(bruh);
                         }
                     }
-                }").First();
+                }");
 
-            Assert.AreEqual(expected, actual.Substring(0, 7));
+            Assert.AreEqual(1, actual.Errors.Count());
+            Assert.AreEqual(expected, actual.Errors.First().ErrorCode);
         }
     }
 }
