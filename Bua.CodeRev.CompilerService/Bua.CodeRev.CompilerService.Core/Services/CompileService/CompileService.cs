@@ -40,19 +40,20 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
                     diagnostic.Severity == DiagnosticSeverity.Error);
 
         /// <returns>Консольный вывод запущенной сборки</returns>
+        /// <exception cref="ArgumentException">В сборке отсутствует требуемая входная точка</exception>
         private static IEnumerable<string> RunAssemblyFromStream(MemoryStream ms)
         {
             ms.Seek(0, SeekOrigin.Begin);
             var assembly = Assembly.Load(ms.ToArray());
             var entryClassInstance = assembly
                 .CreateInstance($"{InputProgramEntryNamespace}.{InputProgramEntryClass}") 
-                ?? throw new NullReferenceException(
+                ?? throw new ArgumentException(
                     $"Unable to create instance of '{InputProgramEntryClass}' at {InputProgramEntryNamespace} from input solution");
 
             var methodInfo = entryClassInstance
                 .GetType()
                 .GetMethod(InputProgramEntryMethod)
-                ?? throw new NullReferenceException(
+                ?? throw new ArgumentException(
                     $"Unable to invoke '{InputProgramEntryMethod}' at {InputProgramEntryClass} from input solution");
 
             using var sw = new StringWriter();
