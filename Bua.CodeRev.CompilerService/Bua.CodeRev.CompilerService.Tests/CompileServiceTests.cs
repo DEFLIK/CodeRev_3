@@ -8,7 +8,7 @@ namespace Bua.CodeRev.CompilerService.Tests
     {
 
         [TestCase("hi")]
-        [TestCase("Привет бобикам!")]
+        [TestCase("РџСЂРёРІРµС‚ Р±РѕР±РёРєР°Рј!")]
         public void Compile_ConsoleWriteLine_ShouldReturnText(string text)
         {
             var compiler = new CompileService();
