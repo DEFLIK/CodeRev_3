@@ -1,0 +1,8 @@
+<div class="output" ngClass>
+    <a *ngFor="let line of text" [ngClass]="{
+        'output-success': success,
+        'output-failure': !success
+    }">
+        {{ line }}
+    </a>
+</div>

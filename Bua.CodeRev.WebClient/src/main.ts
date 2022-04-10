@@ -4,6 +4,9 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
+import 'codemirror/mode/clike/clike';
+import 'codemirror/mode/javascript/javascript';
+
 if (environment.production) {
     enableProdMode();
 }

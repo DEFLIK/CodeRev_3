@@ -1,0 +1,14 @@
+<p>code-editor works!</p>
+<ngx-codemirror
+    #codeMirror
+    [(ngModel)]="editor"
+    [options]="{
+        lineNumbers: true,
+        theme: 'material',
+        mode: 'text/x-csharp'
+    }"
+></ngx-codemirror>
+
+<button (click)="run()">Run</button>
+
+<app-output #output></app-output>
