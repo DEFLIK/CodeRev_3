@@ -7,11 +7,11 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
     public interface ICompileService
     {
         /// <summary>
-        /// Ассинхронно производит компиляцию кода
+        /// Ассинхронно производит выполнение кода
         /// </summary>
-        /// <param name="code">Строка кода для компиляции</param>
-        /// <returns>Результат компиляции (подобно консольному выводу/ошибке)</returns>
+        /// <param name="code">Код в виде Plain-Text</param>
+        /// <returns>Результат выполнения (подобно консольному выводу/ошибке)</returns>
         /// <exception cref="ArgumentException">Переданная строка имеет значение null</exception>
-        public ExecutionResult CompileAndExecute(string code);
+        public ExecutionResult Execute(string code, EntryPoint entryPoint);
     }
 }

@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Bua.CodeRev.CompilerService.Core.Models;
 using Bua.CodeRev.CompilerService.Core.Services.CompileService;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bua.CodeRev.CompilerService.Core.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/compile")]
+    [EnableCors]
     [ApiController]
     public class CompileController : ControllerBase
     {
@@ -20,12 +24,12 @@ namespace Bua.CodeRev.CompilerService.Core.Controllers
             this._compiler = _compiler;
         }
 
-        [HttpGet]
-        public ExecutionResult CompileAndExecute(string code)
+        [HttpPut("execute")]
+        public ActionResult<ExecutionResult> Execute([FromBody]ExecutionRequest req)
         {
-            var res = _compiler.CompileAndExecute(code);
+            var res = _compiler.Execute(req?.Code, req?.EntryPoint);
             GC.Collect();
-            return res;
+            return Ok(res);
         }
     }
 }

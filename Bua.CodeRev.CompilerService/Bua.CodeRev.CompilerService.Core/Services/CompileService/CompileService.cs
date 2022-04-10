@@ -12,10 +12,6 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
 {
     public class CompileService : ICompileService
     {
-        private const string InputProgramEntryNamespace = "CodeRevSolution";
-        private const string InputProgramEntryClass = "Program";
-        private const string InputProgramEntryMethod = "Main";
-
         private static readonly string[] Dependencies = new string[]
         {
             "System.Private.CoreLib.dll",
@@ -41,20 +37,20 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
 
         /// <returns>Консольный вывод запущенной сборки</returns>
         /// <exception cref="ArgumentException">В сборке отсутствует требуемая входная точка</exception>
-        private static IEnumerable<string> RunAssemblyFromStream(MemoryStream ms)
+        private static IEnumerable<string> RunAssemblyFromStream(MemoryStream ms, EntryPoint entryPoint)
         {
             ms.Seek(0, SeekOrigin.Begin);
             var assembly = Assembly.Load(ms.ToArray());
             var entryClassInstance = assembly
-                .CreateInstance($"{InputProgramEntryNamespace}.{InputProgramEntryClass}") 
+                .CreateInstance($"{entryPoint.NamespaceName}.{entryPoint.ClassName}") 
                 ?? throw new ArgumentException(
-                    $"Unable to create instance of '{InputProgramEntryClass}' at {InputProgramEntryNamespace} from input solution");
+                    $"Unable to create instance of '{entryPoint.ClassName}' at {entryPoint.NamespaceName} from input solution");
 
             var methodInfo = entryClassInstance
                 .GetType()
-                .GetMethod(InputProgramEntryMethod)
+                .GetMethod(entryPoint.MethodName)
                 ?? throw new ArgumentException(
-                    $"Unable to invoke '{InputProgramEntryMethod}' at {InputProgramEntryClass} from input solution");
+                    $"Unable to invoke '{entryPoint.MethodName}' at {entryPoint.ClassName} from input solution");
 
             using var sw = new StringWriter();
             Console.SetOut(sw);
@@ -63,7 +59,7 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
             return sw.ToString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public ExecutionResult CompileAndExecute(string code)
+        public ExecutionResult Execute(string code, EntryPoint entryPoint)
         {
             if (code is null)
                 throw new ArgumentException("Expected code string value, got null");
@@ -80,7 +76,7 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
                 foreach (var diagnostic in GetDiagnostics(emitResult))
                     errors.Add(new CompilationError(diagnostic));
             else
-                output = RunAssemblyFromStream(ms);
+                output = RunAssemblyFromStream(ms, entryPoint);
 
             return new ExecutionResult()
             {
