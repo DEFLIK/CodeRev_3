@@ -1,0 +1,16 @@
+﻿using System;
+using Bua.CodeRev.UserService.DAL.Models;
+
+namespace Bua.CodeRev.UserService.DAL.Entities
+{
+    public class TaskSolution : BaseEntity
+    {
+        public Guid TaskId { get; set; }
+        public Guid InterviewSolutionId { get; set; }
+        public Guid TimelineId { get; set; }
+        public Guid RunTimelineId { get; set; }
+        public bool IsDone { get; set; }
+        public TaskGradeEnum TaskGrade { get; set; }
+        
+    }
+}
