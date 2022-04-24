@@ -8,6 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { RequestService } from '../global-services/request/request.service';
 import { OutputComponent } from './components/output/output.component';
+import { RecordService } from './services/record-service/record.service';
+import { ControlsComponent } from './components/controls/controls.component';
 
 const routes: Routes = [
     {
@@ -20,7 +22,8 @@ const routes: Routes = [
     declarations: [
         CodeEditorComponent,
         CodeEditorDirective,
-        OutputComponent
+        OutputComponent,
+        ControlsComponent,
     ],
     imports: [
         FormsModule,
