@@ -3,12 +3,10 @@ import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import * as CodeMirror from 'codemirror';
 import { interval } from 'rxjs';
 import { RequestService } from 'src/app/global-services/request/request.service';
-import { EntryPoint } from '../../models/entryPoint';
-import { CompileService } from '../../services/compile-service/compile-service.service';
-import { OutputComponent } from '../output/output.component';
-import { CodeStorageService } from '../../services/code-storage-service/code-storage.service';
-import { ExecutionResult } from '../../models/executionResult';
-import { ControlsComponent } from '../controls/controls.component';
+import { ControlsComponent } from './components/controls/controls.component';
+import { OutputComponent } from './components/output/output.component';
+import { ExecutionResult } from './models/executionResult';
+import { CodeStorageService } from './services/code-storage-service/code-storage.service';
 
 @Component({
     selector: 'app-code-editor',

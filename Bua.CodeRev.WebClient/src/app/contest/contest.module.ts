@@ -4,19 +4,21 @@ import { RouterModule, Routes } from '@angular/router';
 import { TaskComponent } from './components/task/task.component';
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
 import { NotificationComponent } from './components/notification/notification.component';
+import { ContestComponent } from './contest.component';
 
 const routes: Routes = [
     {
-        // path: '',
-        // component:
-    }
+        path: '',
+        component: ContestComponent
+    },
 ];
 
 @NgModule({
     declarations: [
         TaskComponent,
         TasksListComponent,
-        NotificationComponent
+        NotificationComponent,
+        ContestComponent
     ],
     imports: [
         CommonModule,

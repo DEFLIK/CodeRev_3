@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CodeEditorComponent } from './components/code-editor/code-editor.component';
+import { CodeEditorComponent } from './code-editor.component';
 import { RouterModule, Routes } from '@angular/router';
 import { CodeEditorDirective } from './directives/code-editor.directive';
 import { BrowserModule } from '@angular/platform-browser';
@@ -20,10 +20,10 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [
-        CodeEditorComponent,
         CodeEditorDirective,
         OutputComponent,
         ControlsComponent,
+        CodeEditorComponent
     ],
     imports: [
         FormsModule,
