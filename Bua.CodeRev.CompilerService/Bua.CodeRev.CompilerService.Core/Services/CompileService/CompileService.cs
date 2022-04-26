@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -54,7 +55,18 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
 
             using var sw = new StringWriter();
             Console.SetOut(sw);
-            methodInfo.Invoke(null, null);
+
+            try
+            {
+                methodInfo.Invoke(null, null);
+            }
+            catch (TargetInvocationException exception)
+            {
+                var inner = exception.InnerException;
+                return inner is null 
+                    ? new[] { $"Серверная ошибка выполнения: {exception.Message}. Обратитесь к владельцу" } 
+                    : new[] { inner.ToString() };
+            }
 
             return sw.ToString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
         }
