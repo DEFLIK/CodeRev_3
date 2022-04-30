@@ -4,17 +4,17 @@ import { LoadChildren, LoadChildrenCallback, RouterModule, Routes } from '@angul
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'editor',
+        redirectTo: 'review',
         pathMatch: 'full'
     },
     {
         path: 'auth',
         loadChildren: () => import('./auth/auth.module').then((m: any) => m.AuthModule)
     },
-    // {
-    //     path: 'editor',
-    //     loadChildren: () => import('./code-editor/code-editor.module').then((m: any) => m.CodeEditorModule)
-    // },
+    {
+        path: 'editor',
+        loadChildren: () => import('./code-editor/code-editor.module').then((m: any) => m.CodeEditorModule)
+    },
     {
         path: 'contest',
         loadChildren: () => import('./contest/contest.module').then((m: any) => m.ContestModule)

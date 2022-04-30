@@ -1,0 +1,47 @@
+:host {
+    font-size: 19px;
+    border-left: solid 3px;
+    padding: 10px;
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 10px 0 #7e7e7e;
+    display: flex;
+    justify-content: space-between;
+
+    .left, .right {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+    }
+
+    .left {
+        width: 75%;
+
+        .top, .bottom {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top {  
+            .vacancy {
+                color: #939393;
+                font-size: 17px;
+            }
+        }
+
+        .bottom {
+            font-size: 17px;
+
+            .time {
+                color: #939393;
+            }
+
+            .alert {
+                color: red;
+            }
+        }
+    }
+
+    .right {
+        align-items: center;
+    }
+}

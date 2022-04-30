@@ -1,1 +1,33 @@
-<p>candidate-card works!</p>
+<div class="left">
+    <div class="top">
+        <span class="name">{{ candidate.fullName }}</span>
+        <span class="vacancy"> {{ candidate.vacancy }} </span>
+    </div>
+
+    <div class="bottom">
+        <span>
+            Начало:
+            <span *ngIf="candidate.startTimeMs !== -1" class="time">
+                {{ candidate.startTimeMs | date : 'dd-MM-yyyy HH:mm:ss' }}
+            </span>
+    
+            <span *ngIf="candidate.startTimeMs === -1" class="alert">
+                не приступал
+            </span>
+        </span>
+    
+        <span>
+            Срок проверки:
+            <span class="time">
+                {{ candidate.timeToCheckMs | date : 'dd-MM-yyyy HH:mm:ss' }}
+            </span>
+        </span>
+    </div>
+</div>
+
+<div class="right">
+    <span class="grade"> {{ candidate.doneTasksCount }} / {{ candidate.tasksCount }} </span>
+    <div class="controls">
+        <button [disabled]="candidate.doneTasksCount < candidate.tasksCount">Оценить</button>
+    </div>
+</div>
