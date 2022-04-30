@@ -1,2 +1,59 @@
 @import '~codemirror/lib/codemirror';
 @import '~codemirror/theme/material';
+
+@color-main: brown;
+
+body {
+    margin: 0;
+}
+
+button {
+    background-color: #a52a2a;
+    color: white;
+    border: none;
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: rgb(194, 48, 48);
+        cursor: pointer;
+    }
+
+    &:active {
+        background-color: rgb(209, 53, 53);
+    }
+
+    &:disabled {
+        cursor: default;
+        background-color: rgb(187, 187, 187);
+    }
+}
+
+* {
+    font-family: Railway, Arial, Helvetica, sans-serif;
+    scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+    width: 15px;
+  }
+  
+::-webkit-scrollbar-track {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background: transparent;
+}
+  
+::-webkit-scrollbar-thumb {
+    background-color: #C3C3C3;
+    border: 5px solid transparent;
+    border-radius: 20px;
+    background-clip: content-box;
+}
+
+@font-face {
+    font-family: 'Railway';
+    src: url('./assets/fonts/Raleway-Regular.ttf');
+}

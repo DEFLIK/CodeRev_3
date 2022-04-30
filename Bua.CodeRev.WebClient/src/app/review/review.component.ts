@@ -5,11 +5,8 @@ import { Component, OnInit } from '@angular/core';
     templateUrl: './review.component.html',
     styleUrls: ['./review.component.less']
 })
-export class ReviewComponent implements OnInit {
+export class ReviewComponent {
 
     constructor() { }
-
-    ngOnInit(): void {
-    }
 
 }

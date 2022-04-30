@@ -1,1 +1,72 @@
-<p>candidates-list works!</p>
+
+<label class="search" for="search">
+    <input id="search" type="text" placeholder="Поиск...">
+    <img src="../../../../assets/svg/loupe.svg">
+</label>
+
+<div class="wrapper">
+    <div class="left">
+        <form class="filters" [formGroup]="filtersForm">
+            <div class="segment">
+                <div class="option">
+                    <label value="true">
+                        <input type="checkbox" formControlName="ending"> 
+                        Истекает срок проверки
+                    </label>
+                </div>
+            </div>
+        
+            <div class="segment">
+                <span class="title">По добавлению:</span>
+                <label class="option">
+                    <input type="radio" formControlName="date" value="new"> 
+                    Сначала новые
+                </label>
+                <label class="option">
+                    <input type="radio" formControlName="date" value="old"> 
+                    Сначала старые
+                </label>
+            </div>
+        
+            <div class="segment">
+                <span class="title">По статусу:</span>
+                <!-- <div class="option">
+                    <input type="checkbox" formControlName="state" value="done"> Выполнено
+                </div> -->
+                <div *ngFor="let state of states; let i = index" class="option">
+                    <label [class]="state.value">
+                      <input formArrayName="state" type="checkbox" [value]="state.value" (change)="onCheckboxChange($event)" checked>
+                      {{state.name}}
+                    </label>
+                  </div>
+            </div>
+        
+            <div class="segment">
+                <span class="title">Вакансия:</span>
+                <div *ngFor="let vacancy of vacancies; let i = index" class="option">
+                    <label>
+                      <input formArrayName="state" type="checkbox" [value]="vacancy.value" (change)="onCheckboxChange($event)" checked>
+                      {{vacancy.name}}
+                    </label>
+                  </div>
+            </div>
+            
+        </form>
+    </div>
+    
+    <div class="list">
+        <app-candidate-card 
+            *ngFor="let candidate of candidates | candidateFilter : 'searchCriteria'" 
+            #candidateCard
+            class="candidate-card" 
+            (clickEvent)="selectCard($event)"
+            [candidate]="candidate"
+            [ngClass]="{
+                'done': candidate.tasksCount === candidate.doneTasksCount && candidate.startTimeMs !== -1 && currentTimeMs < candidate.timeToCheckMs,
+                'in-process': candidate.tasksCount > candidate.doneTasksCount && candidate.startTimeMs !== -1 && currentTimeMs < candidate.timeToCheckMs,
+                'not-started': candidate.startTimeMs === -1 && currentTimeMs < candidate.timeToCheckMs,
+                'skiped': currentTimeMs >= candidate.timeToCheckMs 
+            }" >
+        </app-candidate-card >
+    </div>
+</div>

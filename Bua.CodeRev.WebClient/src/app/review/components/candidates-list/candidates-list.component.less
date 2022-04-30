@@ -1,0 +1,169 @@
+
+@import (reference) "/src/styles.less";
+
+@color-done: #009460;
+@color-in-process: #FDD116;
+@color-not-started: #CE1127;
+@color-skiped: gray;
+
+
+:host {
+    background-color: #F3F3F3;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 5px;
+    align-items: center;
+    overflow: auto;
+
+    .search {
+        display: flex;
+        padding-left: 10px;
+        padding-right: 10px;
+        justify-content: center;
+        background-color: #FFFFFF;
+        border: solid 1px #ADADAD;
+        border-radius: 5px;
+        align-items: center;
+        gap: 10px;
+        width: 35%;
+
+        input {
+            width: 100%;
+            background-color: inherit;
+            border: none;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        img {
+            height: 70%;
+        }
+    }
+
+    .wrapper {
+        // padding: 20px;
+        width: 100%;
+        height: 90%;
+        // padding-left: 50px;
+        // padding-right: 50px;
+        display: flex;
+        justify-content: space-evenly;
+        overflow: auto;
+
+        .list {
+            display: grid;
+            justify-content: center;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 420px));
+            grid-auto-rows: 130px;
+            column-gap: 30px;
+            row-gap: 20px;
+            padding: 15px;
+            width: 70%;
+            overflow: auto;
+        }
+
+        .left {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            width: 17%;
+            min-width: 200px;
+            // padding: 10px;
+            // flex: 1 1 auto;
+
+            .filters {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                gap: 10px;
+                padding: 20px;
+                align-items: center;
+                background-color: #FCFCFC;
+                border-radius: 10px;
+                font-size: 19px;
+                box-shadow: 0 4px 10px 0 #7e7e7e;
+                overflow-y: auto;
+
+                .option {
+                    display: flex;
+                }
+                
+                .title {
+                    color: #5E5E5E;
+                    font-size: 17px;
+                }
+
+                .segment {
+                    width: 100%;
+                }
+            }
+        }
+
+        .done {
+            border-color: @color-done;
+        }
+
+        .in-process {
+            border-color: @color-in-process;
+        }
+
+        .not-started {
+            border-color: @color-not-started;
+        }
+
+        .skiped {
+            border-color: @color-skiped;
+        }
+     
+        .input-color(@color) {
+            background-color: @color;
+            border: 1px solid @color;
+        }
+
+        input[type='checkbox']:checked {
+            .input-color(@color-main);
+        }
+
+        .done input[type='checkbox']:checked {
+            .input-color(@color-done);
+        }
+
+        .in-process input[type='checkbox']:checked {
+            .input-color(@color-in-process);
+        }
+
+        .not-started input[type='checkbox']:checked {
+            .input-color(@color-not-started);
+        }
+
+        .skiped input[type='checkbox']:checked {
+            .input-color(@color-skiped);
+        }
+
+        input[type='checkbox']:checked:after {
+            position: relative;
+            top: -4px;
+            content: '\2713';
+            font-size: 17px;
+            display: table-cell;
+            width: 17px;
+            height: 17px;
+            text-align: center;
+            color:white;
+        }
+
+        input[type='checkbox'] {
+            // display: table-cell;
+            vertical-align: middle;
+            width: 17px;
+            height: 17px;
+            appearance: none;
+            border-radius: 2px;
+            border: 1px solid #5E5E5E;
+            box-shadow: none;
+        }
+    }
+}
