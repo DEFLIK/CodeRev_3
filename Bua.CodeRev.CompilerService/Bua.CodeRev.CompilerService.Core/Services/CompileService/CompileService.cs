@@ -13,7 +13,7 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
 {
     public class CompileService : ICompileService
     {
-        private static readonly string[] Dependencies = new string[]
+        private static readonly string[] Dependencies = new []
         {
             "System.Private.CoreLib.dll",
             "System.Console.dll",
