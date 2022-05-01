@@ -1,6 +1,9 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { CandidateCardInfo } from '../../models/candidateCardInfo';
+import { CandidateFitlerCriteria } from '../../models/candidateFilterCriteria';
+import { CandidateState } from '../../models/candidateState';
+import { CandidateVacancy } from '../../models/candidateVacancy';
 import { CandidateCardComponent } from '../candidate-card/candidate-card.component';
 
 @Component({
@@ -12,48 +15,69 @@ export class CandidatesListComponent {
     @ViewChildren('candidateCard')
     public deviceCards!: QueryList<CandidateCardComponent>;
     public candidates: CandidateCardInfo[] = this.generateRandomCardsInfo(30);
+    public searchForm: FormGroup = new FormGroup({
+        serachInput: new FormControl('')
+    });
     public filtersForm: FormGroup = new FormGroup({
         ending: new FormControl(''),
         date: new FormControl('new'),
         state: new FormArray([]),
         vacancy: new FormArray([])
     });
-    public states: any[] = [
-        { name: 'Выполнено', value: 'done' },
-        { name: 'В процессе', value: 'in-process' },
-        { name: 'Не начато', value: 'not-started' },
-        { name: 'Не выполнено', value: 'skiped' }
-    ];
+    public states: any[] = [];
 
-    public vacancies: any[] = [
-        { name: 'Junior', value: 'junior' },
-        { name: 'Middle', value: 'middle' },
-        { name: 'Senior', value: 'senior' },
-
-    ];
+    public vacancies: any[] = [];
     public get currentTimeMs(): number {
         return Date.now();
     }
+    public get searchCriteria(): string {
+        return this.searchForm.get('serachInput')?.value;
+    }
+    public get filterCriteria(): CandidateFitlerCriteria {
+        return new CandidateFitlerCriteria(
+            this.filtersForm.get('ending')?.value,
+            this.filtersForm.get('date')?.value === 'old',
+            this.filtersForm.get('state')?.value,
+            this.filtersForm.get('vacancy')?.value
+        );
+    }
 
-    constructor() { }
+    constructor() { 
+        const stateVals = Object.values(CandidateState);
+        const stateKeys = Object.keys(CandidateState);
+        const vacanVals = Object.values(CandidateVacancy);
+        const vacanKeys = Object.keys(CandidateVacancy);
+
+        for (let i = 0; i < stateKeys.length; i++) {
+            this.states.push({
+                name: stateVals[i],
+                value: stateKeys[i]
+            });
+
+            this.vacancies.push({
+                name: vacanVals[i],
+                value: vacanKeys[i]
+            });
+        }
+    }
 
     public selectCard(candidate: CandidateCardInfo): void {
 
     }
 
     public log(): void {
-        console.log(this.filtersForm.get('state'));
+        console.log(this.searchForm.get('serachInput')?.value);
     }
 
-    public onCheckboxChange(e: any): void {
-        const state: FormArray = this.filtersForm.get('state') as FormArray;
+    public onCheckboxChange(e: any, groupName: string): void {
+        const group: FormArray = this.filtersForm.get(groupName) as FormArray;
         if (e.target.checked) {
-            state.push(new FormControl(e.target.value));
+            group.push(new FormControl(e.target.value));
         } else {
             let i: number = 0;
-            state.controls.forEach((item: AbstractControl) => {
+            group.controls.forEach((item: AbstractControl) => {
                 if (item.value === e.target.value) {
-                    state.removeAt(i);
+                    group.removeAt(i);
 
                     return;
                 }

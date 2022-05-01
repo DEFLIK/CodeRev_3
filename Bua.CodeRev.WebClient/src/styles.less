@@ -1,14 +1,14 @@
 @import '~codemirror/lib/codemirror';
 @import '~codemirror/theme/material';
 
-@color-main: brown;
+@color-main: #B20023;
 
 body {
     margin: 0;
 }
 
 button {
-    background-color: #a52a2a;
+    background-color: @color-main;
     color: white;
     border: none;
     padding: 10px;
@@ -17,12 +17,12 @@ button {
     border-radius: 5px;
 
     &:hover {
-        background-color: rgb(194, 48, 48);
+        background-color: lighten(@color-main, 5%);
         cursor: pointer;
     }
 
     &:active {
-        background-color: rgb(209, 53, 53);
+        background-color: lighten(@color-main, 10%);
     }
 
     &:disabled {

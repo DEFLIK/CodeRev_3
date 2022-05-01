@@ -1,6 +1,6 @@
 
-<label class="search" for="search">
-    <input id="search" type="text" placeholder="Поиск...">
+<label class="search" for="search" [formGroup]="searchForm">
+    <input id="search" type="text" placeholder="Поиск..." formControlName="serachInput">
     <img src="../../../../assets/svg/loupe.svg">
 </label>
 
@@ -18,14 +18,18 @@
         
             <div class="segment">
                 <span class="title">По добавлению:</span>
-                <label class="option">
-                    <input type="radio" formControlName="date" value="new"> 
-                    Сначала новые
-                </label>
-                <label class="option">
-                    <input type="radio" formControlName="date" value="old"> 
-                    Сначала старые
-                </label>
+                <div class="option">
+                    <label>
+                        <input type="radio" formControlName="date" value="new"> 
+                        Сначала новые
+                    </label>
+                </div>
+                <div class="option">
+                    <label>
+                        <input type="radio" formControlName="date" value="old"> 
+                        Сначала старые
+                    </label>
+                </div>
             </div>
         
             <div class="segment">
@@ -35,7 +39,7 @@
                 </div> -->
                 <div *ngFor="let state of states; let i = index" class="option">
                     <label [class]="state.value">
-                      <input formArrayName="state" type="checkbox" [value]="state.value" (change)="onCheckboxChange($event)" checked>
+                      <input formArrayName="state" type="checkbox" [value]="state.value" (change)="onCheckboxChange($event, 'state')">
                       {{state.name}}
                     </label>
                   </div>
@@ -45,7 +49,7 @@
                 <span class="title">Вакансия:</span>
                 <div *ngFor="let vacancy of vacancies; let i = index" class="option">
                     <label>
-                      <input formArrayName="state" type="checkbox" [value]="vacancy.value" (change)="onCheckboxChange($event)" checked>
+                      <input formArrayName="state" type="checkbox" [value]="vacancy.value" (change)="onCheckboxChange($event, 'vacancy')">
                       {{vacancy.name}}
                     </label>
                   </div>
@@ -56,15 +60,15 @@
     
     <div class="list">
         <app-candidate-card 
-            *ngFor="let candidate of candidates | candidateFilter : 'searchCriteria'" 
+            *ngFor="let candidate of candidates | candidateFilter : filterCriteria : searchCriteria" 
             #candidateCard
             class="candidate-card" 
             (clickEvent)="selectCard($event)"
             [candidate]="candidate"
             [ngClass]="{
                 'done': candidate.tasksCount === candidate.doneTasksCount && candidate.startTimeMs !== -1 && currentTimeMs < candidate.timeToCheckMs,
-                'in-process': candidate.tasksCount > candidate.doneTasksCount && candidate.startTimeMs !== -1 && currentTimeMs < candidate.timeToCheckMs,
-                'not-started': candidate.startTimeMs === -1 && currentTimeMs < candidate.timeToCheckMs,
+                'inProcess': candidate.tasksCount > candidate.doneTasksCount && candidate.startTimeMs !== -1 && currentTimeMs < candidate.timeToCheckMs,
+                'notStarted': candidate.startTimeMs === -1 && currentTimeMs < candidate.timeToCheckMs,
                 'skiped': currentTimeMs >= candidate.timeToCheckMs 
             }" >
         </app-candidate-card >
