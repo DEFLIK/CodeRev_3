@@ -7,8 +7,9 @@ namespace Bua.CodeRev.UserService.DAL.Entities
     {
         public Guid UserId { get; set; }
         public Guid InterviewId { get; set; }
-        public long StartTimeMillis { get; set; }
-        public long EndTimeMillis { get; set; }
+        public long StartTimeMs { get; set; }
+        public long EndTimeMs { get; set; }
+        public long TimeToCheckMs { get; set; } // fixed time until which solution must be checked
         public string ReviewerComment { get; set; }
         public InterviewResultEnum InterviewResult { get; set; }
     }
