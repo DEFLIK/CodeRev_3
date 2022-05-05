@@ -1,11 +1,32 @@
+@import (reference) "/src/styles.less";
+@import (reference) "../candidates-list/candidates-list.component.less";
+
 :host {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    flex: 1 1 auto;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    overflow: auto;
+
     .person {
         display: flex;
         justify-content: space-around;
         align-items: center;
         width: 100%;
         height: 138px;
-        background-color: aliceblue;
+        background-color: white;
+        box-shadow: 0 1px 3px 0 #939393;
+
+        .back {
+            cursor: pointer;
+            border-radius: 10px;
+
+            &:hover {
+                background-color: #F3F3F3;
+            }
+        }
 
         .main {
             display: flex;
@@ -40,7 +61,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 87px;
+            gap: 5vw;
+            text-align: center;
             
             .stamp {
                 display: flex;
@@ -53,6 +75,7 @@
                 }
 
                 .timestamp {
+                    font-family: Recursive;
                     font-size: 26px;
                 }
             }
@@ -69,6 +92,111 @@
 
             img {
                 height: 30%;
+            }
+        }
+    }
+
+    .overview {
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 3px 0 #939393;
+        background-color: white;
+        flex: 1 1 auto;
+        overflow: auto;
+
+        .tasks {
+            padding: 20px;
+            display: flex;
+            flex: 1 1 auto;
+            flex-direction: column;
+            overflow: auto;
+            
+            .task {
+                display: flex;
+                justify-content: space-between;
+                padding: 30px;
+                height: 50px;
+                font-size: 30px;
+                border-bottom: solid 2px #DFDFDF;
+
+                &-info {
+                    display: flex;
+                    align-items: baseline;
+                    gap: 6vw;
+
+                    .number {
+                        display: inline-block;
+                        color: white;
+                        padding: 5px;
+                        height: 70%;
+                        text-align: center;
+                        aspect-ratio: 1/1;
+                        border-radius: 6px;
+                        background-color: @color-done;
+                    }
+                } 
+
+                &-grades {
+                    display: flex;
+                    gap: 50px;
+                    label {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                }
+            }
+        }
+
+        .result {
+            border-top: solid 2px @color-main;
+            flex: 0 0 160px;
+            padding: 50px;
+            gap: 110px;
+            display: flex;
+            justify-content: space-between;
+
+            .comment {
+                display: flex;
+                flex-direction: column;
+                flex: 1 1 auto;
+                gap: 55px;
+                align-items: flex-end;
+
+                &-input {
+                    font-size: 20px;
+                    width: 100%;
+                    height: 100px;
+                    resize: none;
+                }
+                
+                .submit {
+                    align-self: flex-end;
+                    width: 100px;
+                }
+            }
+
+
+            &-grades {
+                display: flex;
+                flex-direction: column;
+                flex-direction: 30px;
+                gap: 30px;
+                font-size: 30px;
+
+                span {
+                    width: 100%;
+                    text-align: center;
+                }
+
+                .wrapper {
+                    display: flex;
+                    gap: 50px;
+                    label {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                }
+
             }
         }
     }

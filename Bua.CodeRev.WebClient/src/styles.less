@@ -1,7 +1,7 @@
 @import '~codemirror/lib/codemirror';
 @import '~codemirror/theme/material';
 
-@color-main: #B20023;
+@color-main: #D33030;
 
 body {
     margin: 0;
@@ -51,6 +51,36 @@ button {
     border: 5px solid transparent;
     border-radius: 20px;
     background-clip: content-box;
+}
+
+input[type='radio']:after {
+    width: 17px;
+    height: 17px;
+    border-radius: 17px;
+    top: -3px;
+    left: -6px;
+    position: relative;
+    background-color: white;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: solid 1px #606060;
+}
+
+input[type='radio']:checked:after {
+    width: 17px;
+    height: 17px;
+    border-radius: 17px;
+    top: -3px;
+    left: -6px;
+    position: relative;
+    background-color: @color-main;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: solid 1px @color-main;
+    box-shadow: inset 0 0 0 5px white;
+    // border: 3px inset white;
 }
 
 @font-face {
