@@ -3,15 +3,17 @@ using System;
 using Bua.CodeRev.UserService.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Bua.CodeRev.UserService.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220505064717_InterviewsTableChange")]
+    partial class InterviewsTableChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,26 +88,6 @@ namespace Bua.CodeRev.UserService.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("InterviewTasks");
-                });
-
-            modelBuilder.Entity("Bua.CodeRev.UserService.DAL.Entities.Invitation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<long>("ExpiredAt")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("InterviewId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Invitations");
                 });
 
             modelBuilder.Entity("Bua.CodeRev.UserService.DAL.Entities.Task", b =>

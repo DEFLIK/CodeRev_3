@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Bua.CodeRev.UserService.Core.Models;
 using Bua.CodeRev.UserService.DAL;
 using Bua.CodeRev.UserService.DAL.Entities;
@@ -28,16 +29,16 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         }
         
         [HttpPost("login")]
-        public IActionResult Login(LoginRequest request)
+        public async Task<IActionResult> LoginAsync(LoginRequest request)
         {
-            var user = AuthenticateUser(request);
+            var user = await AuthenticateUserAsync(request);
+            
             if (user == null) 
                 return Unauthorized();
             
-            var jwtToken = GenerateTokenString(user);
             return Ok(new
             {
-                access_token = jwtToken
+                access_token = GenerateTokenString(user)
             });
         }
 
@@ -49,8 +50,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.ToString())
             };
-
-
+            
             var nowTime = DateTime.UtcNow;
             var jwtToken = new JwtSecurityToken(
                 issuer: AuthOptions.Issuer,
@@ -62,13 +62,9 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return new JwtSecurityTokenHandler().WriteToken(jwtToken);
         }
 
-        private User AuthenticateUser(LoginRequest request)
-        {
-            var userTask = _context.Users
+        private async Task<User> AuthenticateUserAsync(LoginRequest request) =>
+            await _context.Users
                 .FirstOrDefaultAsync(user =>
                     user.Email == request.Email && user.PasswordHash == request.PasswordHash);
-            userTask.Wait();
-            return userTask.Result;
-        }
     }
 }
