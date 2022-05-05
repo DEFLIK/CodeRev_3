@@ -25,6 +25,9 @@ namespace Bua.CodeRev.UserService.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<long>("InterviewDurationMs")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("InterviewText")
                         .HasColumnType("text");
 
@@ -83,6 +86,26 @@ namespace Bua.CodeRev.UserService.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("InterviewTasks");
+                });
+
+            modelBuilder.Entity("Bua.CodeRev.UserService.DAL.Entities.Invitation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("ExpiredAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("InterviewId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Invitations");
                 });
 
             modelBuilder.Entity("Bua.CodeRev.UserService.DAL.Entities.Task", b =>

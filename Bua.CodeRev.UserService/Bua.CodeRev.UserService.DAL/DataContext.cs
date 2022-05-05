@@ -13,5 +13,6 @@ namespace Bua.CodeRev.UserService.DAL
         public DbSet<Task> Tasks { get; set; }
         public DbSet<InterviewSolution> InterviewSolutions { get; set; }
         public DbSet<TaskSolution> TaskSolutions { get; set; }
+        public DbSet<Invitation> Invitations { get; set; }
     }
 }
