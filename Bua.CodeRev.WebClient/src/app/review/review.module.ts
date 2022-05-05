@@ -6,11 +6,16 @@ import { RouterModule, Routes } from '@angular/router';
 import { ReviewComponent } from './review.component';
 import { CandidateFilterPipe } from './pipes/candidate-filter.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CandidateGradeComponent } from './components/candidate-grade/candidate-grade.component';
 
 const routes: Routes = [
     {
         path: '',
         component: ReviewComponent
+    },
+    {
+        path: 'grade/:solutionId',
+        component: CandidateGradeComponent
     }
 ];
 
@@ -19,7 +24,8 @@ const routes: Routes = [
         CandidateCardComponent,
         CandidatesListComponent,
         ReviewComponent,
-        CandidateFilterPipe
+        CandidateFilterPipe,
+        CandidateGradeComponent
     ],
     imports: [
         CommonModule,
