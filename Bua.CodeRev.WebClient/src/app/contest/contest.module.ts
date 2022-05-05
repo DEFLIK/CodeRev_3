@@ -5,6 +5,8 @@ import { TaskComponent } from './components/task/task.component';
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { ContestComponent } from './contest.component';
+import { CodeEditorModule } from '../code-editor/code-editor.module';
+import { CodeEditorComponent } from '../code-editor/code-editor.component';
 
 const routes: Routes = [
     {
@@ -21,6 +23,7 @@ const routes: Routes = [
         ContestComponent
     ],
     imports: [
+        CodeEditorModule,
         CommonModule,
         RouterModule.forChild(routes)
     ]
