@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Bua.CodeRev.UserService.DAL;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,8 +19,9 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             _context = context;
         }
         
+        [Authorize]
         [HttpGet("start-interview-sln")]
-        public async Task<IActionResult> StartInterviewSolutionAsync([FromQuery(Name = "id")] string interviewSolutionId)
+        public async Task<IActionResult> StartInterviewSolutionAsync([Required][FromQuery(Name = "id")] string interviewSolutionId)
         {
             var interviewSolutionGuid = new Guid();
             try
@@ -27,7 +30,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             }
             catch (ArgumentNullException)
             {
-                return BadRequest("interview solution id to be parsed is null.");
+                return BadRequest("interview solution id to be parsed is null");
             }
             catch (FormatException)
             {
@@ -36,7 +39,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             
             var interviewSolution = await _context.InterviewSolutions.FindAsync(interviewSolutionGuid);
             if (interviewSolution == null)
-                return BadRequest("No interview solution with this uuid");
+                return BadRequest("no interview solution with such id");
                 
             var interviewTask = _context.Interviews.FirstOrDefaultAsync(iv => iv.Id == interviewSolution.InterviewId);
             var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
@@ -44,7 +47,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 
             var interview = await interviewTask;
             if (interview == null)
-                return BadRequest("No such interview");
+                return BadRequest("no interview with such id");
                 
             interviewSolution.EndTimeMs = nowTime + interview.InterviewDurationMs;
 

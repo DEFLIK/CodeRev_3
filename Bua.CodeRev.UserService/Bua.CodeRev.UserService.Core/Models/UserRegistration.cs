@@ -7,7 +7,6 @@ namespace Bua.CodeRev.UserService.Core.Models
     {
         [Required]
         public string FullName { get; set; }
-        public RoleEnum Role { get; set; } //todo how to make required
         
         [Required]
         [Phone]
