@@ -30,6 +30,9 @@ const routes: Routes = [
         CodemirrorModule,
         CommonModule,
         RouterModule.forChild(routes)
+    ],
+    exports: [
+        CodeEditorComponent
     ]
 })
 
