@@ -55,5 +55,34 @@ namespace Bua.CodeRev.UserService.Core.Controllers
 
             return Ok();
         }
+        
+        [Authorize]
+        [HttpGet("end-interview-sln")]
+        public async Task<IActionResult> EndInterviewSolutionAsync([Required][FromQuery(Name = "id")] string interviewSolutionId)
+        {
+            var interviewSolutionGuid = new Guid();
+            try
+            {
+                interviewSolutionGuid = Guid.Parse(interviewSolutionId);
+            }
+            catch (ArgumentNullException)
+            {
+                return BadRequest("interview solution id to be parsed is null");
+            }
+            catch (FormatException)
+            {
+                return BadRequest("interview solution id should be in UUID format");
+            }
+            
+            var interviewSolution = await _context.InterviewSolutions.FindAsync(interviewSolutionGuid);
+            if (interviewSolution == null)
+                return BadRequest("no interview solution with such id");
+            
+            interviewSolution.EndTimeMs = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }
