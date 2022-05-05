@@ -1,5 +1,6 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CandidateCardInfo } from '../../models/candidateCardInfo';
 import { CandidateFitlerCriteria } from '../../models/candidateFilterCriteria';
 import { CandidateState } from '../../models/candidateState';
@@ -42,7 +43,9 @@ export class CandidatesListComponent {
         );
     }
 
-    constructor() { 
+    constructor(
+        private _router: Router
+    ) { 
         const stateVals = Object.values(CandidateState);
         const stateKeys = Object.keys(CandidateState);
         const vacanVals = Object.values(CandidateVacancy);
@@ -62,7 +65,8 @@ export class CandidatesListComponent {
     }
 
     public selectCard(candidate: CandidateCardInfo): void {
-
+        console.log(candidate);
+        this._router.navigateByUrl(`review/grade/${candidate.interviewSolutionId}`);
     }
 
     public log(): void {
@@ -95,6 +99,7 @@ export class CandidatesListComponent {
             newCardInfo.averageGrade = this.getRandomGrade(5);
             newCardInfo.fullName = 'Testy Test Testovich';
             newCardInfo.vacancy = 'Testy developer';
+            newCardInfo.interviewSolutionId = `${this.getRandomInt(100000)}`;
             newCardInfo.tasksCount = 3;
 
             if (Math.random() > 0.65) {
