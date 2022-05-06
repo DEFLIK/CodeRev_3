@@ -60,8 +60,6 @@ export class CodeEditorComponent implements AfterViewInit {
             });
             
             this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
-
-            this._record.startRecord(this.codeMirrorCmpt);
         });
     }
 }
