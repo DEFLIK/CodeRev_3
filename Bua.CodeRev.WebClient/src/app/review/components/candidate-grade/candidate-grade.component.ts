@@ -41,4 +41,8 @@ export class CandidateGradeComponent implements OnInit {
     public log(): void {
         console.log(this.gradesForm);
     }
+
+    public watch(): void {
+        this._router.navigateByUrl('/contest');
+    }
 }
