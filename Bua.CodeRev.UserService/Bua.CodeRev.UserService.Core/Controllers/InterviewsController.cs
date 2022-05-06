@@ -1,10 +1,13 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
+using Bua.CodeRev.UserService.Core.Models;
 using Bua.CodeRev.UserService.DAL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Bua.CodeRev.UserService.Core.Controllers
 {
@@ -57,7 +60,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         }
         
         [Authorize]
-        [HttpGet("end-interview-sln")]
+        [HttpGet("end-interview-sln")] //todo set timetocheckms parameter
         public async Task<IActionResult> EndInterviewSolutionAsync([Required][FromQuery(Name = "id")] string interviewSolutionId)
         {
             var interviewSolutionGuid = new Guid();
@@ -83,6 +86,46 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+        
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpGet("get-cards")]
+        public IActionResult GetInterviewSolutions()
+        {
+            var groups = _context.TaskSolutions.ToList().GroupBy(t => t.InterviewSolutionId).ToList();
+            var cardsInfo = _context.InterviewSolutions.ToList().Join(_context.Interviews.ToList(),
+                s => s.InterviewId,
+                i => i.Id,
+                (s, i) => new CardInfo
+                {
+                    UserId = s.UserId,
+                    InterviewSolutionId = s.Id,
+                    Vacancy = i.Vacancy,
+                    StartTimeMs = s.StartTimeMs,
+                    TimeToCheckMs = s.TimeToCheckMs,
+                    ReviewerComment = s.ReviewerComment,
+                    InterviewResult = s.InterviewResult
+                }).ToList();
+            cardsInfo = cardsInfo.Join(_context.Users.ToList(), 
+                c => c.UserId, 
+                u => u.Id,
+                (c, u) =>
+                {
+                    c.FullName = u.FullName;
+                    return c;
+                }).ToList();
+            cardsInfo = cardsInfo.Join(groups, 
+                c => c.InterviewSolutionId,
+                g => g.Key,
+                (c, g) => 
+                {
+                    c.AverageGrade = (float) Math.Round(g.Average(t => (int) t.TaskGrade), 1);
+                    c.DoneTasksCount = g.Count(t => t.IsDone);
+                    c.TasksCount = g.Count();
+                    return c;
+                }).ToList();
+            
+            return Ok(cardsInfo);
         }
     }
 }
