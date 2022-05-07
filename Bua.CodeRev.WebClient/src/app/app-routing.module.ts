@@ -5,7 +5,7 @@ import { AuthGuard } from './auth/guards/auth.guard';
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'review',
+        redirectTo: 'auth',
         pathMatch: 'full'
     },
     {
@@ -23,7 +23,8 @@ const routes: Routes = [
     },
     {
         path: 'review',
-        loadChildren: () => import('./review/review.module').then((m: any) => m.ReviewModule)
+        loadChildren: () => import('./review/review.module').then((m: any) => m.ReviewModule),
+        canLoad: [AuthGuard]
     },
 ];
 
