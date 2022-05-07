@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import * as CodeMirror from 'codemirror';
 import { interval } from 'rxjs';
-import { RequestService } from 'src/app/global-services/request/request.service';
+import { HttpService } from 'src/app/global-services/request/http.service';
 import { ControlsComponent } from './components/controls/controls.component';
 import { OutputComponent } from './components/output/output.component';
 import { ExecutionResult } from './models/executionResult';

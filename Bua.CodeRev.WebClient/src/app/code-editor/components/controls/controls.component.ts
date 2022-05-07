@@ -4,6 +4,7 @@ import { EntryPoint } from 'src/app/code-editor/models/entryPoint';
 import { CodeStorageService } from 'src/app/code-editor/services/code-storage-service/code-storage.service';
 import { CompileService } from 'src/app/code-editor/services/compile-service/compile-service.service';
 import { RecordService } from 'src/app/code-editor/services/record-service/record.service';
+import { ExecutionResult } from '../../models/executionResult';
 
 @Component({
     selector: 'app-controls',
@@ -32,8 +33,13 @@ export class ControlsComponent {
                     this._codeStorage.entryNamespace, 
                     this._codeStorage.entryClass, 
                     this._codeStorage.entryMethod))
-            .subscribe(result => 
-                this._codeStorage.storeOutput(result));
+            .subscribe(resp => {
+                if (resp.ok) {
+                    this._codeStorage.storeOutput(resp.body ?? new ExecutionResult());
+                } else {
+                    //todo
+                }
+            });
     }
 
     public startRecord(): void {

@@ -1,6 +1,8 @@
+import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RequestService } from 'src/app/global-services/request/request.service';
+import { HttpService } from 'src/app/global-services/request/http.service';
+import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { EntryPoint } from '../../models/entryPoint';
 import { ExecutionRequest } from '../../models/executionRequest';
 import { ExecutionResult } from '../../models/executionResult';
@@ -10,12 +12,13 @@ import { ExecutionResult } from '../../models/executionResult';
 })
 export class CompileService {
 
-    constructor(private _req: RequestService) { }
+    constructor(private _req: HttpService) { }
 
-    public execute(code: string, entry: EntryPoint): Observable<ExecutionResult> {
-        return this._req.put<ExecutionResult, ExecutionRequest>(
-            `https://localhost:44343/api/compile/execute`,
-            new ExecutionRequest(code, entry)
-        );
+    public execute(code: string, entry: EntryPoint): Observable<HttpResponse<ExecutionResult>> {
+        return this._req.request<ExecutionResult, ExecutionRequest>({
+            url: `https://localhost:44343/api/compile/execute`,
+            method: RequestMethodType.put,
+            body: new ExecutionRequest(code, entry)
+        });
     }
 }

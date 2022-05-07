@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { LoadChildren, LoadChildrenCallback, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './auth/guards/auth.guard';
 
 const routes: Routes = [
     {
@@ -17,7 +18,8 @@ const routes: Routes = [
     },
     {
         path: 'contest',
-        loadChildren: () => import('./contest/contest.module').then((m: any) => m.ContestModule)
+        loadChildren: () => import('./contest/contest.module').then((m: any) => m.ContestModule),
+        canLoad: [AuthGuard]
     },
     {
         path: 'review',
