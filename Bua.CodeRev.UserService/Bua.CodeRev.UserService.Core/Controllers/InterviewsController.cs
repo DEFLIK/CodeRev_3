@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Bua.CodeRev.UserService.Core.Models;
 using Bua.CodeRev.UserService.DAL;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -12,6 +13,7 @@ using Newtonsoft.Json;
 namespace Bua.CodeRev.UserService.Core.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors]
     [ApiController]
     public class InterviewsController : Controller
     {
