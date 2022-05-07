@@ -141,6 +141,42 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
 
+        
+        [Authorize]
+        [HttpPut("end-task-sln")]
+        public async Task<IActionResult> EndTaskSolutionAsync([Required] [FromQuery(Name = "id")] string taskSolutionId)
+        {
+            var taskSolutionGuid = new Guid();
+            try
+            {
+                taskSolutionGuid = Guid.Parse(taskSolutionId);
+            }
+            catch (ArgumentNullException)
+            {
+                return BadRequest("task solution id to be parsed is null");
+            }
+            catch (FormatException)
+            {
+                return BadRequest("task solution id should be in UUID format");
+            }
+            var taskSolution = await _dbRepository
+                .Get<TaskSolution>(t => t.Id == taskSolutionGuid).FirstOrDefaultAsync();
+            if (taskSolution == null)
+            {
+                return Conflict("no task solution with such id");
+            }
+
+            if (taskSolution.IsDone)
+            {
+                return Conflict("task solution is already done");
+            }
+
+            taskSolution.IsDone = true;
+            await _dbRepository.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet("i-sln-info")]
         public async Task<IActionResult> GetInterviewSolutionInfoAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId)
