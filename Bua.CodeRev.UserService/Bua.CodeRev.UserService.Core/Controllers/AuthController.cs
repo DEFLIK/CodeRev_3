@@ -51,7 +51,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         {
             if (!IsValidToken(token))
                 return Unauthorized();
-            var roleClaim = GetClaim(token, ClaimTypes.Role);
+            var roleClaim = GetClaim(token, "role");
             if (roleClaim == null)
                 return Unauthorized();
             var role = roleClaim.Value;
@@ -104,7 +104,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
+                new Claim("role", user.Role.ToString())
             };
             
             var nowTime = DateTime.UtcNow;
