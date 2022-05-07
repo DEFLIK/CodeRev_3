@@ -9,7 +9,7 @@ export class AuthInterceptor implements HttpInterceptor {
     constructor(private _cacher: SessionStorageService) {}
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const sessionToken: string = this._cacher.getSession().token;
+        const sessionToken: string = this._cacher.getJWTSession().accessToken;
 
         if (sessionToken) {
             const newRequest: HttpRequest<any> = req.clone({

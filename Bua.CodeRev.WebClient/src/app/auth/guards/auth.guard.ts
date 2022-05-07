@@ -1,44 +1,68 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, CanDeactivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { AuthService } from '../services/auth-service/auth.service';
+import { UserRole } from '../models/userRole';
+import { SessionStorageService } from '../services/sessionStorage-service/session-storage.service';
+import { RolesController } from '../models/rolesController';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
-
     constructor(
-        private _req: HttpService,
+        private _auth: AuthService,
+        private _cacher: SessionStorageService,
         private _router: Router
     ) {}
 
-    public async canActivate(
+    public canActivate(
         route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot): Promise<boolean> {
-        return this.validate();
+        state: RouterStateSnapshot): Observable<boolean> {
+        return this.validate(route.routeConfig?.path ?? '');
     }
 
-    public async canLoad(
+    public canLoad(
         route: Route, 
-        segments: UrlSegment[]): Promise<boolean> {
-        return this.validate();
+        segments: UrlSegment[]): Observable<boolean> {
+        return this.validate(route.path ?? '');
     }
 
-    public async canActivateChild(
+    public canActivateChild(
         childRoute: ActivatedRouteSnapshot, 
-        state: RouterStateSnapshot): Promise<boolean> {
-        return this.validate();
+        state: RouterStateSnapshot): Observable<boolean> {
+        return this.validate(childRoute.routeConfig?.path ?? '');
     }
 
-    private validate(): boolean {
-        this._req.request({
-            url: `http://localhost:62167/api/auth/validate-role?role=candidate`,
-            method: RequestMethodType.get
-        }).subscribe();
+    public validate(route: string): Observable<boolean> {
+        return this._auth.checkCurrentSessionValid()
+            .pipe(
+                map(resp => {
+                    const currRole = this._cacher.getJWTInfo().role;
 
-        return true;
+                    if (!currRole || !resp.ok) {
+                        return false;
+                    }
+
+                    switch(route) {
+                        case('review'):
+                            return RolesController.reviewRoles.includes(currRole);
+                        case('contest'):
+                            return RolesController.contestRoles.includes(currRole);
+                        default:
+                            return false;
+                    }
+                }),
+                tap(res => {
+                    if (!res) {
+                        console.log('res:', res);
+
+                        this._router
+                            .navigateByUrl('');
+                    }
+                })
+            );
     }
 }
