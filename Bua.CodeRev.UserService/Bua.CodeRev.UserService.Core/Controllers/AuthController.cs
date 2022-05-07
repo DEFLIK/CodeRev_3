@@ -62,6 +62,17 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             });
         }
 
+        
+        [HttpGet("validate-token")]
+        public IActionResult ValidateToken([Required][FromQuery(Name = "token")] string token)
+        {
+            if (!IsValidToken(token))
+                return Unauthorized();
+            return Ok();
+        }
+        
+        
+
         private bool IsValidToken(string token)
         {
             try
