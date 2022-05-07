@@ -131,6 +131,35 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             });
         }
 
+        [HttpGet("validate-invitation")]
+        public async Task<IActionResult> ValidateInvitationAsync([Required] [FromQuery(Name = "invite")] string invitationId)
+        {
+            var invitationGuid = new Guid();
+            try
+            {
+                invitationGuid = Guid.Parse(invitationId);
+            }
+            catch (ArgumentNullException)
+            {
+                return BadRequest("invitation id to be parsed is null");
+            }
+            catch (FormatException)
+            {
+                return BadRequest("invitation id should be in UUID format");
+            }
+            var invitation = await _dbRepository.Get<Invitation>(i => i.Id == invitationGuid).FirstOrDefaultAsync();
+            if (invitation == null)
+                return Conflict("this invitation doesn't exist or is expired");
+            if (invitation.ExpiredAt < DateTimeOffset.Now.ToUnixTimeMilliseconds())
+            {
+                await _dbRepository.Remove(invitation);
+                await _dbRepository.SaveChangesAsync();
+                return Conflict("this invitation doesn't exist or is expired");
+            }
+
+            return Ok();
+        }
+
         private async System.Threading.Tasks.Task CreateInterviewSolutionAsync(Guid userGuid, Guid interviewGuid)
         {
             var interviewSolutionGuid = Guid.NewGuid();
