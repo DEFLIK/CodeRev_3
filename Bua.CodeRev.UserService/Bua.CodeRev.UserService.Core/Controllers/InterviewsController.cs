@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Bua.CodeRev.UserService.Core.Models;
 using Bua.CodeRev.UserService.DAL;
 using Bua.CodeRev.UserService.DAL.Entities;
+using Bua.CodeRev.UserService.DAL.Models;
 using Bua.CodeRev.UserService.DAL.Models.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -98,6 +99,48 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
 
+        
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpPut("put-task-sln-grade")]
+        public async Task<IActionResult> PutTaskSolutionGradeAsync([Required] [FromQuery(Name = "id")] string taskSolutionId, 
+            [Required][FromQuery(Name = "grade")] int grade)
+        {
+            GradeEnum gradeEnum;
+            try
+            {
+                gradeEnum = (GradeEnum) grade;
+            }
+            catch (Exception)
+            {
+                return BadRequest("grade is invalid");
+            }
+            
+            var taskSolutionGuid = new Guid();
+            try
+            {
+                taskSolutionGuid = Guid.Parse(taskSolutionId);
+            }
+            catch (ArgumentNullException)
+            {
+                return BadRequest("task solution id to be parsed is null");
+            }
+            catch (FormatException)
+            {
+                return BadRequest("task solution id should be in UUID format");
+            }
+            var taskSolution = await _dbRepository
+                .Get<TaskSolution>(t => t.Id == taskSolutionGuid).FirstOrDefaultAsync();
+            if (taskSolution == null)
+            {
+                return Conflict("no task solution with such id");
+            }
+
+            taskSolution.Grade = gradeEnum;
+            await _dbRepository.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet("i-sln-info")]
         public async Task<IActionResult> GetInterviewSolutionInfoAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId)
@@ -118,7 +161,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             
             var interviewSolutionInfo = await GetInterviewSolutionInfoAsync(interviewSolutionGuid);
             if (interviewSolutionInfo == null)
-                return BadRequest("no interview solution with such id, interview or user doesn't exist");
+                return Conflict("no interview solution with such id, interview or user doesn't exist");
             return Ok(interviewSolutionInfo);
         }
 
@@ -143,7 +186,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             var taskSolutionInfo = await GetTaskSolutionInfoAsync(taskSolutionGuid);
             if (taskSolutionInfo == null)
             {
-                return Conflict("no task solution with such id or user doesn't exist");
+                return Conflict("no task solution with such id or user solution refers to doesn't exist");
             }
 
             return Ok(taskSolutionInfo);
