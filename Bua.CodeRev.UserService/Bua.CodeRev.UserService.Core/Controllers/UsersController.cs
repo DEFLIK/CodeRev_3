@@ -74,10 +74,12 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             if (invitation.Role != RoleEnum.Candidate)
                 await _dbRepository.Remove(invitation);
 
-            await _dbRepository.SaveChangesAsync();
-
             if (!invitation.InterviewId.Equals(Guid.Empty))
-                CreateInterviewSolutionAsync(userGuid, invitation.InterviewId);
+            {
+                await CreateInterviewSolutionAsync(userGuid, invitation.InterviewId);
+            }
+
+            await _dbRepository.SaveChangesAsync();
             
             return Ok();
         }
@@ -129,7 +131,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             });
         }
 
-        private async void CreateInterviewSolutionAsync(Guid userGuid, Guid interviewGuid)
+        private async System.Threading.Tasks.Task CreateInterviewSolutionAsync(Guid userGuid, Guid interviewGuid)
         {
             var interviewSolutionGuid = Guid.NewGuid();
             await _dbRepository.Add(new InterviewSolution
@@ -148,13 +150,11 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 .Get<InterviewTask>(it => it.InterviewId == interviewGuid)
                 .Select(it => it.TaskId))
             {
-                CreateTaskSolutionAsync(interviewSolutionGuid, taskId);
+                await CreateTaskSolutionAsync(interviewSolutionGuid, taskId);
             }
-
-            await _dbRepository.SaveChangesAsync();
         }
 
-        private async void CreateTaskSolutionAsync(Guid interviewSolutionGuid, Guid taskGuid)
+        private async System.Threading.Tasks.Task CreateTaskSolutionAsync(Guid interviewSolutionGuid, Guid taskGuid)
         {
             await _dbRepository.Add(new TaskSolution
             {
