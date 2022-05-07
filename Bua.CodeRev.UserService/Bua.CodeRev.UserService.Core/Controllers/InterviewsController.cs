@@ -51,7 +51,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
             if (interviewSolution == null)
-                return BadRequest("no interview solution with such id");
+                return Conflict("no interview solution with such id");
                 
             var interviewTask = _dbRepository.Get<Interview>(iv => iv.Id == interviewSolution.InterviewId).FirstOrDefaultAsync();
             var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
@@ -59,7 +59,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 
             var interview = await interviewTask;
             if (interview == null)
-                return BadRequest("no interview with such id");
+                return Conflict("no interview with such id");
                 
             interviewSolution.EndTimeMs = nowTime + interview.InterviewDurationMs;
 
@@ -90,7 +90,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
             if (interviewSolution == null)
-                return BadRequest("no interview solution with such id");
+                return Conflict("no interview solution with such id");
             
             interviewSolution.EndTimeMs = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 

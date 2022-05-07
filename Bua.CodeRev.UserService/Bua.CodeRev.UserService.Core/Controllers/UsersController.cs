@@ -112,7 +112,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             if (mustBeId && await _dbRepository
                 .Get<Interview>(i => i.Id == interviewGuid)
                 .FirstOrDefaultAsync() == null)
-                return BadRequest("no interview with such id");
+                return Conflict("no interview with such id");
 
             var invitationGuid = Guid.NewGuid();
             var invitation = new Invitation
