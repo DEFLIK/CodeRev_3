@@ -11,7 +11,7 @@ namespace Bua.CodeRev.UserService.Core.Models
         public string Vacancy { get; set; }
         public long StartTimeMs { get; set; }
         public long TimeToCheckMs { get; set; }
-        public float AverageGrade { get; set; }
+        public GradeEnum AverageGrade { get; set; }
         public string ReviewerComment { get; set; }
         public int DoneTasksCount { get; set; }
         public int TasksCount { get; set; }

@@ -44,7 +44,6 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 accessToken = GenerateTokenString(user)
             });
         }
-
         
         [HttpGet("validate-role")]
         public IActionResult ValidateRoleFromToken([Required][FromQuery(Name = "token")] string token)
@@ -62,7 +61,6 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 role = role.ToLower()
             });
         }
-
         
         [HttpGet("validate-token")]
         public IActionResult ValidateToken([Required][FromQuery(Name = "token")] string token)
@@ -72,8 +70,6 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
         
-        
-
         private bool IsValidToken(string token)
         {
             try

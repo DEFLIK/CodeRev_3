@@ -191,7 +191,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 InterviewSolutionId = interviewSolutionGuid,
                 TaskId = taskGuid,
                 IsDone = false,
-                TaskGrade = TaskGradeEnum.Zero,
+                Grade = GradeEnum.Zero,
             });
         }
     }
