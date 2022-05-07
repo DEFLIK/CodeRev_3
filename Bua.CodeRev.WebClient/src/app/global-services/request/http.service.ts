@@ -1,6 +1,6 @@
 import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable, isDevMode } from '@angular/core';
-import { map, merge, Observable, skipWhile, Subject, takeUntil } from 'rxjs';
+import { map, merge, Observable, share, skipWhile, Subject, takeUntil } from 'rxjs';
 import { ContentType } from './models/content-type';
 import { IRequestOptions } from './models/request-options';
 import { RequestResponseType } from './models/request-response-type';
@@ -81,7 +81,8 @@ export class HttpService {
 
                     return value;
                 }),
-                takeUntil(requestParams.unsubscriber ? merge(this._takeUntil, requestParams.unsubscriber) : this._takeUntil)
+                takeUntil(requestParams.unsubscriber ? merge(this._takeUntil, requestParams.unsubscriber) : this._takeUntil),
+                share()
             );
 
     }
