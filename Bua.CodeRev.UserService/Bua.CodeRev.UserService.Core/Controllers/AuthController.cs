@@ -9,6 +9,7 @@ using Bua.CodeRev.UserService.Core.Models;
 using Bua.CodeRev.UserService.DAL;
 using Bua.CodeRev.UserService.DAL.Entities;
 using Bua.CodeRev.UserService.DAL.Models;
+using Bua.CodeRev.UserService.DAL.Models.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -23,11 +24,11 @@ namespace Bua.CodeRev.UserService.Core.Controllers
     [ApiController]
     public class AuthController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IDbRepository _dbRepository;
         
-        public AuthController(DataContext context)
+        public AuthController(IDbRepository dbRepository)
         {
-            _context = context;
+            _dbRepository = dbRepository;
         }
         
         [HttpPost("login")]
@@ -40,7 +41,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             
             return Ok(new
             {
-                access_token = GenerateTokenString(user)
+                accessToken = GenerateTokenString(user)
             });
         }
 
@@ -121,8 +122,8 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             new JwtSecurityTokenHandler().ReadJwtToken(token).Claims.FirstOrDefault(c => c.Type == claimType);
 
         private async Task<User> AuthenticateUserAsync(LoginRequest request) =>
-            await _context.Users
-                .FirstOrDefaultAsync(user =>
-                    user.Email == request.Email && user.PasswordHash == request.PasswordHash);
+            await _dbRepository
+                .Get<User>(user => user.Email == request.Email && user.PasswordHash == request.PasswordHash)
+                .FirstOrDefaultAsync();
     }
 }

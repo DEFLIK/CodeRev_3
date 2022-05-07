@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Bua.CodeRev.UserService.Core.Models;
 using Bua.CodeRev.UserService.DAL;
+using Bua.CodeRev.UserService.DAL.Entities;
+using Bua.CodeRev.UserService.DAL.Models.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +19,11 @@ namespace Bua.CodeRev.UserService.Core.Controllers
     [ApiController]
     public class InterviewsController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IDbRepository _dbRepository;
         
-        public InterviewsController(DataContext context)
+        public InterviewsController(IDbRepository dbRepository)
         {
-            _context = context;
+            _dbRepository = dbRepository;
         }
         
         [Authorize]
@@ -42,11 +44,13 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 return BadRequest("interview solution id should be in UUID format");
             }
             
-            var interviewSolution = await _context.InterviewSolutions.FindAsync(interviewSolutionGuid);
+            var interviewSolution = await _dbRepository
+                .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
+                .FirstOrDefaultAsync();
             if (interviewSolution == null)
                 return BadRequest("no interview solution with such id");
                 
-            var interviewTask = _context.Interviews.FirstOrDefaultAsync(iv => iv.Id == interviewSolution.InterviewId);
+            var interviewTask = _dbRepository.Get<Interview>(iv => iv.Id == interviewSolution.InterviewId).FirstOrDefaultAsync();
             var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             interviewSolution.StartTimeMs = nowTime;
                 
@@ -56,7 +60,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 
             interviewSolution.EndTimeMs = nowTime + interview.InterviewDurationMs;
 
-            await _context.SaveChangesAsync();
+            await _dbRepository.SaveChangesAsync();
 
             return Ok();
         }
@@ -79,13 +83,15 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 return BadRequest("interview solution id should be in UUID format");
             }
             
-            var interviewSolution = await _context.InterviewSolutions.FindAsync(interviewSolutionGuid);
+            var interviewSolution = await _dbRepository
+                .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
+                .FirstOrDefaultAsync();
             if (interviewSolution == null)
                 return BadRequest("no interview solution with such id");
             
             interviewSolution.EndTimeMs = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
-            await _context.SaveChangesAsync();
+            await _dbRepository.SaveChangesAsync();
 
             return Ok();
         }
@@ -94,8 +100,8 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         [HttpGet("get-cards")]
         public IActionResult GetInterviewSolutions()
         {
-            var groups = _context.TaskSolutions.ToList().GroupBy(t => t.InterviewSolutionId).ToList();
-            var cardsInfo = _context.InterviewSolutions.ToList().Join(_context.Interviews.ToList(),
+            var groups = _dbRepository.Get<TaskSolution>().ToList().GroupBy(t => t.InterviewSolutionId).ToList(); //todo optimize
+            var cardsInfo = _dbRepository.Get<InterviewSolution>().ToList().Join(_dbRepository.Get<Interview>().ToList(),
                 s => s.InterviewId,
                 i => i.Id,
                 (s, i) => new CardInfo
@@ -108,7 +114,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                     ReviewerComment = s.ReviewerComment,
                     InterviewResult = s.InterviewResult
                 }).ToList();
-            cardsInfo = cardsInfo.Join(_context.Users.ToList(), 
+            cardsInfo = cardsInfo.Join(_dbRepository.Get<User>().ToList(), 
                 c => c.UserId, 
                 u => u.Id,
                 (c, u) =>
