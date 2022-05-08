@@ -2,11 +2,12 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import * as CodeMirror from 'codemirror';
 import { interval } from 'rxjs';
-import { RequestService } from 'src/app/global-services/request/request.service';
+import { HttpService } from 'src/app/global-services/request/http.service';
 import { ControlsComponent } from './components/controls/controls.component';
 import { OutputComponent } from './components/output/output.component';
 import { ExecutionResult } from './models/executionResult';
 import { CodeStorageService } from './services/code-storage-service/code-storage.service';
+import { RecordService } from './services/record-service/record.service';
 
 @Component({
     selector: 'app-code-editor',
@@ -22,21 +23,12 @@ export class CodeEditorComponent implements AfterViewInit {
     @ViewChild('output') 
     public outputCmpt!: OutputComponent;
 
-    constructor(private _codeStorage: CodeStorageService) { }
+    constructor(
+        private _record: RecordService,
+        private _codeStorage: CodeStorageService
+    ) { }
 
     public ngAfterViewInit(): void {
-        setTimeout(() => {
-            if (!this.codeMirrorCmpt.codeMirror) {
-                console.log('Failed to load codeMirror component!');
-            }
-
-            this.codeMirrorCmpt.codeMirror?.setValue(this._codeStorage.defaultCode);
-            this.codeMirrorCmpt.codeMirror?.on('change', () => {
-                this.codeMirrorCmpt.codeMirror?.getAllMarks().forEach(marker => marker.clear());
-            });
-            this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
-        });
-
         this._codeStorage
             .onOutputRefresh$
             .subscribe((result: ExecutionResult) => {
@@ -53,5 +45,21 @@ export class CodeEditorComponent implements AfterViewInit {
 
                 this.outputCmpt.setOutput(result);
             });
+
+        setTimeout(() => { // Закидываю в конец очереди, чтобы дать модулю CodeMirror подгрузить библиотеку
+            if (!this.codeMirrorCmpt.codeMirror) {
+                console.log('Failed to load codeMirror component!');
+
+                return;
+            }
+
+            this.codeMirrorCmpt.codeMirror?.setValue(this._codeStorage.defaultCode);
+
+            this.codeMirrorCmpt.codeMirror?.on('change', () => {
+                this.codeMirrorCmpt.codeMirror?.getAllMarks().forEach(marker => marker.clear());
+            });
+            
+            this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
+        });
     }
 }

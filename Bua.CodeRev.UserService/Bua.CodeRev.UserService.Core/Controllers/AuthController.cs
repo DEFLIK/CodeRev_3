@@ -1,44 +1,97 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Bua.CodeRev.UserService.Core.Models;
 using Bua.CodeRev.UserService.DAL;
 using Bua.CodeRev.UserService.DAL.Entities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Bua.CodeRev.UserService.DAL.Models;
+using Bua.CodeRev.UserService.DAL.Models.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using JwtConstants = System.IdentityModel.Tokens.Jwt.JwtConstants;
 using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 
 namespace Bua.CodeRev.UserService.Core.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors]
     [ApiController]
     public class AuthController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IDbRepository _dbRepository;
         
-        public AuthController(DataContext context)
+        public AuthController(IDbRepository dbRepository)
         {
-            _context = context;
+            _dbRepository = dbRepository;
         }
         
         [HttpPost("login")]
-        public IActionResult Login(LoginRequest request)
+        public async Task<IActionResult> LoginAsync(LoginRequest request)
         {
-            var user = AuthenticateUser(request);
+            var user = await AuthenticateUserAsync(request);
+            
             if (user == null) 
                 return Unauthorized();
             
-            var jwtToken = GenerateTokenString(user);
             return Ok(new
             {
-                access_token = jwtToken
+                accessToken = GenerateTokenString(user)
             });
+        }
+        
+        [HttpGet("validate-role")]
+        public IActionResult ValidateRoleFromToken([Required][FromQuery(Name = "token")] string token)
+        {
+            if (!IsValidToken(token))
+                return Unauthorized();
+            var roleClaim = GetClaim(token, "role");
+            if (roleClaim == null)
+                return Unauthorized();
+            var role = roleClaim.Value;
+            if (!Enum.TryParse(role, true, out RoleEnum roleEnum))
+                return Unauthorized();
+            return Ok(new
+            {
+                role = role.ToLower()
+            });
+        }
+        
+        [HttpGet("validate-token")]
+        public IActionResult ValidateToken([Required][FromQuery(Name = "token")] string token)
+        {
+            if (!IsValidToken(token))
+                return Unauthorized();
+            return Ok();
+        }
+        
+        private bool IsValidToken(string token)
+        {
+            try
+            {
+                new JwtSecurityTokenHandler().ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = AuthOptions.Issuer,
+                    ValidAudience = AuthOptions.Audience,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
+
+                }, out var jwt);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private string GenerateTokenString(User user)
@@ -47,28 +100,26 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.ToString())
+                new Claim("role", user.Role.ToString())
             };
-
-
+            
             var nowTime = DateTime.UtcNow;
-            var jwtToken = new JwtSecurityToken(
+            var jwt = new JwtSecurityToken(
                 issuer: AuthOptions.Issuer,
                 audience: AuthOptions.Audience,
                 notBefore: nowTime,
                 claims: claims,
                 expires: nowTime.AddSeconds(AuthOptions.Lifetime),
                 signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
-        private User AuthenticateUser(LoginRequest request)
-        {
-            var userTask = _context.Users
-                .FirstOrDefaultAsync(user =>
-                    user.Email == request.Email && user.PasswordHash == request.PasswordHash);
-            userTask.Wait();
-            return userTask.Result;
-        }
+        private Claim GetClaim(string token, string claimType) =>
+            new JwtSecurityTokenHandler().ReadJwtToken(token).Claims.FirstOrDefault(c => c.Type == claimType);
+
+        private async Task<User> AuthenticateUserAsync(LoginRequest request) =>
+            await _dbRepository
+                .Get<User>(user => user.Email == request.Email && user.PasswordHash == request.PasswordHash)
+                .FirstOrDefaultAsync();
     }
 }

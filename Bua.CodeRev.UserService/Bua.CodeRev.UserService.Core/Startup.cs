@@ -55,7 +55,8 @@ namespace Bua.CodeRev.UserService.Core
                         IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
                     };
                 });
-            
+
+            services.AddCors();
             services.AddControllers();
         }
 
@@ -74,6 +75,11 @@ namespace Bua.CodeRev.UserService.Core
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
 
             app.UseEndpoints(endpoints =>
             {

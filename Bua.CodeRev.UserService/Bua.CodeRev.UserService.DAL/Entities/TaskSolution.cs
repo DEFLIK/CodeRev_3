@@ -7,10 +7,8 @@ namespace Bua.CodeRev.UserService.DAL.Entities
     {
         public Guid TaskId { get; set; }
         public Guid InterviewSolutionId { get; set; }
-        public Guid TimelineId { get; set; }
-        public Guid RunTimelineId { get; set; }
         public bool IsDone { get; set; }
-        public TaskGradeEnum TaskGrade { get; set; }
+        public GradeEnum Grade { get; set; }
         
     }
 }

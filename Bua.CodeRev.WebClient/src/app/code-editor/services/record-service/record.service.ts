@@ -30,7 +30,7 @@ export class RecordService {
             return;
         }
 
-        editorComp.codeMirror.setValue(this._storage.defaultCode);
+        editorComp.codeMirror.setValue('');
         this._player = new CodePlay(editorComp.codeMirror, {
             maxDelay: this._maxDelayMs,
             autoplay: true,
@@ -53,11 +53,15 @@ export class RecordService {
 
     public startRecord(editorComp: CodemirrorComponent): void {
         if (!editorComp.codeMirror) {
+            console.log('Unable to load code mirror model');
+
             return;
         }
 
         this._recorder = new CodeRecord(editorComp.codeMirror);
         this._recorder.listen();
+        editorComp.codeMirror?.setValue(editorComp.codeMirror.getValue());
+        console.log('record started');
     }
 
     public stopAndSaveRecord(editorComp: CodemirrorComponent): void {

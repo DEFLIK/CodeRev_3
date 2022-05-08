@@ -1,0 +1,32 @@
+:host {
+    display: flex;
+    height: 100vh;
+    flex-flow: column;
+
+    header, .route {
+        padding-left: 19vw;
+        padding-right: 19vw;
+    }
+    
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex: 0 0 40px;
+        background-color: white;
+
+        .settings {
+            height: 60%;
+            display: flex;
+            gap: 30px;
+        }
+    }
+
+    .route {
+        display: flex;
+        flex-direction: column;
+        background-color: #F3F3F3;
+        flex: 1 1 auto;
+        overflow: hidden;
+    }
+}

@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { LoadChildren, LoadChildrenCallback, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './auth/guards/auth.guard';
 
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'review',
+        redirectTo: 'auth',
         pathMatch: 'full'
     },
     {
@@ -17,11 +18,13 @@ const routes: Routes = [
     },
     {
         path: 'contest',
-        loadChildren: () => import('./contest/contest.module').then((m: any) => m.ContestModule)
+        loadChildren: () => import('./contest/contest.module').then((m: any) => m.ContestModule),
+        canLoad: [AuthGuard]
     },
     {
         path: 'review',
-        loadChildren: () => import('./review/review.module').then((m: any) => m.ReviewModule)
+        loadChildren: () => import('./review/review.module').then((m: any) => m.ReviewModule),
+        canLoad: [AuthGuard]
     },
 ];
 

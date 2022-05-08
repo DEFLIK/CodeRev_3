@@ -25,7 +25,13 @@ namespace Bua.CodeRev.UserService.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<long>("InterviewDurationMs")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("InterviewText")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Vacancy")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -39,7 +45,10 @@ namespace Bua.CodeRev.UserService.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<long>("EndTimeMillis")
+                    b.Property<int>("AverageGrade")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("EndTimeMs")
                         .HasColumnType("bigint");
 
                     b.Property<Guid>("InterviewId")
@@ -51,7 +60,10 @@ namespace Bua.CodeRev.UserService.DAL.Migrations
                     b.Property<string>("ReviewerComment")
                         .HasColumnType("text");
 
-                    b.Property<long>("StartTimeMillis")
+                    b.Property<long>("StartTimeMs")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TimeToCheckMs")
                         .HasColumnType("bigint");
 
                     b.Property<Guid>("UserId")
@@ -79,11 +91,34 @@ namespace Bua.CodeRev.UserService.DAL.Migrations
                     b.ToTable("InterviewTasks");
                 });
 
+            modelBuilder.Entity("Bua.CodeRev.UserService.DAL.Entities.Invitation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("ExpiredAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("InterviewId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Invitations");
+                });
+
             modelBuilder.Entity("Bua.CodeRev.UserService.DAL.Entities.Task", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<string>("StartCode")
+                        .HasColumnType("text");
 
                     b.Property<string>("TaskText")
                         .HasColumnType("text");
@@ -99,22 +134,16 @@ namespace Bua.CodeRev.UserService.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int>("Grade")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("InterviewSolutionId")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsDone")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("RunTimelineId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("TaskGrade")
-                        .HasColumnType("integer");
-
                     b.Property<Guid>("TaskId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TimelineId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");

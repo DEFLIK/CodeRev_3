@@ -1,6 +1,6 @@
 ﻿namespace Bua.CodeRev.UserService.DAL.Models
 {
-    public enum TaskGradeEnum
+    public enum GradeEnum
     {
         Zero,
         One,
