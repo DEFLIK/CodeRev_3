@@ -11,7 +11,7 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
         /// </summary>
         /// <param name="code">Код в виде Plain-Text</param>
         /// <returns>Результат выполнения (подобно консольному выводу/ошибке)</returns>
-        /// <exception cref="ArgumentException">Переданная строка имеет значение null</exception>
+        /// <exception cref="ArgumentException">Неверное указана входная точка</exception>
         public ExecutionResult Execute(string code, EntryPoint entryPoint);
     }
 }

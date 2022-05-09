@@ -27,8 +27,20 @@ namespace Bua.CodeRev.CompilerService.Core.Controllers
         [HttpPut("execute")]
         public ActionResult<ExecutionResult> Execute([FromBody]ExecutionRequest req)
         {
-            var res = _compiler.Execute(req?.Code, req?.EntryPoint);
-            GC.Collect();
+            ExecutionResult res;
+            try
+            {
+                res = _compiler.Execute(req.Code, req.EntryPoint);
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest("Invalid entry point");
+            }
+            
+            // Следует использовать при включенной серверной сборке мусора,
+            // во избежание быстрого накопления памяти после сборки решения
+            //GC.Collect();
+
             return Ok(res);
         }
     }
