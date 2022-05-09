@@ -17,4 +17,8 @@
       <ProjectReference Include="..\Bua.CodeRev.TrackerService.Contracts\Bua.CodeRev.TrackerService.Contracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Mvc.Core" />
+    </ItemGroup>
+
 </Project>

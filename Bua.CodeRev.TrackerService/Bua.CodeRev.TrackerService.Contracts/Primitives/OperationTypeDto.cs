@@ -69,5 +69,7 @@ public enum OperationTypeDto
     ///     Extra
     /// </summary>
     [EnumMember]
-    e = 12
+    e = 12,
+    [EnumMember]
+    NoType
 }

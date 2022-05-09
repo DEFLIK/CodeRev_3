@@ -21,7 +21,6 @@ public class Parser : IParser
         var time = ParseTimeline(record["t"]);
         var count = (int?) record["l"];
         var t = record["o"];
-        
         var operation = record["o"]?.Select(ParseOperation).ToArray();
         return new RecordDto {Time = time, Long = count, Operation = operation};
     }
@@ -72,6 +71,7 @@ public class Parser : IParser
             "s" => OperationTypeDto.s,
             "x" => OperationTypeDto.x,
             "e" => OperationTypeDto.e,
+            null => OperationTypeDto.NoType,
             _ => throw new ArgumentOutOfRangeException()
         };
 

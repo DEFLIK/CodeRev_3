@@ -23,6 +23,7 @@ public class Startup
             sp.GetRequiredService<IOptions<TimelineTrackerDataBaseSettings>>().Value);
         services.AddTransient<ITrackerManager, TrackerManager>();
         services.AddTransient<IRepository, Repository>();
+        services.AddTransient<ISerializer, Serializer>();
         services.AddTransient<IParser, Parser>();
         services.AddAutoMapper(typeof(RecordProfile));
         services.AddControllers();
