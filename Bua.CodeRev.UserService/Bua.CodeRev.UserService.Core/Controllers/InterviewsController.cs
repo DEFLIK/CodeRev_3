@@ -33,38 +33,27 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         [HttpGet("start-interview-sln")]
         public async Task<IActionResult> StartInterviewSolutionAsync([Required][FromQuery(Name = "id")] string interviewSolutionId)
         {
-            var interviewSolutionGuid = new Guid();
-            try
-            {
-                interviewSolutionGuid = Guid.Parse(interviewSolutionId);
-            }
-            catch (ArgumentNullException)
-            {
-                return BadRequest("interview solution id to be parsed is null");
-            }
-            catch (FormatException)
-            {
-                return BadRequest("interview solution id should be in UUID format");
-            }
-            
+            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
             var interviewSolution = await _dbRepository
                 .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
+            
             if (interviewSolution == null)
-                return Conflict("no interview solution with such id");
+                return Conflict($"no {nameof(interviewSolution)} with such id");
                 
-            var interviewTask = _dbRepository.Get<Interview>(iv => iv.Id == interviewSolution.InterviewId).FirstOrDefaultAsync();
+            var interview = await _dbRepository
+                .Get<Interview>(iv => iv.Id == interviewSolution.InterviewId)
+                .FirstOrDefaultAsync();
+                
+            if (interview == null)
+                return Conflict($"no {nameof(interview)} with such id");
+            
             var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             interviewSolution.StartTimeMs = nowTime;
-                
-            var interview = await interviewTask;
-            if (interview == null)
-                return Conflict("no interview with such id");
-                
             interviewSolution.EndTimeMs = nowTime + interview.InterviewDurationMs;
-
             await _dbRepository.SaveChangesAsync();
-
             return Ok();
         }
         
@@ -72,30 +61,18 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         [HttpGet("end-interview-sln")] //todo set timetocheckms parameter
         public async Task<IActionResult> EndInterviewSolutionAsync([Required][FromQuery(Name = "id")] string interviewSolutionId)
         {
-            var interviewSolutionGuid = new Guid();
-            try
-            {
-                interviewSolutionGuid = Guid.Parse(interviewSolutionId);
-            }
-            catch (ArgumentNullException)
-            {
-                return BadRequest("interview solution id to be parsed is null");
-            }
-            catch (FormatException)
-            {
-                return BadRequest("interview solution id should be in UUID format");
-            }
-            
+            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
             var interviewSolution = await _dbRepository
                 .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
+            
             if (interviewSolution == null)
-                return Conflict("no interview solution with such id");
+                return Conflict($"no {nameof(interviewSolution)} with such id");
             
             interviewSolution.EndTimeMs = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
             await _dbRepository.SaveChangesAsync();
-
             return Ok();
         }
 
@@ -105,75 +82,42 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         public async Task<IActionResult> PutTaskSolutionGradeAsync([Required] [FromQuery(Name = "id")] string taskSolutionId, 
             [Required][FromQuery(Name = "grade")] int grade)
         {
-            GradeEnum gradeEnum;
-            try
-            {
-                gradeEnum = (GradeEnum) grade;
-            }
-            catch (Exception)
-            {
-                return BadRequest("grade is invalid");
-            }
+            if (!Enum.IsDefined(typeof(GradeEnum), grade))
+                return BadRequest($"{nameof(grade)} is invalid");
             
-            var taskSolutionGuid = new Guid();
-            try
-            {
-                taskSolutionGuid = Guid.Parse(taskSolutionId);
-            }
-            catch (ArgumentNullException)
-            {
-                return BadRequest("task solution id to be parsed is null");
-            }
-            catch (FormatException)
-            {
-                return BadRequest("task solution id should be in UUID format");
-            }
+            var (taskSolutionGuid, errorString) = TryParseGuid(taskSolutionId, nameof(taskSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
             var taskSolution = await _dbRepository
-                .Get<TaskSolution>(t => t.Id == taskSolutionGuid).FirstOrDefaultAsync();
+                .Get<TaskSolution>(t => t.Id == taskSolutionGuid)
+                .FirstOrDefaultAsync();
+            
             if (taskSolution == null)
-            {
-                return Conflict("no task solution with such id");
-            }
+                return Conflict($"no {nameof(taskSolution)} with such id");
 
-            taskSolution.Grade = gradeEnum;
+            taskSolution.Grade = (GradeEnum) grade;
             await _dbRepository.SaveChangesAsync();
-
             return Ok();
         }
-
         
         [Authorize]
         [HttpPut("end-task-sln")]
         public async Task<IActionResult> EndTaskSolutionAsync([Required] [FromQuery(Name = "id")] string taskSolutionId)
         {
-            var taskSolutionGuid = new Guid();
-            try
-            {
-                taskSolutionGuid = Guid.Parse(taskSolutionId);
-            }
-            catch (ArgumentNullException)
-            {
-                return BadRequest("task solution id to be parsed is null");
-            }
-            catch (FormatException)
-            {
-                return BadRequest("task solution id should be in UUID format");
-            }
+            var (taskSolutionGuid, errorString) = TryParseGuid(taskSolutionId, nameof(taskSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
             var taskSolution = await _dbRepository
-                .Get<TaskSolution>(t => t.Id == taskSolutionGuid).FirstOrDefaultAsync();
+                .Get<TaskSolution>(t => t.Id == taskSolutionGuid)
+                .FirstOrDefaultAsync();
+            
             if (taskSolution == null)
-            {
                 return Conflict("no task solution with such id");
-            }
-
             if (taskSolution.IsDone)
-            {
                 return Conflict("task solution is already done");
-            }
 
             taskSolution.IsDone = true;
             await _dbRepository.SaveChangesAsync();
-
             return Ok();
         }
 
@@ -181,19 +125,9 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         [HttpGet("i-sln-info")]
         public async Task<IActionResult> GetInterviewSolutionInfoAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId)
         {
-            var interviewSolutionGuid = new Guid();
-            try
-            {
-                interviewSolutionGuid = Guid.Parse(interviewSolutionId);
-            }
-            catch (ArgumentNullException)
-            {
-                return BadRequest("interview solution id to be parsed is null");
-            }
-            catch (FormatException)
-            {
-                return BadRequest("interview solution id should be in UUID format");
-            }
+            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
             
             var interviewSolutionInfo = await GetInterviewSolutionInfoAsync(interviewSolutionGuid);
             if (interviewSolutionInfo == null)
@@ -205,26 +139,13 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         [HttpGet("task-sln-info")]
         public async Task<IActionResult> GetTaskSolutionInfoAsync([Required] [FromQuery(Name = "id")] string taskSolutionId)
         {
-            var taskSolutionGuid = new Guid();
-            try
-            {
-                taskSolutionGuid = Guid.Parse(taskSolutionId);
-            }
-            catch (ArgumentNullException)
-            {
-                return BadRequest("task solution id to be parsed is null");
-            }
-            catch (FormatException)
-            {
-                return BadRequest("task solution id should be in UUID format");
-            }
-            
+            var (taskSolutionGuid, errorString) = TryParseGuid(taskSolutionId, nameof(taskSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
+
             var taskSolutionInfo = await GetTaskSolutionInfoAsync(taskSolutionGuid);
             if (taskSolutionInfo == null)
-            {
                 return Conflict("no task solution with such id or user solution refers to doesn't exist");
-            }
-
             return Ok(taskSolutionInfo);
         }
         
@@ -273,24 +194,23 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             var interviewSolution = await _dbRepository
                 .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
+            
             if (interviewSolution == null)
-            {
                 return null;
-            }
 
             var interview = await _dbRepository
-                .Get<Interview>(i => i.Id == interviewSolution.InterviewId).FirstOrDefaultAsync();
+                .Get<Interview>(i => i.Id == interviewSolution.InterviewId)
+                .FirstOrDefaultAsync();
+            
             if (interview == null)
-            {
                 return null;
-            }
             
             var user = await _dbRepository
-                .Get<User>(u => u.Id == interviewSolution.UserId).FirstOrDefaultAsync();
+                .Get<User>(u => u.Id == interviewSolution.UserId)
+                .FirstOrDefaultAsync();
+            
             if (user == null)
-            {
                 return null;
-            }
 
             var interviewSolutionInfo = new InterviewSolutionInfo
             {
@@ -308,7 +228,8 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 TaskSolutionsInfos = new List<TaskSolutionInfo>()
             };
             foreach (var taskSolution in _dbRepository
-                .Get<TaskSolution>(t => t.InterviewSolutionId == interviewSolution.Id).ToList())
+                .Get<TaskSolution>(t => t.InterviewSolutionId == interviewSolution.Id)
+                .ToList())
             {
                 interviewSolutionInfo.TaskSolutionsInfos.Add(await GetTaskSolutionInfoAsync(taskSolution.Id));
             }
@@ -319,23 +240,25 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         private async Task<TaskSolutionInfo> GetTaskSolutionInfoAsync(Guid taskSolutionGuid)
         {
             var taskSolution = await _dbRepository
-                .Get<TaskSolution>(t => t.Id == taskSolutionGuid).FirstOrDefaultAsync();
+                .Get<TaskSolution>(t => t.Id == taskSolutionGuid)
+                .FirstOrDefaultAsync();
+            
             if (taskSolution == null)
-            {
                 return null;
-            }
+            
             var interviewSolution = await _dbRepository
-                .Get<InterviewSolution>(i => i.Id == taskSolution.InterviewSolutionId).FirstOrDefaultAsync();
+                .Get<InterviewSolution>(i => i.Id == taskSolution.InterviewSolutionId)
+                .FirstOrDefaultAsync();
+            
             if (interviewSolution == null)
-            {
                 return null;
-            }
             var user = await _dbRepository
-                .Get<User>(u => u.Id == interviewSolution.UserId).FirstOrDefaultAsync();
+                .Get<User>(u => u.Id == interviewSolution.UserId)
+                .FirstOrDefaultAsync();
+            
             if (user == null)
-            {
                 return null;
-            }
+            
             return new TaskSolutionInfo
             {
                 TaskSolutionId = taskSolution.Id,
@@ -345,6 +268,26 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 Grade = taskSolution.Grade,
                 IsDone = taskSolution.IsDone
             };
+        }
+
+        private Tuple<Guid, string> TryParseGuid(string id, string nameOfId)
+        {
+            
+            var guid = new Guid();
+            string errorString = null;
+            try
+            {
+                guid = Guid.Parse(id);
+            }
+            catch (ArgumentNullException)
+            {
+                errorString = $"{nameOfId} to be parsed is null";
+            }
+            catch (FormatException)
+            {
+                errorString = $"{nameOfId} should be in UUID format";
+            }
+            return new Tuple<Guid, string>(guid, errorString);
         }
     }
 }
