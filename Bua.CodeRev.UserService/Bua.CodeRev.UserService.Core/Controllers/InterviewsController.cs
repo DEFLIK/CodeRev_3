@@ -138,6 +138,30 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "HrManager,Admin")]
+        [HttpPut("put-i-sln-result")]
+        public async Task<IActionResult> PutInterviewSolutionResultAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId,
+            [Required] [FromQuery(Name = "result")] int interviewResult)
+        {
+            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
+            var interviewSolution = await _dbRepository
+                .Get<InterviewSolution>(t => t.Id == interviewSolutionGuid)
+                .FirstOrDefaultAsync();
+            
+            if (interviewSolution == null)
+                return Conflict($"no {nameof(interviewSolution)} with such id");
+            if (!Enum.IsDefined(typeof(InterviewResultEnum), interviewResult))
+                return BadRequest($"{nameof(interviewResult)} is invalid");
+            if (interviewSolution.InterviewResult != InterviewResultEnum.NotChecked)
+                return Conflict($"{nameof(interviewResult)} is already put");
+            
+            interviewSolution.InterviewResult = (InterviewResultEnum) interviewResult;
+            await _dbRepository.SaveChangesAsync();
+            return Ok();
+        }
+
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPut("put-i-sln-review")]
         public async Task<IActionResult> PutInterviewSolutionReviewAsync([Required] [FromBody] InterviewSolutionReview interviewSolutionReview)
