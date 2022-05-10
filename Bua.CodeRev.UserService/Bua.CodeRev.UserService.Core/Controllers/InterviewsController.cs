@@ -75,30 +75,6 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             await _dbRepository.SaveChangesAsync();
             return Ok();
         }
-
-        
-        [Authorize(Roles = "Interviewer,HrManager,Admin")]
-        [HttpPut("put-task-sln-grade")]
-        public async Task<IActionResult> PutTaskSolutionGradeAsync([Required] [FromQuery(Name = "id")] string taskSolutionId, 
-            [Required][FromQuery(Name = "grade")] int grade)
-        {
-            if (!Enum.IsDefined(typeof(GradeEnum), grade))
-                return BadRequest($"{nameof(grade)} is invalid");
-            
-            var (taskSolutionGuid, errorString) = TryParseGuid(taskSolutionId, nameof(taskSolutionId));
-            if (errorString != null)
-                return BadRequest(errorString);
-            var taskSolution = await _dbRepository
-                .Get<TaskSolution>(t => t.Id == taskSolutionGuid)
-                .FirstOrDefaultAsync();
-            
-            if (taskSolution == null)
-                return Conflict($"no {nameof(taskSolution)} with such id");
-
-            taskSolution.Grade = (GradeEnum) grade;
-            await _dbRepository.SaveChangesAsync();
-            return Ok();
-        }
         
         [Authorize]
         [HttpPut("end-task-sln")]
@@ -112,11 +88,88 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 .FirstOrDefaultAsync();
             
             if (taskSolution == null)
-                return Conflict("no task solution with such id");
+                return Conflict($"no {nameof(taskSolution)} with such id");
             if (taskSolution.IsDone)
-                return Conflict("task solution is already done");
+                return Conflict($"{nameof(taskSolution)} is already done");
 
             taskSolution.IsDone = true;
+            await _dbRepository.SaveChangesAsync();
+            return Ok();
+        }
+
+        
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpPut("put-task-sln-grade")]
+        public async Task<IActionResult> PutTaskSolutionGradeAsync([Required] [FromQuery(Name = "id")] string taskSolutionId, 
+            [Required][FromQuery(Name = "grade")] int grade, string interviewSolutionId)
+        {
+            if (!Enum.IsDefined(typeof(GradeEnum), grade))
+                return BadRequest($"{nameof(grade)} is invalid");
+            
+            var (taskSolutionGuid, errorString) = TryParseGuid(taskSolutionId, nameof(taskSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
+            var taskSolution = await _dbRepository
+                .Get<TaskSolution>(t => t.Id == taskSolutionGuid)
+                .FirstOrDefaultAsync();
+            
+            if (taskSolution == null)
+                return Conflict($"no {nameof(taskSolution)} with such id");
+            if (taskSolution.IsDone == false)
+                return Conflict($"{nameof(taskSolution)} wasn't done yet");
+
+            if (interviewSolutionId != null)
+            {
+                var (interviewSolutionGuid, errorStringNew) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
+                if (errorStringNew != null)
+                    return BadRequest(errorStringNew);
+                var interviewSolution = await _dbRepository
+                    .Get<InterviewSolution>(t => t.Id == interviewSolutionGuid)
+                    .FirstOrDefaultAsync();
+                
+                if (interviewSolution == null)
+                    return Conflict($"no {nameof(interviewSolution)} with such id");
+                if (interviewSolution.Id != taskSolution.InterviewSolutionId)
+                    return Conflict($"{nameof(interviewSolutionGuid)} doesn't match {nameof(taskSolution)}.{nameof(taskSolution.InterviewSolutionId)}");
+            }
+
+            taskSolution.Grade = (GradeEnum) grade;
+            await _dbRepository.SaveChangesAsync();
+            return Ok();
+        }
+
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpPut("put-i-sln-review")]
+        public async Task<IActionResult> PutInterviewSolutionReviewAsync([Required] [FromBody] InterviewSolutionReview interviewSolutionReview)
+        {
+            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionReview.InterviewSolutionId, 
+                nameof(interviewSolutionReview.InterviewSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
+            var interviewSolution = await _dbRepository
+                .Get<InterviewSolution>(t => t.Id == interviewSolutionGuid)
+                .FirstOrDefaultAsync();
+            
+            if (interviewSolution == null)
+                return Conflict($"no {nameof(interviewSolution)} with such id");
+            if (interviewSolutionReview.ReviewerComment == null)
+                return Conflict($"{nameof(interviewSolutionReview.ReviewerComment)} can't be null");
+            if (!Enum.IsDefined(typeof(GradeEnum), interviewSolutionReview.AverageGrade))
+                return BadRequest($"{nameof(interviewSolutionReview.AverageGrade)} is invalid");
+            if (!Enum.IsDefined(typeof(InterviewResultEnum), interviewSolutionReview.InterviewResult))
+                return BadRequest($"{nameof(interviewSolutionReview.InterviewResult)} is invalid");
+            
+            foreach (var taskSolutionReview in interviewSolutionReview.TaskSolutionsReviews)
+            {
+                var answer = await PutTaskSolutionGradeAsync(taskSolutionReview.TaskSolutionId, 
+                    (int) taskSolutionReview.Grade, 
+                    interviewSolutionReview.InterviewSolutionId);
+                if (!(answer is OkResult))
+                    return answer;
+            }
+            interviewSolution.ReviewerComment = interviewSolutionReview.ReviewerComment;
+            interviewSolution.AverageGrade = interviewSolutionReview.AverageGrade;
+            interviewSolution.InterviewResult = interviewSolutionReview.InterviewResult;
             await _dbRepository.SaveChangesAsync();
             return Ok();
         }

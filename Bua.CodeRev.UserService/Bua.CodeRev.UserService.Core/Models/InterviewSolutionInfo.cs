@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Bua.CodeRev.UserService.DAL.Entities;
 using Bua.CodeRev.UserService.DAL.Models;
 
