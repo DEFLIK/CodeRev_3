@@ -59,8 +59,9 @@ public class Serializer : ISerializer
 
     private JToken SerializeSelect(SelectDto selectDto)
     {
-        
-        return JToken.FromObject(selectDto);
+        var lineNumber = JToken.FromObject(selectDto.LineNumber);
+        var tailMove = JToken.FromObject(selectDto.TailMove.Select(SerializeMove).ToArray());
+        return JToken.FromObject(new[]{lineNumber, tailMove});
     }
 
     private JToken SerializeMove(MoveDto moveDto)
@@ -68,7 +69,7 @@ public class Serializer : ISerializer
         var start = JToken.FromObject(moveDto.Start);
         if (moveDto.End != null)
         {
-            var end = new JObject {moveDto.End};
+            var end = JToken.FromObject(moveDto.End);
             return JToken.FromObject(new[] {start, end});
         }
 
@@ -77,10 +78,10 @@ public class Serializer : ISerializer
 
     private JToken SerializePeriod(PeriodDto periodDto)
     {
-        var from = JToken.FromObject(new[] {periodDto.From.ColumnNumber, periodDto.From.LineNumber} );
+        var from = JToken.FromObject(new[] {periodDto.From.LineNumber, periodDto.From.ColumnNumber} );
         if (periodDto.To != null)
         {
-            var to = JToken.FromObject(new[] {periodDto.To.ColumnNumber, periodDto.To.LineNumber});
+            var to = JToken.FromObject(new[] {periodDto.To.LineNumber, periodDto.To.ColumnNumber});
             return JToken.FromObject(new[] {from, to});
         }
 
