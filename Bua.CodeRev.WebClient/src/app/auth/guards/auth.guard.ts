@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, CanDeactivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
-import { map, Observable, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { AuthService } from '../services/auth-service/auth.service';
@@ -39,6 +39,9 @@ export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
     public validate(route: string): Observable<boolean> {
         return this._auth.checkCurrentSessionValid()
             .pipe(
+                catchError((err) => {
+                    return of();
+                }),
                 map(resp => {
                     const currRole = this._cacher.getJWTInfo().role;
 
@@ -48,17 +51,15 @@ export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
 
                     switch(route) {
                         case('review'):
-                            return RolesController.reviewRoles.includes(currRole);
+                            return RolesController.reviewRoles.includes(currRole ?? 0);
                         case('contest'):
-                            return RolesController.contestRoles.includes(currRole);
+                            return RolesController.contestRoles.includes(currRole ?? 0);
                         default:
                             return false;
                     }
                 }),
                 tap(res => {
                     if (!res) {
-                        console.log('res:', res);
-
                         this._router
                             .navigateByUrl('');
                     }
