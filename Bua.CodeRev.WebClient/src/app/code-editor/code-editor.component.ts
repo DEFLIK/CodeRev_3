@@ -33,7 +33,14 @@ export class CodeEditorComponent implements AfterViewInit {
             .onOutputRefresh$
             .subscribe((result: ExecutionResult) => {
                 if (!result.success) {
+                    console.log(result.errors);
+
                     for (const error of result.errors ?? []) {
+                        if (error.endChar === error.startChar) {
+                            error.startChar ??= 1;
+                            error.startChar -= 1;
+                        }
+
                         this.codeMirrorCmpt
                             .codeMirror
                             ?.markText(
