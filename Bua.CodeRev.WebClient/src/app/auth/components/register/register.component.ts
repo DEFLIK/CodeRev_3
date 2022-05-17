@@ -9,7 +9,9 @@ import { AuthService } from '../../services/auth-service/auth.service';
     styleUrls: ['./register.component.less']
 })
 export class RegisterComponent implements OnInit {
-    
+    public get isProcessing(): boolean {
+        return this._auth.isProcessing;
+    }
     public regForm: FormGroup = new FormGroup({
         userName: new FormControl('', Validators.required),
         userEmail: new FormControl('', [
