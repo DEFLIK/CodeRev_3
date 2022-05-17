@@ -4,11 +4,6 @@ import { AuthGuard } from './auth/guards/auth.guard';
 
 const routes: Routes = [
     {
-        path: '',
-        redirectTo: 'auth',
-        pathMatch: 'full'
-    },
-    {
         path: 'auth',
         loadChildren: () => import('./auth/auth.module').then((m: any) => m.AuthModule)
     },
@@ -19,12 +14,19 @@ const routes: Routes = [
     {
         path: 'contest',
         loadChildren: () => import('./contest/contest.module').then((m: any) => m.ContestModule),
-        canLoad: [AuthGuard]
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard]
     },
     {
         path: 'review',
         loadChildren: () => import('./review/review.module').then((m: any) => m.ReviewModule),
-        canLoad: [AuthGuard]
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard]
+    },
+    {
+        path: '**',
+        redirectTo: 'auth',
+        pathMatch: 'full'
     },
 ];
 
