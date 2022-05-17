@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
-import * as CodeMirror from 'codemirror';
 import { CodeRecord, CodePlay } from 'codemirror-record/src';
 import { CodeStorageService } from '../code-storage-service/code-storage.service';
 // declare var CodeRecord: any;
@@ -13,24 +12,22 @@ export class RecordService {
     private _player: any;
     private _maxDelayMs: number = 3000;
     private _playSpeed: number = 0.8;
+    private _codeMirror!: any;
 
     constructor(private _storage: CodeStorageService) { 
+        
     }
 
-    public playSavedRecord(editorComp: CodemirrorComponent): void {
+    public bindEditor(editorComp: CodemirrorComponent): void {
         if (!editorComp.codeMirror) {
-            return;
-        }
-
-        const savedRecord = this._storage.getSavedRecord();
-
-        if (!savedRecord) {
-            console.log('There is no any recorded data');
+            console.log('cant bind editor');
 
             return;
         }
 
-        editorComp.codeMirror.setValue('');
+        this._codeMirror = editorComp.codeMirror;
+        console.log(this._codeMirror);
+
         this._player = new CodePlay(editorComp.codeMirror, {
             maxDelay: this._maxDelayMs,
             autoplay: true,
@@ -43,37 +40,55 @@ export class RecordService {
                 console.log(activityRecorded);
             }
         });
+    }
+
+    public playSavedRecord(): void {
+        if (!this._player) {
+            return;
+        }
+
+        const savedRecord = this._storage.getSavedRecord();
+
+        if (!savedRecord) {
+            console.log('There is no any recorded data');
+
+            return;
+        }
+
+        this._codeMirror.setValue('');
         this._player.addOperations(savedRecord);
         this._player.play();
         this._player.on('end', () => {
             console.log('end');
             this._player.clear();
         });
+
+        console.log('code duraiton', this._player.getDuration());
     }
 
-    public startRecord(editorComp: CodemirrorComponent): void {
-        if (!editorComp.codeMirror) {
+    public startRecord(): void {
+        if (!this._codeMirror) {
             console.log('Unable to load code mirror model');
 
             return;
         }
 
-        this._recorder = new CodeRecord(editorComp.codeMirror);
+        this._recorder = new CodeRecord(this._codeMirror);
         this._recorder.listen();
-        editorComp.codeMirror?.setValue(editorComp.codeMirror.getValue());
+        this._codeMirror.setValue(this._codeMirror.getValue());
         console.log('record started');
     }
 
-    public stopAndSaveRecord(editorComp: CodemirrorComponent): void {
+    public stopAndSaveRecord(): void {
         if (!this._recorder) {
             console.log('Recording not started');
             
             return;
         }
 
-        editorComp.codeMirror?.off('changes', this._recorder.changesListener); // some override
-        editorComp.codeMirror?.off('swapDoc', this._recorder.swapDocListener);
-        editorComp.codeMirror?.off('cursorActivity', this._recorder.cursorActivityListener);
+        this._codeMirror.off('changes', this._recorder.changesListener); // some override
+        this._codeMirror.off('swapDoc', this._recorder.swapDocListener);
+        this._codeMirror.off('cursorActivity', this._recorder.cursorActivityListener);
 
         const record = this._recorder.getRecords() as string;
         if (record.length === 2) {
@@ -88,4 +103,15 @@ export class RecordService {
         console.log('Record saved');
     }
     
+    public clear(): void {
+        this._player.clear();
+    }
+
+    public seek(pos: number): void {
+        this._player.seek(pos);
+    }
+
+    public getDuration(): number {
+        return this._player.getDuration();
+    }
 }
