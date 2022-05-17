@@ -97,7 +97,7 @@ export class CandidatesListComponent {
             const newCardInfo = new CandidateCardInfo();
             newCardInfo.userId = 'test id';
             newCardInfo.averageGrade = this.getRandomGrade(5);
-            newCardInfo.fullName = 'Testy Test Testovich';
+            newCardInfo.fullName = `Testy Test Testovich ${i}`;
             newCardInfo.vacancy = 'Testy developer';
             newCardInfo.interviewSolutionId = `${this.getRandomInt(100000)}`;
             newCardInfo.tasksCount = 3;
