@@ -18,6 +18,8 @@ import { SessionStorageService } from '../sessionStorage-service/session-storage
     providedIn: 'root'
 })
 export class AuthService {
+    public isProcessing: boolean = false;
+
     constructor(
         private _req: HttpService,
         private _encr: EncryptionService,
@@ -26,9 +28,10 @@ export class AuthService {
     ) {}
 
     public register(inviteToken: string, userName: string, email: string, phone: string, pass: string): Observable<HttpResponse<unknown>> {
+        this.isProcessing = true;
         const encryptedPass: string = this._encr.encryptString(pass);
         
-        return this._req.request<unknown, IRegister>({
+        const ans = this._req.request<unknown, IRegister>({
             url: `${UrlRoutes.user}/api/users/register?invite=${inviteToken}`,
             method: RequestMethodType.post,
             body: { 
@@ -38,9 +41,17 @@ export class AuthService {
                 phonenumber: phone
             }
         });
+
+        ans.subscribe({
+            next: () => this.isProcessing = false,
+            error: () => this.isProcessing = false
+        });
+
+        return ans;
     }
 
     public login(email: string, pass: string): Observable<HttpResponse<unknown>> {
+        this.isProcessing = true;
         const encryptedPass: string = this._encr.encryptString(pass);
         
         const ans = this._req.request<IJWTSession, ILogin>({
@@ -49,16 +60,20 @@ export class AuthService {
             body: { email: email, passwordHash: encryptedPass }
         });
 
-        ans.subscribe(resp => {
-            if (resp.ok) {
-                this._cacher.cacheJWTSession(resp.body ?? { accessToken: '' });
+        ans.subscribe({
+            next: resp => {
+                if (resp.ok) {
+                    this._cacher.cacheJWTSession(resp.body ?? { accessToken: '' });
 
-                this._router
-                    .navigateByUrl(
-                        RolesController.getDefaultRoot(
-                            this._cacher.getJWTInfo().role 
-                            ?? UserRole.candidate));
-            }
+                    this._router
+                        .navigateByUrl(
+                            RolesController.getDefaultRoot(
+                                this._cacher.getJWTInfo().role 
+                                ?? UserRole.candidate));
+                }
+                this.isProcessing = false;
+            },
+            error: () => this.isProcessing = false
         });
 
         return ans;
