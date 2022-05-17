@@ -4,7 +4,7 @@ import { CodeEditorComponent } from './code-editor.component';
 import { RouterModule, Routes } from '@angular/router';
 import { CodeEditorDirective } from './directives/code-editor.directive';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { HttpService } from '../global-services/request/http.service';
 import { OutputComponent } from './components/output/output.component';
@@ -26,6 +26,7 @@ const routes: Routes = [
         CodeEditorComponent
     ],
     imports: [
+        ReactiveFormsModule,
         FormsModule,
         CodemirrorModule,
         CommonModule,
