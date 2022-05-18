@@ -8,8 +8,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Bua.CodeRev.TrackerService.Contracts\Bua.CodeRev.TrackerService.Contracts.csproj" />
+      <ProjectReference Include="..\Bua.CodeRev.TrackerService.DataAccess\Bua.CodeRev.TrackerService.DataAccess.csproj" />
       <ProjectReference Include="..\Bua.CodeRev.TrackerService.DomainCore\Bua.CodeRev.TrackerService.DomainCore.csproj" />
-      <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,8 +1,8 @@
-﻿using Bua.CodeRev.TrackerService.DomainCore;
+﻿using Bua.CodeRev.TrackerService.DataAccess;
+using Bua.CodeRev.TrackerService.DomainCore;
 using Bua.CodeRev.TrackerService.DomainCore.Parser;
 using Bua.CodeRev.TrackerService.Infrastructure.Mapping;
 using Bua.CodeRev.TrackerService.Services;
-using DataAccess;
 using Microsoft.Extensions.Options;
 
 namespace Bua.CodeRev.TrackerService;

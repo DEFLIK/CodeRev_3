@@ -1,5 +1,5 @@
 ﻿using Bua.CodeRev.TrackerService.Contracts.Record;
-using DataAccess;
+using Bua.CodeRev.TrackerService.DataAccess;
 
 namespace Bua.CodeRev.TrackerService.Services;
 
