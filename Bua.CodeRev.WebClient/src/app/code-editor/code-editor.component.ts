@@ -5,9 +5,12 @@ import { interval } from 'rxjs';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { ControlsComponent } from './components/controls/controls.component';
 import { OutputComponent } from './components/output/output.component';
+import { EditorMode } from './models/editorMode';
 import { ExecutionResult } from './models/executionResult';
 import { CodeStorageService } from './services/code-storage-service/code-storage.service';
 import { RecordService } from './services/record-service/record.service';
+
+type CodeMirrorOptions = {[key: string]: any};
 
 @Component({
     selector: 'app-code-editor',
@@ -22,6 +25,14 @@ export class CodeEditorComponent implements AfterViewInit {
     public controlsCmpt!: ControlsComponent;
     @ViewChild('output') 
     public outputCmpt!: OutputComponent;
+    public editorMode: EditorMode = EditorMode.review;
+    public options: CodeMirrorOptions = {
+        lineNumbers: true,
+        theme: 'material',
+        mode: 'text/x-csharp',
+        indentUnit: 4,
+        readOnly: this.editorMode === EditorMode.review
+    };
 
     constructor(
         private _record: RecordService,
@@ -33,8 +44,6 @@ export class CodeEditorComponent implements AfterViewInit {
             .onOutputRefresh$
             .subscribe((result: ExecutionResult) => {
                 if (!result.success) {
-                    console.log(result.errors);
-
                     for (const error of result.errors ?? []) {
                         if (error.endChar === error.startChar) {
                             error.startChar ??= 1;
@@ -59,6 +68,18 @@ export class CodeEditorComponent implements AfterViewInit {
 
                 return;
             }
+
+            
+            this.codeMirrorCmpt.codeMirror?.setOption('extraKeys', {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                'Right': () => {},
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                'Left': () => {},
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                'Up': () => {}, 
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                'Down': () => {}
+            });
 
             this.codeMirrorCmpt.codeMirror?.setValue(this._codeStorage.defaultCode);
 
