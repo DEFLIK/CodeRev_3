@@ -1,18 +1,41 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, Component, ComponentFactoryResolver, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
+import { CanvasPos, NgxVideoTimelineComponent, VideoCellType } from 'ngx-video-timeline';
+import { interval, Subscription } from 'rxjs';
 import { EntryPoint } from 'src/app/code-editor/models/entryPoint';
 import { CodeStorageService } from 'src/app/code-editor/services/code-storage-service/code-storage.service';
 import { CompileService } from 'src/app/code-editor/services/compile-service/compile-service.service';
 import { RecordService } from 'src/app/code-editor/services/record-service/record.service';
+import { IOperationMark, RecordInfo } from '../../models/codeRecord';
+import { EditorMode } from '../../models/editorMode';
 import { ExecutionResult } from '../../models/executionResult';
+import { PatchedTimelineComponent } from '../patched-timeline/patched-timeline.component';
 
 @Component({
     selector: 'app-controls',
     templateUrl: './controls.component.html',
-    styleUrls: ['./controls.component.less']
+    styleUrls: ['./controls.component.less'],
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ControlsComponent {
+export class ControlsComponent implements OnInit, OnDestroy {
+    // @ViewChild('timeline')
+    // public timeline?: ElementRef;
+    // @ViewChild('nxgtimeline')
+    // public timelineComp!: NgxVideoTimelineComponent;
+    @ViewChild('timeline')
+    public patchedTimeline!: PatchedTimelineComponent;
+    @Input()
+    public editorMode!: EditorMode;
+    public startTime: number = new Date().getTime();
+    public get isPlaying(): boolean {
+        return this._record.isPlaying;
+    }
+    // public get width(): number {
+    //     console.log(this.timeline?.nativeElement.offsetWidth);
+        
+    //     return this.timeline?.nativeElement.offsetWidth ?? 0;
+    // }
     public get maxValue(): number {
         // console.log('get');
         if (this._bindedEditor) {
@@ -27,15 +50,43 @@ export class ControlsComponent {
         slider: new FormControl('')
     });
     private _bindedEditor?: CodemirrorComponent;
+    private _rangeUpdater$?: Subscription;
 
     constructor(
         private _compiler: CompileService,
         private _record: RecordService,
-        private _codeStorage: CodeStorageService) { }
+        private _codeStorage: CodeStorageService
+    ) {
+        if (this.editorMode === EditorMode.review) {
+            this._rangeUpdater$ = interval(100)
+                .subscribe(() => {
+                    const currentTime = _record.getCurrentTime();
+                    if (this._record.isPlaying && currentTime >= 0) {
+                        this.inputForm.get('slider')?.disable();
+                        this.inputForm.get('slider')?.setValue(currentTime);
+                    } else {
+                        this.inputForm.get('slider')?.enable();
+                    }
+                });
+        }
+    }
+
+    public ngOnDestroy(): void {
+        this._rangeUpdater$?.unsubscribe();
+    }
+    public ngOnInit(): void {
+        this.inputForm.get('slider')?.setValue(0);
+    }
 
     public bindToEditor(editor: CodemirrorComponent): void {
         this._bindedEditor = editor;
-        this._record.bindEditor(editor);
+        this._record.bindEditor(editor, this.editorMode);
+        this.patchedTimeline.buildComponent();
+        this.patchedTimeline.setProperties(this.startTime, this._record.getDuration(), this._record.getRecords());
+    }
+
+    public change(): void {
+        this.patchedTimeline.setProperties(new Date().getTime(), this._record.getDuration(), new RecordInfo([]));
     }
     
     public saveAndRun(): void {
@@ -87,17 +138,23 @@ export class ControlsComponent {
         this._record.playSavedRecord();
     }
 
-    public seek(): void {
-        console.log('seeking');
-        this._record.seek(this.inputForm.get('slider')?.value);
+    public pauseSavedRecord(): void {
+        if (!this._bindedEditor) {
+            console.log('Controls not binded to any exist editor');
+
+            return;
+        }
+
+        this._record.pauseSavedRecord();
+    }
+
+    public seek(time: number): void {
+        // this._record.seek(this.inputForm.get('slider')?.value);
+        console.log(time- this.startTime);
+        this._record.seek(time - this.startTime);
     }
 
     public clear(): void {
         this._record.clear();
     }
-
-    public getDuration(): void {
-        this._record.getDuration();
-    }
-
 }
