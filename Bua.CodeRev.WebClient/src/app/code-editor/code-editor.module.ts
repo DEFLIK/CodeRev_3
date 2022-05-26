@@ -10,6 +10,8 @@ import { HttpService } from '../global-services/request/http.service';
 import { OutputComponent } from './components/output/output.component';
 import { RecordService } from './services/record-service/record.service';
 import { ControlsComponent } from './components/controls/controls.component';
+import { NgxVideoTimelineComponent, NgxVideoTimelineModule } from 'ngx-video-timeline';
+import { PatchedTimelineComponent } from './components/patched-timeline/patched-timeline.component';
 
 const routes: Routes = [
     {
@@ -23,9 +25,11 @@ const routes: Routes = [
         CodeEditorDirective,
         OutputComponent,
         ControlsComponent,
-        CodeEditorComponent
+        CodeEditorComponent,
+        PatchedTimelineComponent
     ],
     imports: [
+        NgxVideoTimelineModule,
         ReactiveFormsModule,
         FormsModule,
         CodemirrorModule,
