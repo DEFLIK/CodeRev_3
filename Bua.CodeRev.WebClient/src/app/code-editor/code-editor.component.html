@@ -1,12 +1,7 @@
-<app-controls #controls></app-controls>
+<app-controls #controls [editorMode]="editorMode"></app-controls>
 <ngx-codemirror
     #codeMirror
     [(ngModel)]="editor"
-    [options]="{
-        lineNumbers: true,
-        theme: 'material',
-        mode: 'text/x-csharp',
-        indentUnit: 4
-    }"
+    [options]="options"
 ></ngx-codemirror>
 <app-output #output></app-output>
