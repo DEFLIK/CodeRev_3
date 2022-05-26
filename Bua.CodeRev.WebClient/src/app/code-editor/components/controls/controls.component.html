@@ -1,9 +1,23 @@
-<button (click)="saveAndRun()">Save and run</button>
-<button (click)="startRecord()">Start record</button>
-<button (click)="stopAndSaveRecord()">Stop and save record</button>
-<button (click)="playSavedRecord()">Play saved record</button>
-<button (click)="seek()">seek</button>
-<button (click)="clear()">clear</button>
-<div [formGroup]="inputForm">
-    <input type="range" min="0" [max]="maxValue" formControlName="slider" (change)="seek()">
+<div class="review" *ngIf="editorMode === 1">
+    <button (click)="playSavedRecord()">Play</button>
+    <button (click)="pauseSavedRecord()">Pause</button>
+    <div [formGroup]="inputForm">
+        <!-- <input class="range" type="range" min="0" [max]="maxValue" formControlName="slider" (change)="seek()"> -->
+    </div>
+    <app-patched-timeline #timeline (valueChanges)="seek($event)"></app-patched-timeline>
+    <!-- <ngx-video-timeline #nxgtimeline
+        [videoCells]="videoCells"
+        [playTime]="playTime"
+        [startTimeThreshold]="startTimeThreshold"
+        [endTimeThreshold]="endTimeThreshold"
+    >
+    </ngx-video-timeline> -->
 </div>
+<div class="write" *ngIf="editorMode === 0">
+    <button (click)="saveAndRun()">Save and run</button>
+    <button (click)="startRecord()">Start record</button>
+    <button (click)="stopAndSaveRecord()">Stop and save record</button>
+</div>
+
+
+<button (click)="change()"></button>
