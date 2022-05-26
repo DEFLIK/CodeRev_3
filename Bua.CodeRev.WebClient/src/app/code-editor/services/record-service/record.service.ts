@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { CodeRecord, CodePlay } from 'codemirror-record/src';
+import { RecordInfo } from '../../models/codeRecord';
+import { EditorMode } from '../../models/editorMode';
 import { CodeStorageService } from '../code-storage-service/code-storage.service';
 // declare var CodeRecord: any;
 
@@ -8,6 +10,7 @@ import { CodeStorageService } from '../code-storage-service/code-storage.service
     providedIn: 'root'
 })
 export class RecordService {
+    public isPlaying: boolean = false;
     private _recorder: any;
     private _player: any;
     private _maxDelayMs: number = 3000;
@@ -18,7 +21,7 @@ export class RecordService {
         
     }
 
-    public bindEditor(editorComp: CodemirrorComponent): void {
+    public bindEditor(editorComp: CodemirrorComponent, mode: EditorMode): void {
         if (!editorComp.codeMirror) {
             console.log('cant bind editor');
 
@@ -28,42 +31,68 @@ export class RecordService {
         this._codeMirror = editorComp.codeMirror;
         console.log(this._codeMirror);
 
-        this._player = new CodePlay(editorComp.codeMirror, {
-            maxDelay: this._maxDelayMs,
-            autoplay: true,
-            autofocus: true,
-            speed: this._playSpeed,
-            extraActivityHandler: (activityRecorded: any): any => {
-                console.log(activityRecorded);
-            },
-            extraActivityReverter: (activityRecorded: any): any => {
-                console.log(activityRecorded);
+        if (mode === EditorMode.review) {
+            this._player = new CodePlay(editorComp.codeMirror, {
+                maxDelay: this._maxDelayMs,
+                autoplay: false,
+                autofocus: true,
+                speed: this._playSpeed,
+                extraActivityHandler: (activityRecorded: any): any => {
+                    console.log(activityRecorded);
+                },
+                extraActivityReverter: (activityRecorded: any): any => {
+                    console.log(activityRecorded);
+                }
+            });
+            this._player.on('end', () => {
+                console.log('end');
+                this.isPlaying = false;
+            });
+
+            const savedRecord = this._storage.getSavedRecord();
+            console.log('mode: review');
+
+            if (!savedRecord) {
+                console.log('There is no any recorded data');
+    
+                return;
             }
-        });
+            this._player.addOperations(savedRecord);
+            
+        } else {
+            console.log('mode: write');
+        }
+
+        console.log('editor binded');
     }
 
     public playSavedRecord(): void {
         if (!this._player) {
+            console.log('no player');
+            
             return;
         }
 
-        const savedRecord = this._storage.getSavedRecord();
+        this._player.speed = 1;
+        this.isPlaying = true;
 
-        if (!savedRecord) {
-            console.log('There is no any recorded data');
-
-            return;
-        }
-
-        this._codeMirror.setValue('');
-        this._player.addOperations(savedRecord);
+        // this._codeMirror.setValue('');
         this._player.play();
-        this._player.on('end', () => {
-            console.log('end');
-            this._player.clear();
-        });
 
-        console.log('code duraiton', this._player.getDuration());
+        console.log('playing');
+        console.log(JSON.parse(this._storage.getSavedRecord() ?? ''));
+    }
+
+    public pauseSavedRecord(): void {
+        if (!this._player) {
+            console.log('no player');
+            
+            return;
+        }
+
+        this._player.pause();
+        this.isPlaying = false;
+        console.log('pause');
     }
 
     public startRecord(): void {
@@ -108,10 +137,28 @@ export class RecordService {
     }
 
     public seek(pos: number): void {
+        if (!this._player) {
+            console.log('no player');
+        }
+        if (this.getDuration() === 0) {
+            console.log('zero duration');
+        }
         this._player.seek(pos);
     }
 
+    public getCurrentTime(): number {
+        return this._player.getCurrentTime();
+    }
+
     public getDuration(): number {
+        if (!this._player) {
+            return 1;
+        }
+
         return this._player.getDuration();
+    }
+
+    public getRecords(): RecordInfo {
+        return new RecordInfo(JSON.parse(this._storage.getSavedRecord() ?? ''));
     }
 }
