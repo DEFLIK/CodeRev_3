@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import * as CodeMirror from 'codemirror';
-import { interval } from 'rxjs';
+import { interval, Observable, Subject } from 'rxjs';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { ControlsComponent } from './components/controls/controls.component';
 import { OutputComponent } from './components/output/output.component';
@@ -25,13 +25,17 @@ export class CodeEditorComponent implements AfterViewInit {
     public controlsCmpt!: ControlsComponent;
     @ViewChild('output') 
     public outputCmpt!: OutputComponent;
-    public editorMode: EditorMode = EditorMode.review;
+    @Input()
+    public editorMode!: EditorMode;
+    @Input()
+    public taskSelected$!: Observable<string>;
+    @Input()
+    public tasks?: string[];
     public options: CodeMirrorOptions = {
         lineNumbers: true,
-        theme: 'material',
+        theme: 'neat', // 'material',
         mode: 'text/x-csharp',
-        indentUnit: 4,
-        readOnly: this.editorMode === EditorMode.review
+        indentUnit: 4
     };
 
     constructor(
@@ -39,12 +43,14 @@ export class CodeEditorComponent implements AfterViewInit {
         private _codeStorage: CodeStorageService
     ) { }
 
-    public ngAfterViewInit(): void {
+    public ngAfterViewInit(): void {    
+        this.options['readOnly']= this.editorMode === EditorMode.review;
+        
         this._codeStorage
             .onOutputRefresh$
             .subscribe((result: ExecutionResult) => {
                 if (!result.success) {
-                    for (const error of result.errors ?? []) {
+                    for (const error of result.errors) {
                         if (error.endChar === error.startChar) {
                             error.startChar ??= 1;
                             error.startChar -= 1;
@@ -53,8 +59,8 @@ export class CodeEditorComponent implements AfterViewInit {
                         this.codeMirrorCmpt
                             .codeMirror
                             ?.markText(
-                                { line: error.startLine ?? 0, ch:error.startChar ?? 0 }, 
-                                { line: error.endLine ?? 0 , ch: error.endChar ?? 1 },
+                                { line: error.startLine , ch:error.startChar }, 
+                                { line: error.endLine , ch: error.endChar },
                                 { css: 'background-color: yellow' });
                     }
                 }
@@ -69,17 +75,18 @@ export class CodeEditorComponent implements AfterViewInit {
                 return;
             }
 
-            
-            this.codeMirrorCmpt.codeMirror?.setOption('extraKeys', {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Right': () => {},
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Left': () => {},
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Up': () => {}, 
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Down': () => {}
-            });
+            if (this.editorMode === EditorMode.review) {
+                this.codeMirrorCmpt.codeMirror?.setOption('extraKeys', {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    'Right': () => {},
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    'Left': () => {},
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    'Up': () => {}, 
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    'Down': () => {}
+                });
+            }
 
             this.codeMirrorCmpt.codeMirror?.setValue(this._codeStorage.defaultCode);
 
@@ -88,6 +95,10 @@ export class CodeEditorComponent implements AfterViewInit {
             });
             
             this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
+
+            if (this.editorMode === EditorMode.write) {
+                this._record.initRecordersStream(this.tasks ?? []);
+            }
         });
     }
 }
