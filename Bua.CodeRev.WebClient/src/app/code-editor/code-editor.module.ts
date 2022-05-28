@@ -13,13 +13,6 @@ import { ControlsComponent } from './components/controls/controls.component';
 import { NgxVideoTimelineComponent, NgxVideoTimelineModule } from 'ngx-video-timeline';
 import { PatchedTimelineComponent } from './components/patched-timeline/patched-timeline.component';
 
-const routes: Routes = [
-    {
-        path: '',
-        component: CodeEditorComponent
-    }
-];
-
 @NgModule({
     declarations: [
         CodeEditorDirective,
@@ -33,8 +26,7 @@ const routes: Routes = [
         ReactiveFormsModule,
         FormsModule,
         CodemirrorModule,
-        CommonModule,
-        RouterModule.forChild(routes)
+        CommonModule
     ],
     exports: [
         CodeEditorComponent
