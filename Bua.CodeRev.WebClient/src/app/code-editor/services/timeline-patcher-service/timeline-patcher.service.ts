@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NgxVideoTimelineComponent } from 'ngx-video-timeline';
+import { DateUtil, NgxVideoTimelineComponent } from 'ngx-video-timeline';
 import { interval } from 'rxjs';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class TimelinePatcherService {
 
     // Monkey патч прикольной, но плохо сделанной, опенсурсной библиотеки ngx-video-timeline
     public patchTimelineComponent(timelineComp: NgxVideoTimelineComponent): void {
-    // Фикс неправильного отслеживания позици мыши при выходе за рамки таймлайна
+        // Фикс неправильного отслеживания позици мыши при выходе за рамки таймлайна
         const oldOnOut = timelineComp.mouseoutFunc.bind(timelineComp);
         timelineComp.mouseoutFunc = (): void => {
             oldOnOut();
@@ -34,7 +34,6 @@ export class TimelinePatcherService {
         timelineComp.playBarOffsetY2 = 0;
         
         // Фикс хардкод лимита на приближение
-        const oldOnWheel = timelineComp.mousewheelFunc.bind(timelineComp);
         timelineComp.mousewheelFunc = (event: any): boolean => {
             const e = window.event || event;
             const delta = Math.max(-1, Math.min(1, e.wheelDelta || -e.detail));
@@ -42,20 +41,18 @@ export class TimelinePatcherService {
             const middleTime =
                 timelineComp.startTimestamp + (timelineComp.hoursPerRuler * timelineComp.playBarDistanceLeft * 3600 * 1000);
             if (delta < 0) {
-                timelineComp.zoom += timelineComp.zoom > 4 ? 4 : 0.2;
-                if (timelineComp.zoom >= 24) {
-                    timelineComp.zoom = 24;
+                timelineComp.zoom += timelineComp.zoom * 2;
+                if (timelineComp.zoom >= 16) {
+                    timelineComp.zoom = 16;
                 }
                 timelineComp.hoursPerRuler = timelineComp.zoom;
             } else if (delta > 0) {
-                timelineComp.zoom -= timelineComp.zoom > 4 ? 4 : 0.2;
-                if (timelineComp.zoom <= 0.1) {
-                    timelineComp.zoom = 0.1;
+                const newZoom = timelineComp.zoom - timelineComp.zoom / 2;
+                if (timelineComp.zoom > 16 / 1024) {
+                    timelineComp.zoom = newZoom;
                 }
                 timelineComp.hoursPerRuler = timelineComp.zoom;
-            }
-            
-
+            }          
             timelineComp.clearCanvas();
             timelineComp.startTimestamp =
                 middleTime - (timelineComp.hoursPerRuler * 3600 * 1000) / 2;
@@ -65,5 +62,28 @@ export class TimelinePatcherService {
 
             return false;
         };
+
+        // Фикс прорисовки при смене разрешения
+        const oldResize = timelineComp.onResize.bind(timelineComp);
+        timelineComp.onResize = (): void => {
+            oldResize();
+            timelineComp.drawPalyBar();
+        };
+
+
+        // Фиск неправильного перемещения указателя при смене разрешения
+        const oldDrawPlayBar = timelineComp.drawPalyBar.bind(timelineComp);
+        timelineComp.drawPalyBar = (): void => {
+            timelineComp.playBarOffsetX =  timelineComp.canvasW / 2;
+            oldDrawPlayBar();
+        };
+
+        // Отключаю встроеную функцию воспроизведения, т.к. в ней нет смысла
+        timelineComp.onPlayClick = (): void => {};
+
+        // Обновление отрисовки для применения новой логики
+        timelineComp.onResize();
+
+        // timelineComp.onPlayClick();
     }
 }
