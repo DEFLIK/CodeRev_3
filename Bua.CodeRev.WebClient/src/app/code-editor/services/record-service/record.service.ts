@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { CodeRecord, CodePlay } from 'codemirror-record/src';
-import { RecordInfo } from '../../models/codeRecord';
+import { ICodeOperation, ICodeRecord, RecordInfo } from '../../models/codeRecord';
 import { EditorMode } from '../../models/editorMode';
 import { CodeStorageService } from '../code-storage-service/code-storage.service';
 // declare var CodeRecord: any;
@@ -11,7 +11,7 @@ import { CodeStorageService } from '../code-storage-service/code-storage.service
 })
 export class RecordService {
     public isPlaying: boolean = false;
-    private _recorder: any;
+    private _recorders: Map<string, any> = new Map();
     private _player: any;
     private _maxDelayMs: number = 3000;
     private _playSpeed: number = 0.8;
@@ -29,7 +29,6 @@ export class RecordService {
         }
 
         this._codeMirror = editorComp.codeMirror;
-        console.log(this._codeMirror);
 
         if (mode === EditorMode.review) {
             this._player = new CodePlay(editorComp.codeMirror, {
@@ -48,17 +47,6 @@ export class RecordService {
                 console.log('end');
                 this.isPlaying = false;
             });
-
-            const savedRecord = this._storage.getSavedRecord();
-            console.log('mode: review');
-
-            if (!savedRecord) {
-                console.log('There is no any recorded data');
-    
-                return;
-            }
-            this._player.addOperations(savedRecord);
-            
         } else {
             console.log('mode: write');
         }
@@ -66,10 +54,29 @@ export class RecordService {
         console.log('editor binded');
     }
 
-    public playSavedRecord(): void {
+    public initRecordersStream(tasks: string[]): void {
+        console.log(tasks);
+        
+        for (const task of tasks) {
+            this.startTaskRecord(task);
+        }
+
+        console.log(this._recorders);
+        
+    }
+
+    public selectTaskRecord(task: string): void {
+        const newRecord = this._storage.getSavedRecord(task);
+        
+        this.clear();
+        this._player.addOperations(newRecord);
+        
+        this.seek(0);
+        
+    }
+
+    public play(): void {
         if (!this._player) {
-            console.log('no player');
-            
             return;
         }
 
@@ -78,71 +85,82 @@ export class RecordService {
 
         // this._codeMirror.setValue('');
         this._player.play();
-
-        console.log('playing');
-        console.log(JSON.parse(this._storage.getSavedRecord() ?? ''));
     }
 
-    public pauseSavedRecord(): void {
+    public pause(): void {
         if (!this._player) {
-            console.log('no player');
-            
             return;
         }
 
         this._player.pause();
         this.isPlaying = false;
-        console.log('pause');
     }
 
-    public startRecord(): void {
+    public setRecordingTask(task: string): void {
+        for (const [t, recorder] of this._recorders) {
+            console.log(recorder);
+            
+            this.stopEditorListening(recorder);
+        }
+
+        const curRecorder = this._recorders.get(task);
+        
+        this._codeMirror.on('changes', curRecorder.changesListener);
+        this._codeMirror.on('swapDoc', curRecorder.swapDocListener);
+        this._codeMirror.on('cursorActivity', curRecorder.cursorActivityListener);
+    }
+
+    public startTaskRecord(task: string): void {
         if (!this._codeMirror) {
             console.log('Unable to load code mirror model');
 
             return;
         }
 
-        this._recorder = new CodeRecord(this._codeMirror);
-        this._recorder.listen();
+        this._recorders.set(task, new CodeRecord(this._codeMirror));
+        this._recorders.get(task).listen();
         this._codeMirror.setValue(this._codeMirror.getValue());
-        console.log('record started');
     }
 
-    public stopAndSaveRecord(): void {
-        if (!this._recorder) {
+    public stopAndSaveTaskRecord(task: string): void {
+        if (!this._recorders) {
             console.log('Recording not started');
             
             return;
         }
 
-        this._codeMirror.off('changes', this._recorder.changesListener); // some override
-        this._codeMirror.off('swapDoc', this._recorder.swapDocListener);
-        this._codeMirror.off('cursorActivity', this._recorder.cursorActivityListener);
+        const recorder = this._recorders.get(task);
 
-        const record = this._recorder.getRecords() as string;
+        this.stopEditorListening(task);
+
+        let record = recorder.getRecords() as string;
         if (record.length === 2) {
-            console.log('Recording stoped, nothing to save');
-
             return;
         }
 
-        this._storage.saveRecord(record);
+        const recordModel = JSON.parse(record) as ICodeRecord[];
+        this.aproximateRecordInfo(recordModel);
+        record = JSON.stringify(recordModel);
 
-        this._recorder = null;
-        console.log('Record saved');
+        this._storage.saveTaskRecord(task, record);
+
+        // this._recorders.set(task, null);
     }
     
     public clear(): void {
         this._player.clear();
     }
 
-    public seek(pos: number): void {
+    public seek(pos: number): void {    
         if (!this._player) {
-            console.log('no player');
+            return;
         }
-        if (this.getDuration() === 0) {
-            console.log('zero duration');
+        
+        if (pos < 1) {
+            pos = 1;
         }
+        console.log('seek', pos);
+        
         this._player.seek(pos);
     }
 
@@ -158,7 +176,26 @@ export class RecordService {
         return this._player.getDuration();
     }
 
-    public getRecords(): RecordInfo {
-        return new RecordInfo(JSON.parse(this._storage.getSavedRecord() ?? ''));
+    public getTaskRecord(task: string): RecordInfo {
+        return new RecordInfo(JSON.parse(this._storage.getSavedRecord(task) ?? '{}'));
+    }
+
+    private stopEditorListening(recorder: any): void {
+        this._codeMirror.off('changes', recorder.changesListener); // some override
+        this._codeMirror.off('swapDoc', recorder.swapDocListener);
+        this._codeMirror.off('cursorActivity', recorder.cursorActivityListener);
+    }
+
+    private aproximateRecordInfo(records: ICodeRecord[]): void {
+        // Апроксимация первой операции (операция выставления начального кода)
+        if (records.length >= 1) {
+            switch(typeof records[0].t) {
+                case('number'):
+                    records[0].t = -1;
+                    break;
+                default:
+                    records[0].t = [-1, -1];
+            }
+        }
     }
 }
