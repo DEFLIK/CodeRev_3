@@ -1,3 +1,4 @@
+
 <div class="review" *ngIf="editorMode === 1">
     <button (click)="playSavedRecord()">Play</button>
     <button (click)="pauseSavedRecord()">Pause</button>
@@ -14,10 +15,10 @@
     </ngx-video-timeline> -->
 </div>
 <div class="write" *ngIf="editorMode === 0">
-    <button (click)="saveAndRun()">Save and run</button>
-    <button (click)="startRecord()">Start record</button>
+    <button (click)="saveAndRun()" class="b-green">
+        <img src="../../../../assets/svg/play.svg" alt=">">
+        Run
+    </button>
+    <!-- <button (click)="startRecord()">Start record</button> -->
     <button (click)="stopAndSaveRecord()">Stop and save record</button>
 </div>
-
-
-<button (click)="change()"></button>
