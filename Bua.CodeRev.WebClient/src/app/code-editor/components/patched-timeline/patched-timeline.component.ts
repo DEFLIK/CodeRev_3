@@ -38,23 +38,10 @@ export class PatchedTimelineComponent implements OnDestroy {
         this._videoCells = [];
         this.timeLineComp = compRef.instance;
         this.timeLineComp.videoCells = this._videoCells;
+        this.timeLineComp.playBarColor = '#DA2323';
 
-        this.timeLineComp
-            .keyUp
-            .pipe(
-                takeUntil(this._unsubscriber)
-            )
-            .subscribe((value: any) => {
-                this.valueChanges.emit(value);
-            });
-        this.timeLineComp
-            .mouseDown
-            .pipe(
-                takeUntil(this._unsubscriber)
-            )
-            .subscribe((value: any) => {
-                this.valueChanges.emit(value);
-            });
+        this.subscribeToValueChange(this.timeLineComp.keyUp);
+        this.subscribeToValueChange(this.timeLineComp.mouseDown);
         
         setTimeout(() => {
             if (!this.timeLineComp) {
@@ -62,60 +49,79 @@ export class PatchedTimelineComponent implements OnDestroy {
             }
 
             this._patcher.patchTimelineComponent(this.timeLineComp);
+
+            this.timeLineComp.zoom = 0.5;
+            this.refreshZoom(this.timeLineComp);
         });
     }
 
     public setCurrentTime(time: number): void {
         if (!this.timeLineComp) {
+            console.log('no comp');
+            
             return;
         }
 
-        this.timeLineComp.currentTimestamp = this.timeLineComp.startTimestamp += time;
-        this.timeLineComp.set_time_to_middle(this.timeLineComp.currentTimestamp);
+        console.log('set time');
+        this.timeLineComp.isPlayClick = true;
+        this.timeLineComp.playTime = Number(this.timeLineComp.startTimeThreshold) + time;
+        this.timeLineComp.set_time_to_middle(this.timeLineComp.playTime);
     }
 
     public setProperties(startTime: number, duration: number, records: RecordInfo): void {
         setTimeout(() => {
-            if (!this.timeLineComp || ! this._videoCells) {
+            if (!this.timeLineComp || !this._videoCells) {
                 throw new Error('Component not builded yet');
             }
-            // const duration = this._record.getDuration();
+
             this.timeLineComp.startTimeThreshold = startTime;
             this.timeLineComp.endTimeThreshold = startTime + duration;
             this.timeLineComp.playTime = startTime;
-            this.timeLineComp.zoom = 0.1;
             
-    
-            // const res: VideoCellType[] = [];
-            this._videoCells.splice(0, this._videoCells.length);
-            for (const point of records.points) {
-                this._videoCells.push({
-                    beginTime: startTime + point.startTime,
-                    endTime: startTime + point.endTime + 10000,
-                    // beginTime: this.startTimeThreshold + 10,
-                    // endTime: this.startTimeThreshold + 100000,
-                    style: {
-                        background: point.color
-                    }
-                });
-            }
-            
-            this._videoCells.push({
-                beginTime: startTime,
-                endTime: startTime + duration,
-                style: {
-                    background: '#90cbff59'
-                }
-            });
-    
-            this.timeLineComp.mousewheelFunc(new WheelEvent('in', {
-                deltaX: 1
-            }));
-        });
+            this.updateMarks(this._videoCells, records, startTime, duration);
 
+            this.timeLineComp.onResize();
+        });
     }
 
     public mfWheel(e: Event): void {
         this.timeLineComp?.mousewheelFunc(e);
+    }
+
+    private subscribeToValueChange(event: EventEmitter<number>): void {
+        event
+            .pipe(
+                takeUntil(this._unsubscriber)
+            )
+            .subscribe((value: any) => {
+                this.valueChanges.emit(value);
+            });
+    }
+
+    private updateMarks(sourceContainer: VideoCellType[], newRecord: RecordInfo, startTime: number, duration: number): void {
+        sourceContainer.splice(0, sourceContainer.length);
+        for (const point of newRecord.points) {
+            sourceContainer.push({
+                beginTime: startTime + point.startTime,
+                endTime: startTime + point.endTime + 5000,
+                style: {
+                    background: point.color
+                }
+            });
+        }
+        
+        sourceContainer.push({
+            beginTime: startTime,
+            endTime: startTime + duration,
+            style: {
+                background: '#90cbff59'
+            }
+        });
+    }
+
+    private refreshZoom(timeLineComp: NgxVideoTimelineComponent): void {
+        timeLineComp.mousewheelFunc(new WheelEvent('in', {
+            deltaX: 1
+        }));
     }
 }
