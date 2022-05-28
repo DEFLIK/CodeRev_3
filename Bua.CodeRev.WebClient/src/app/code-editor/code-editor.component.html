@@ -1,5 +1,10 @@
-<app-controls #controls [editorMode]="editorMode"></app-controls>
+<head>
+    <link rel="stylesheet" href="/../../assets/code-themes/coderev.css">
+</head>
+
+<app-controls #controls [editorMode]="editorMode" [taskSelected$]="taskSelected$"></app-controls>
 <ngx-codemirror
+    class="editor"
     #codeMirror
     [(ngModel)]="editor"
     [options]="options"
