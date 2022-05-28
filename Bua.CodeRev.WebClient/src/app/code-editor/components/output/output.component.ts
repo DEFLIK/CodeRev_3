@@ -13,11 +13,11 @@ export class OutputComponent {
     constructor() { }
 
     public setOutput(result: ExecutionResult): void {
-        this.success = result?.success ?? false;
+        this.success = result.success;
         if (this.success) {
-            this.text = result?.output ?? ['']; 
+            this.text = result.output;
         } else {
-            this.text = result?.errors?.map(error => `${error.errorCode}: ${error.message}`) ?? ['Something went wrong'];
+            this.text = result.errors.map(error => `${error.errorCode}: ${error.message}`);
         }
     }
 
