@@ -58,7 +58,7 @@
         </form>
     </div>
     
-    <div class="list">
+    <div class="list" *ngIf="candidates">
         <app-candidate-card 
             *ngFor="let candidate of candidates | candidateFilter : filterCriteria : searchCriteria" 
             #candidateCard
