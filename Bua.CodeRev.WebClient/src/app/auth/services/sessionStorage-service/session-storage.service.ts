@@ -39,6 +39,7 @@ export class SessionStorageService {
         }
 
         const newObj = this.parseJwt(jwtSession.accessToken);
+        console.log(newObj);
         const session = new UserSession;
         Object.assign(session, newObj);
 

@@ -30,7 +30,6 @@ export class RecordInfo {
                 if (this._importantOperations.has(operation.o)) { // o - operation -> o - opeartion type
                     let start = 0;
                     let end = 10;
-                    console.log(typeof record.t);
                     switch(typeof record.t) {
                         case('number'):
                             start = record.t as number;

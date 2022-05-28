@@ -14,13 +14,11 @@ const routes: Routes = [
     {
         path: 'contest',
         loadChildren: () => import('./contest/contest.module').then((m: any) => m.ContestModule),
-        canLoad: [AuthGuard],
-        canActivate: [AuthGuard]
+        // canActivate: [AuthGuard]
     },
     {
         path: 'review',
         loadChildren: () => import('./review/review.module').then((m: any) => m.ReviewModule),
-        canLoad: [AuthGuard],
         canActivate: [AuthGuard]
     },
     {
