@@ -56,19 +56,16 @@ export class PatchedTimelineComponent implements OnDestroy {
     }
 
     public setCurrentTime(time: number): void {
-        if (!this.timeLineComp) {
-            console.log('no comp');
-            
+        if (!this.timeLineComp) {       
             return;
         }
 
-        console.log('set time');
         this.timeLineComp.isPlayClick = true;
-        this.timeLineComp.playTime = Number(this.timeLineComp.startTimeThreshold) + time;
+        this.timeLineComp.playTime = time;
         this.timeLineComp.set_time_to_middle(this.timeLineComp.playTime);
     }
 
-    public setProperties(startTime: number, duration: number, records: RecordInfo): void {
+    public setProperties(startTime: number, duration: number, records: RecordInfo[]): void {
         setTimeout(() => {
             if (!this.timeLineComp || !this._videoCells) {
                 throw new Error('Component not builded yet');
@@ -98,25 +95,44 @@ export class PatchedTimelineComponent implements OnDestroy {
             });
     }
 
-    private updateMarks(sourceContainer: VideoCellType[], newRecord: RecordInfo, startTime: number, duration: number): void {
+    private updateMarks(sourceContainer: VideoCellType[], records: RecordInfo[], startTime: number, duration: number): void {
         sourceContainer.splice(0, sourceContainer.length);
-        for (const point of newRecord.points) {
+        let prevRecord: RecordInfo | undefined = undefined;
+
+        for (const record of records) {
+            console.log(record.points);
+            
+            for (const point of record.points) {
+                const endTime = record.recordStartTime + point.endTime + 1000;
+                sourceContainer.push({
+                    beginTime: record.recordStartTime + point.startTime,
+                    endTime: endTime < record.recordStartTime + record.duration ? endTime : record.recordStartTime + record.duration,
+                    style: {
+                        background: point.color
+                    }
+                });
+            }
+
+            if (prevRecord) {
+                sourceContainer.push({
+                    beginTime: prevRecord.recordStartTime + prevRecord.duration + 1,
+                    endTime: record.recordStartTime - 1,
+                    style: {
+                        background: '#87878785'
+                    }
+                });
+            }
+
             sourceContainer.push({
-                beginTime: startTime + point.startTime,
-                endTime: startTime + point.endTime + 5000,
+                beginTime: record.recordStartTime,
+                endTime: record.recordStartTime + record.duration,
                 style: {
-                    background: point.color
+                    background: '#90cbff59'
                 }
             });
+
+            prevRecord = record;
         }
-        
-        sourceContainer.push({
-            beginTime: startTime,
-            endTime: startTime + duration,
-            style: {
-                background: '#90cbff59'
-            }
-        });
     }
 
     private refreshZoom(timeLineComp: NgxVideoTimelineComponent): void {
