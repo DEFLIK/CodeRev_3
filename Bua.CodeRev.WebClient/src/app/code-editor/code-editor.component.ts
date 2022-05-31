@@ -7,7 +7,7 @@ import { ControlsComponent } from './components/controls/controls.component';
 import { OutputComponent } from './components/output/output.component';
 import { EditorMode } from './models/editorMode';
 import { ExecutionResult } from './models/executionResult';
-import { CodeStorageService } from './services/code-storage-service/code-storage.service';
+import { CodeStorageService } from './services/storage-service/code-storage.service';
 import { RecordService } from './services/record-service/record.service';
 
 type CodeMirrorOptions = {[key: string]: any};
@@ -96,9 +96,9 @@ export class CodeEditorComponent implements AfterViewInit {
             
             this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
 
-            if (this.editorMode === EditorMode.write) {
-                this._record.initRecordersStream(this.tasks ?? []);
-            }
+            // if (this.editorMode === EditorMode.write) {
+            //     this._record.initRecordersStream(this.tasks ?? []);
+            // }
         });
     }
 }
