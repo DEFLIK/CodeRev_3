@@ -10,8 +10,7 @@ export interface ICodeRecord {
     l: number
 }
 export enum OperationColors {
-    'p' = 'red',
-    'x' = 'yellow',
+    'p' = 'red'
 }
 export interface IOperationMark {
     startTime: number,
@@ -22,9 +21,23 @@ export interface IOperationMark {
 
 export class RecordInfo {
     public readonly points: IOperationMark[] = [];
-    private _importantOperations: Set<OperationType> = new Set(['p', 'x']);
+    public readonly record: ICodeRecord[];
+    public readonly recordStartTime: number;
+    public readonly duration: number;
+    private _importantOperations: Set<OperationType> = new Set(['p']);
 
-    constructor(records: ICodeRecord[]) {
+    constructor(records: ICodeRecord[], startTime: number) {
+        this.recordStartTime = startTime;
+        this.record = records;
+
+        switch(typeof(records[records.length - 1].t)) {
+            case('number'):
+                this.duration = records[records.length - 1].t as number;
+                break;
+            default:
+                this.duration = (records[records.length - 1].t as number[])[1];
+        }
+
         for (const record of records) {
             for (const operation of record.o) {
                 if (this._importantOperations.has(operation.o)) { // o - operation -> o - opeartion type
