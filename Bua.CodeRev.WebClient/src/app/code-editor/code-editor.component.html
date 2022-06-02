@@ -9,4 +9,4 @@
     [(ngModel)]="editor"
     [options]="options"
 ></ngx-codemirror>
-<app-output #output></app-output>
+<app-output #output class="output" *ngIf="editorMode === types.write"></app-output>
