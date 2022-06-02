@@ -1,1 +1,1 @@
-<div *ngFor="let i of [].constructor(10)">X</div>
+<div *ngFor="let task of tasks" (click)="change(task)">{{task}}</div>
