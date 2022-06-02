@@ -1,11 +1,10 @@
-<!-- <app-tasks-list></app-tasks-list> -->
-<button *ngFor="let task of tasks" (click)="change(task)">{{task}}</button>
+<app-tasks-list></app-tasks-list>
+<!-- <button *ngFor="let task of tasks" (click)="change(task)">{{task}}</button> -->
 <div class="right">
     <app-task class="task"></app-task>
     <app-code-editor 
         [editorMode]="types.review" 
         class="editor"
-        [tasks]="tasks"
         [taskSelected$]="taskSelected$"
     >
     </app-code-editor>
