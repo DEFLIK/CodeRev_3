@@ -1,8 +1,12 @@
 
 <div class="review" *ngIf="editorMode === 1">
-    <button (click)="playSavedRecord()">Play</button>
-    <button (click)="pauseSavedRecord()">Pause</button>
-    <app-patched-timeline #timeline (valueChanges)="seek($event)"></app-patched-timeline>
+    <button (click)="playSavedRecord()" *ngIf="!isPlaying" class="b-green">
+        <img src="../../../../assets/svg/play.svg" alt=">">
+        Play</button>
+    <button (click)="pauseSavedRecord()" *ngIf="isPlaying" class="b-red">
+        <img src="../../../../assets/svg/stop.svg" alt=">">
+        Pause</button>
+    <app-patched-timeline #timeline (valueChanges)="seek($event)" class="timeline"></app-patched-timeline>
     <!-- <ngx-video-timeline #nxgtimeline
         [videoCells]="videoCells"
         [playTime]="playTime"
