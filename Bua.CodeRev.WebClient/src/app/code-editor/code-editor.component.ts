@@ -29,8 +29,9 @@ export class CodeEditorComponent implements AfterViewInit {
     public editorMode!: EditorMode;
     @Input()
     public taskSelected$!: Observable<string>;
-    @Input()
-    public tasks?: string[];
+    public types = EditorMode;
+    // @Input()
+    // public tasks?: string[];
     public options: CodeMirrorOptions = {
         lineNumbers: true,
         theme: 'neat', // 'material',
@@ -88,13 +89,16 @@ export class CodeEditorComponent implements AfterViewInit {
                 });
             }
 
-            this.codeMirrorCmpt.codeMirror?.setValue(this._codeStorage.defaultCode);
+            this.codeMirrorCmpt.codeMirror.setValue(this._codeStorage.defaultCode);
 
-            this.codeMirrorCmpt.codeMirror?.on('change', () => {
+            this.codeMirrorCmpt.codeMirror.on('change', () => {
                 this.codeMirrorCmpt.codeMirror?.getAllMarks().forEach(marker => marker.clear());
             });
+
+            this.codeMirrorCmpt.codeMirror.setSize('100%', '100%');
             
             this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
+            
 
             // if (this.editorMode === EditorMode.write) {
             //     this._record.initRecordersStream(this.tasks ?? []);
