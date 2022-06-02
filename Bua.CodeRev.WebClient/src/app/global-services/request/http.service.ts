@@ -79,7 +79,7 @@ export class HttpService {
                     return value;
                 }),
                 takeUntil(requestParams.unsubscriber ? merge(this._takeUntil, requestParams.unsubscriber) : this._takeUntil),
-                timeout(3000),
+                timeout(10000),
                 share(),
                 first()
             );
