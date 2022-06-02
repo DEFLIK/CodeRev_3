@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { EditorMode } from '../code-editor/models/editorMode'; 
+import { ContestService } from './services/contest-service/contest.service';
 
 @Component({
     selector: 'app-contest',
@@ -10,18 +11,7 @@ import { EditorMode } from '../code-editor/models/editorMode';
 export class ContestComponent {
     public types = EditorMode;
     public get taskSelected$(): Observable<string> {
-        return this._taskSelected$.asObservable();
+        return this._contest.taskSelected$;
     }
-    public get isTaskSelected(): boolean {
-        return !!this._currentTask;
-    }
-    public tasks = ['task1', 'task2'];
-    private _currentTask?: string;
-    private _taskSelected$ = new Subject<string>();
-    constructor() { }
-
-    public change(task: string): void {
-        this._taskSelected$.next(task);
-    }
-
+    constructor(private _contest: ContestService) { }
 }
