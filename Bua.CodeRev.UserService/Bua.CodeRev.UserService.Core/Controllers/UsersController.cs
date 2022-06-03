@@ -84,7 +84,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
         
-        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPost("create-invitation")]
         public async Task<IActionResult> CreateInvitationGuidAsync(InvitationParams invitationParams)
         {

@@ -29,7 +29,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             _dbRepository = dbRepository;
         }
         
-        [Authorize]
+        //[Authorize]
         [HttpGet("start-interview-sln")]
         public async Task<IActionResult> StartInterviewSolutionAsync([Required][FromQuery(Name = "id")] string interviewSolutionId)
         {
@@ -57,7 +57,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
         
-        [Authorize]
+        //[Authorize]
         [HttpGet("end-interview-sln")] //todo set timetocheckms parameter
         public async Task<IActionResult> EndInterviewSolutionAsync([Required][FromQuery(Name = "id")] string interviewSolutionId)
         {
@@ -76,7 +76,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
         
-        [Authorize]
+        //[Authorize]
         [HttpPut("end-task-sln")]
         public async Task<IActionResult> EndTaskSolutionAsync([Required] [FromQuery(Name = "id")] string taskSolutionId)
         {
@@ -98,7 +98,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         }
 
         
-        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPut("put-task-sln-grade")]
         public async Task<IActionResult> PutTaskSolutionGradeAsync([Required] [FromQuery(Name = "id")] string taskSolutionId, 
             [Required][FromQuery(Name = "grade")] int grade, string interviewSolutionId)
@@ -138,7 +138,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "HrManager,Admin")]
+        //[Authorize(Roles = "HrManager,Admin")]
         [HttpPut("put-i-sln-result")]
         public async Task<IActionResult> PutInterviewSolutionResultAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId,
             [Required] [FromQuery(Name = "result")] int interviewResult)
@@ -162,7 +162,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPut("put-i-sln-review")]
         public async Task<IActionResult> PutInterviewSolutionReviewAsync([Required] [FromBody] InterviewSolutionReview interviewSolutionReview)
         {
@@ -198,7 +198,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet("i-sln-info")]
         public async Task<IActionResult> GetInterviewSolutionInfoAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId)
         {
@@ -212,7 +212,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok(interviewSolutionInfo);
         }
 
-        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet("task-sln-info")]
         public async Task<IActionResult> GetTaskSolutionInfoAsync([Required] [FromQuery(Name = "id")] string taskSolutionId)
         {
@@ -225,8 +225,16 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 return Conflict("no task solution with such id or user solution refers to doesn't exist");
             return Ok(taskSolutionInfo);
         }
+
+        //[Authorize]
+        [HttpGet("tasks-info")]
+        public async Task<IActionResult> GetTasksInfoAsync([Required] [FromQuery(Name = "isln-id")] string interviewSolutionId)
+        {
+            return null;
+            //таски, их id, их текст, стартовый код для таски, нумерация таски (A, B, C), сдана ли таска,
+        }
         
-        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet("get-cards")]
         public IActionResult GetInterviewSolutions()
         {
