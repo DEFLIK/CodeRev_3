@@ -228,10 +228,31 @@ namespace Bua.CodeRev.UserService.Core.Controllers
 
         //[Authorize]
         [HttpGet("tasks-info")]
-        public async Task<IActionResult> GetTasksInfoAsync([Required] [FromQuery(Name = "isln-id")] string interviewSolutionId)
+        public async Task<IActionResult> GetTasksInfoAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId)
         {
-            return null;
-            //таски, их id, их текст, стартовый код для таски, нумерация таски (A, B, C), сдана ли таска,
+            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
+
+            var letterOrder = (int)'A';
+            var taskInfos = (await _dbRepository
+                .Get<TaskSolution>(t => t.InterviewSolutionId == interviewSolutionGuid)
+                .ToListAsync())
+                .Join(_dbRepository.Get<Bua.CodeRev.UserService.DAL.Entities.Task>(),
+                    tSln => tSln.TaskId,
+                    t => t.Id,
+                    (tSln, t) => new TaskInfoExtended
+                    {
+                        TaskSolutionId = tSln.Id,
+                        TaskId = t.Id,
+                        TaskOrder = (char)letterOrder++,
+                        TaskText = t.TaskText,
+                        StartCode = t.StartCode,
+                        IsDone = tSln.IsDone
+                    })
+                .ToList();
+            
+            return Ok(taskInfos);
         }
         
         //[Authorize(Roles = "Interviewer,HrManager,Admin")]
