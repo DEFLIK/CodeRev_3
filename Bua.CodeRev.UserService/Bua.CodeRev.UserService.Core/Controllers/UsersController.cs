@@ -127,7 +127,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
 
             return Ok(new
             {
-                invitation = $"/api/users/register?invite={invitationGuid}"
+                invitation = invitationGuid
             });
         }
 
