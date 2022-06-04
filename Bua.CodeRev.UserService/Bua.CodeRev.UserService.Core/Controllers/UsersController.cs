@@ -2,12 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Bua.CodeRev.UserService.Core.Models;
-using Bua.CodeRev.UserService.DAL;
+using Bua.CodeRev.UserService.Core.Models.Auth;
+using Bua.CodeRev.UserService.Core.Models.Users;
 using Bua.CodeRev.UserService.DAL.Entities;
 using Bua.CodeRev.UserService.DAL.Models;
 using Bua.CodeRev.UserService.DAL.Models.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,36 +16,27 @@ namespace Bua.CodeRev.UserService.Core.Controllers
     [Route("api/[controller]")]
     [EnableCors]
     [ApiController]
-    public class UsersController : Controller
+    public class UsersController : ParentController
     {
-        private readonly IDbRepository _dbRepository;
-        
-        public UsersController(IDbRepository dbRepository)
+        public UsersController(IDbRepository dbRepository) : base(dbRepository)
         {
-            _dbRepository = dbRepository;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([Required][FromQuery(Name = "invite")] string invitationId, 
             [Required][FromBody] UserRegistration userRegistration)
         {
-            var invitationGuid = new Guid();
-            try
-            {
-                invitationGuid = Guid.Parse(invitationId);
-            }
-            catch (ArgumentNullException)
-            {
-                return BadRequest("invitation id to be parsed is null.");
-            }
-            catch (FormatException)
-            {
-                return BadRequest("invitation id should be in UUID format");
-            }
+            var (invitationGuid, errorString) = TryParseGuid(invitationId, nameof(invitationId));
+            if (errorString != null)
+                return BadRequest(errorString);
             
-            var invitation = await _dbRepository.Get<Invitation>(i => i.Id == invitationGuid).FirstOrDefaultAsync();
+            var invitation = await _dbRepository
+                .Get<Invitation>(i => i.Id == invitationGuid)
+                .FirstOrDefaultAsync();
+            
             if (invitation == null)
                 return Conflict("this invitation doesn't exist or is expired");
+            
             if (invitation.ExpiredAt < DateTimeOffset.Now.ToUnixTimeMilliseconds())
             {
                 await _dbRepository.Remove(invitation);
@@ -86,30 +76,22 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         
         //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPost("create-invitation")]
-        public async Task<IActionResult> CreateInvitationGuidAsync(InvitationParams invitationParams)
+        public async Task<IActionResult> CreateInvitationAsync(InvitationParams invitationParams)
         {
             if (!Enum.TryParse(invitationParams.Role, true, out RoleEnum roleEnum))
                 return BadRequest("role is invalid");
             
-            var mustBeId = invitationParams.InterviewId != null || roleEnum == RoleEnum.Candidate;
-            var interviewGuid = new Guid();
-            if (mustBeId)
+            var mustBeInterviewId = invitationParams.InterviewId != null || roleEnum == RoleEnum.Candidate;
+            var interviewGuid = Guid.Empty;
+            if (mustBeInterviewId)
             {
-                try
-                {
-                    interviewGuid = Guid.Parse(invitationParams.InterviewId);
-                }
-                catch (ArgumentNullException)
-                {
-                    return BadRequest("interview id to be parsed is null");
-                }
-                catch (FormatException)
-                {
-                    return BadRequest("interview id should be in UUID format");
-                }
+                string errorString;
+                (interviewGuid, errorString) = TryParseGuid(invitationParams.InterviewId, nameof(invitationParams.InterviewId));
+                if (errorString != null)
+                    return BadRequest(errorString);
             }
 
-            if (mustBeId && await _dbRepository
+            if (mustBeInterviewId && await _dbRepository
                 .Get<Interview>(i => i.Id == interviewGuid)
                 .FirstOrDefaultAsync() == null)
                 return Conflict("no interview with such id");
@@ -134,22 +116,16 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         [HttpGet("validate-invitation")]
         public async Task<IActionResult> ValidateInvitationAsync([Required] [FromQuery(Name = "invite")] string invitationId)
         {
-            var invitationGuid = new Guid();
-            try
-            {
-                invitationGuid = Guid.Parse(invitationId);
-            }
-            catch (ArgumentNullException)
-            {
-                return BadRequest("invitation id to be parsed is null");
-            }
-            catch (FormatException)
-            {
-                return BadRequest("invitation id should be in UUID format");
-            }
-            var invitation = await _dbRepository.Get<Invitation>(i => i.Id == invitationGuid).FirstOrDefaultAsync();
+            var (invitationGuid, errorString) = TryParseGuid(invitationId, nameof(invitationId));
+            if (errorString != null)
+                return BadRequest(errorString);
+            var invitation = await _dbRepository
+                .Get<Invitation>(i => i.Id == invitationGuid)
+                .FirstOrDefaultAsync();
+            
             if (invitation == null)
                 return Conflict("this invitation doesn't exist or is expired");
+            
             if (invitation.ExpiredAt < DateTimeOffset.Now.ToUnixTimeMilliseconds())
             {
                 await _dbRepository.Remove(invitation);

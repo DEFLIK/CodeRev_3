@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Bua.CodeRev.UserService.DAL.Models;
 
-namespace Bua.CodeRev.UserService.Core.Models
+namespace Bua.CodeRev.UserService.Core.Models.Review
 {
     public class InterviewSolutionReview
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bua.CodeRev.UserService.Core.Models
+namespace Bua.CodeRev.UserService.Core.Models.Users
 {
     public class InvitationParams
     {

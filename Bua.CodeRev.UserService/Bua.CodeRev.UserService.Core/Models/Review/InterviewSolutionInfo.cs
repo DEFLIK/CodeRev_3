@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Bua.CodeRev.UserService.DAL.Entities;
 using Bua.CodeRev.UserService.DAL.Models;
 
-namespace Bua.CodeRev.UserService.Core.Models
+namespace Bua.CodeRev.UserService.Core.Models.Review
 {
     public class InterviewSolutionInfo
     {
@@ -19,6 +17,6 @@ namespace Bua.CodeRev.UserService.Core.Models
         public string ReviewerComment { get; set; }
         public GradeEnum AverageGrade { get; set; }
         public InterviewResultEnum InterviewResult { get; set; }
-        public IList<TaskSolutionInfo> TaskSolutionsInfos { get; set; }
+        public IList<TaskSolutionInfoReview> TaskSolutionsInfos { get; set; }
     }
 }

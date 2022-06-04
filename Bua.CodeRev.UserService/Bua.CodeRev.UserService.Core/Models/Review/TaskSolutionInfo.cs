@@ -1,10 +1,9 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using Bua.CodeRev.UserService.DAL.Models;
 
-namespace Bua.CodeRev.UserService.Core.Models
+namespace Bua.CodeRev.UserService.Core.Models.Review
 {
-    public class TaskSolutionInfo
+    public class TaskSolutionInfoReview
     {
         public Guid TaskSolutionId { get; set; }
         public Guid TaskId { get; set; }

@@ -5,12 +5,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Bua.CodeRev.UserService.Core.Models;
-using Bua.CodeRev.UserService.DAL;
+using Bua.CodeRev.UserService.Core.Models.Auth;
 using Bua.CodeRev.UserService.DAL.Entities;
 using Bua.CodeRev.UserService.DAL.Models;
 using Bua.CodeRev.UserService.DAL.Models.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,13 +20,10 @@ namespace Bua.CodeRev.UserService.Core.Controllers
     [Route("api/[controller]")]
     [EnableCors]
     [ApiController]
-    public class AuthController : Controller
+    public class AuthController : ParentController
     {
-        private readonly IDbRepository _dbRepository;
-        
-        public AuthController(IDbRepository dbRepository)
+        public AuthController(IDbRepository dbRepository) : base(dbRepository)
         {
-            _dbRepository = dbRepository;
         }
         
         [HttpPost("login")]
@@ -54,7 +49,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             if (roleClaim == null)
                 return Unauthorized();
             var role = roleClaim.Value;
-            if (!Enum.TryParse(role, true, out RoleEnum roleEnum))
+            if (!Enum.TryParse(role, true, out RoleEnum _))
                 return Unauthorized();
             return Ok(new
             {
@@ -84,7 +79,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
 
-                }, out var jwt);
+                }, out _);
             }
             catch (Exception)
             {
@@ -115,7 +110,10 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         }
 
         private Claim GetClaim(string token, string claimType) =>
-            new JwtSecurityTokenHandler().ReadJwtToken(token).Claims.FirstOrDefault(c => c.Type == claimType);
+            new JwtSecurityTokenHandler()
+                .ReadJwtToken(token)
+                .Claims
+                .FirstOrDefault(c => c.Type == claimType);
 
         private async Task<User> AuthenticateUserAsync(LoginRequest request) =>
             await _dbRepository

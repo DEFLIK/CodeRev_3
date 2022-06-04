@@ -3,108 +3,24 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Bua.CodeRev.UserService.Core.Models;
-using Bua.CodeRev.UserService.DAL;
+using Bua.CodeRev.UserService.Core.Models.Review;
 using Bua.CodeRev.UserService.DAL.Entities;
 using Bua.CodeRev.UserService.DAL.Models;
 using Bua.CodeRev.UserService.DAL.Models.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Task = System.Threading.Tasks.Task;
 
 namespace Bua.CodeRev.UserService.Core.Controllers
 {
     [Route("api/[controller]")]
     [EnableCors]
     [ApiController]
-    public class InterviewsController : Controller
+    public class ReviewController : ParentController
     {
-        private readonly IDbRepository _dbRepository;
-        
-        public InterviewsController(IDbRepository dbRepository)
+        public ReviewController(IDbRepository dbRepository) : base(dbRepository)
         {
-            _dbRepository = dbRepository;
         }
-        
-        //[Authorize]
-        [HttpGet("start-interview-sln")]
-        public async Task<IActionResult> StartInterviewSolutionAsync([Required][FromQuery(Name = "id")] string interviewSolutionId)
-        {
-            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
-            if (errorString != null)
-                return BadRequest(errorString);
-            var interviewSolution = await _dbRepository
-                .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
-                .FirstOrDefaultAsync();
-            
-            if (interviewSolution == null)
-                return Conflict($"no {nameof(interviewSolution)} with such id");
-
-            if (interviewSolution.StartTimeMs >= 0)
-                return Conflict($"{nameof(interviewSolution)} is already started");
-                
-            var interview = await _dbRepository
-                .Get<Interview>(iv => iv.Id == interviewSolution.InterviewId)
-                .FirstOrDefaultAsync();
-                
-            if (interview == null)
-                return Conflict($"no {nameof(interview)} with such id");
-            
-            var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            interviewSolution.StartTimeMs = nowTime;
-            interviewSolution.EndTimeMs = nowTime + interview.InterviewDurationMs;
-            await _dbRepository.SaveChangesAsync();
-            return Ok();
-        }
-        
-        //[Authorize]
-        [HttpGet("end-interview-sln")] //todo set timetocheckms parameter
-        public async Task<IActionResult> EndInterviewSolutionAsync([Required][FromQuery(Name = "id")] string interviewSolutionId)
-        {
-            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
-            if (errorString != null)
-                return BadRequest(errorString);
-            var interviewSolution = await _dbRepository
-                .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
-                .FirstOrDefaultAsync();
-            
-            if (interviewSolution == null)
-                return Conflict($"no {nameof(interviewSolution)} with such id");
-            
-            var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            
-            if (nowTime > interviewSolution.EndTimeMs)
-                return Conflict($"{nameof(interviewSolution)} is already end (end time is less than now time)");
-            
-            interviewSolution.EndTimeMs = nowTime;
-            await _dbRepository.SaveChangesAsync();
-            return Ok();
-        }
-        
-        //[Authorize]
-        [HttpPut("end-task-sln")]
-        public async Task<IActionResult> EndTaskSolutionAsync([Required] [FromQuery(Name = "id")] string taskSolutionId)
-        {
-            var (taskSolutionGuid, errorString) = TryParseGuid(taskSolutionId, nameof(taskSolutionId));
-            if (errorString != null)
-                return BadRequest(errorString);
-            var taskSolution = await _dbRepository
-                .Get<TaskSolution>(t => t.Id == taskSolutionGuid)
-                .FirstOrDefaultAsync();
-            
-            if (taskSolution == null)
-                return Conflict($"no {nameof(taskSolution)} with such id");
-            if (taskSolution.IsDone)
-                return Conflict($"{nameof(taskSolution)} is already done");
-
-            taskSolution.IsDone = true;
-            await _dbRepository.SaveChangesAsync();
-            return Ok();
-        }
-
         
         //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPut("put-task-sln-grade")]
@@ -162,14 +78,12 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 return Conflict($"no {nameof(interviewSolution)} with such id");
             if (!Enum.IsDefined(typeof(InterviewResultEnum), interviewResult))
                 return BadRequest($"{nameof(interviewResult)} is invalid");
-            if (interviewSolution.InterviewResult != InterviewResultEnum.NotChecked)
-                return Conflict($"{nameof(interviewResult)} is already put");
             
             interviewSolution.InterviewResult = (InterviewResultEnum) interviewResult;
             await _dbRepository.SaveChangesAsync();
             return Ok();
         }
-
+        
         //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPut("put-i-sln-review")]
         public async Task<IActionResult> PutInterviewSolutionReviewAsync([Required] [FromBody] InterviewSolutionReview interviewSolutionReview)
@@ -205,7 +119,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             await _dbRepository.SaveChangesAsync();
             return Ok();
         }
-
+        
         //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet("i-sln-info")]
         public async Task<IActionResult> GetInterviewSolutionInfoAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId)
@@ -214,7 +128,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             if (errorString != null)
                 return BadRequest(errorString);
             
-            var interviewSolutionInfo = await GetInterviewSolutionInfoAsync(interviewSolutionGuid);
+            var interviewSolutionInfo = await GetFromDbInterviewSolutionInfoAsync(interviewSolutionGuid);
             if (interviewSolutionInfo == null)
                 return Conflict("no interview solution with such id, interview or user doesn't exist");
             return Ok(interviewSolutionInfo);
@@ -228,45 +142,19 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             if (errorString != null)
                 return BadRequest(errorString);
 
-            var taskSolutionInfo = await GetTaskSolutionInfoAsync(taskSolutionGuid);
+            var taskSolutionInfo = await GetFromDbTaskSolutionInfoAsync(taskSolutionGuid);
             if (taskSolutionInfo == null)
                 return Conflict("no task solution with such id or user solution refers to doesn't exist");
             return Ok(taskSolutionInfo);
         }
-
-        //[Authorize]
-        [HttpGet("task-slns-info")]
-        public async Task<IActionResult> GetTaskSolutionsInfoAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId)
-        {
-            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
-            if (errorString != null)
-                return BadRequest(errorString);
-
-            var letterOrder = (int)'A';
-            var taskInfos = (await _dbRepository
-                .Get<TaskSolution>(t => t.InterviewSolutionId == interviewSolutionGuid)
-                .ToListAsync())
-                .Join(_dbRepository.Get<Bua.CodeRev.UserService.DAL.Entities.Task>(),
-                    tSln => tSln.TaskId,
-                    t => t.Id,
-                    (tSln, t) => new TaskSolutionInfoCandidate
-                    {
-                        Id = tSln.Id,
-                        TaskOrder = (char)letterOrder++,
-                        TaskText = t.TaskText,
-                        StartCode = t.StartCode,
-                        IsDone = tSln.IsDone
-                    })
-                .ToList();
-            
-            return Ok(taskInfos);
-        }
         
         //[Authorize(Roles = "Interviewer,HrManager,Admin")]
-        [HttpGet("get-cards")]
+        [HttpGet("cards")]
         public IActionResult GetInterviewSolutions()
         {
-            var groups = _dbRepository.Get<TaskSolution>().ToList().GroupBy(t => t.InterviewSolutionId).ToList(); //todo optimize
+            var groups = _dbRepository.Get<TaskSolution>().ToList()
+                .GroupBy(t => t.InterviewSolutionId)
+                .ToList(); //todo optimize
             var cardsInfo = _dbRepository.Get<InterviewSolution>().ToList().Join(_dbRepository.Get<Interview>().ToList(),
                 s => s.InterviewId,
                 i => i.Id,
@@ -301,8 +189,8 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             
             return Ok(cardsInfo);
         }
-
-        private async Task<InterviewSolutionInfo> GetInterviewSolutionInfoAsync(Guid interviewSolutionGuid)
+        
+        private async Task<InterviewSolutionInfo> GetFromDbInterviewSolutionInfoAsync(Guid interviewSolutionGuid)
         {
             var interviewSolution = await _dbRepository
                 .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
@@ -338,19 +226,19 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 ReviewerComment = interviewSolution.ReviewerComment,
                 AverageGrade = interviewSolution.AverageGrade,
                 InterviewResult = interviewSolution.InterviewResult,
-                TaskSolutionsInfos = new List<TaskSolutionInfo>()
+                TaskSolutionsInfos = new List<TaskSolutionInfoReview>()
             };
             foreach (var taskSolution in _dbRepository
                 .Get<TaskSolution>(t => t.InterviewSolutionId == interviewSolution.Id)
                 .ToList())
             {
-                interviewSolutionInfo.TaskSolutionsInfos.Add(await GetTaskSolutionInfoAsync(taskSolution.Id));
+                interviewSolutionInfo.TaskSolutionsInfos.Add(await GetFromDbTaskSolutionInfoAsync(taskSolution.Id));
             }
 
             return interviewSolutionInfo;
         }
 
-        private async Task<TaskSolutionInfo> GetTaskSolutionInfoAsync(Guid taskSolutionGuid)
+        private async Task<TaskSolutionInfoReview> GetFromDbTaskSolutionInfoAsync(Guid taskSolutionGuid)
         {
             var taskSolution = await _dbRepository
                 .Get<TaskSolution>(t => t.Id == taskSolutionGuid)
@@ -372,7 +260,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             if (user == null)
                 return null;
             
-            return new TaskSolutionInfo
+            return new TaskSolutionInfoReview
             {
                 TaskSolutionId = taskSolution.Id,
                 TaskId = taskSolution.TaskId,
@@ -381,26 +269,6 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 Grade = taskSolution.Grade,
                 IsDone = taskSolution.IsDone
             };
-        }
-
-        private Tuple<Guid, string> TryParseGuid(string id, string nameOfId)
-        {
-            
-            var guid = new Guid();
-            string errorString = null;
-            try
-            {
-                guid = Guid.Parse(id);
-            }
-            catch (ArgumentNullException)
-            {
-                errorString = $"{nameOfId} to be parsed is null";
-            }
-            catch (FormatException)
-            {
-                errorString = $"{nameOfId} should be in UUID format";
-            }
-            return new Tuple<Guid, string>(guid, errorString);
         }
     }
 }
