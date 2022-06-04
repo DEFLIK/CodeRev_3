@@ -241,10 +241,9 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 .Join(_dbRepository.Get<Bua.CodeRev.UserService.DAL.Entities.Task>(),
                     tSln => tSln.TaskId,
                     t => t.Id,
-                    (tSln, t) => new TaskInfoExtended
+                    (tSln, t) => new TaskSolutionInfoCandidate
                     {
-                        TaskSolutionId = tSln.Id,
-                        TaskId = t.Id,
+                        Id = tSln.Id,
                         TaskOrder = (char)letterOrder++,
                         TaskText = t.TaskText,
                         StartCode = t.StartCode,

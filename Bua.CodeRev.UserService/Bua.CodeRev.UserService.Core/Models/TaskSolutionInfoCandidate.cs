@@ -2,10 +2,9 @@
 
 namespace Bua.CodeRev.UserService.Core.Models
 {
-    public class TaskInfoExtended
+    public class TaskSolutionInfoCandidate
     {
-        public Guid TaskSolutionId { get; set; }
-        public Guid TaskId { get; set; }
+        public Guid Id { get; set; }
         public char TaskOrder { get; set; }
         public string TaskText { get; set; }
         public string StartCode { get; set; }
