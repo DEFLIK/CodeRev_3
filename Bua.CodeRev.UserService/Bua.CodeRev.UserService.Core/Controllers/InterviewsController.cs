@@ -42,6 +42,9 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             
             if (interviewSolution == null)
                 return Conflict($"no {nameof(interviewSolution)} with such id");
+
+            if (interviewSolution.StartTimeMs >= 0)
+                return Conflict($"{nameof(interviewSolution)} is already started");
                 
             var interview = await _dbRepository
                 .Get<Interview>(iv => iv.Id == interviewSolution.InterviewId)
@@ -71,7 +74,12 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             if (interviewSolution == null)
                 return Conflict($"no {nameof(interviewSolution)} with such id");
             
-            interviewSolution.EndTimeMs = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            
+            if (nowTime > interviewSolution.EndTimeMs)
+                return Conflict($"{nameof(interviewSolution)} is already end (end time is less than now time)");
+            
+            interviewSolution.EndTimeMs = nowTime;
             await _dbRepository.SaveChangesAsync();
             return Ok();
         }
