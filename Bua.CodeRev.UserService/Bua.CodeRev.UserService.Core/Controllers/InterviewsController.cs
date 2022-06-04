@@ -227,8 +227,8 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         }
 
         //[Authorize]
-        [HttpGet("tasks-info")]
-        public async Task<IActionResult> GetTasksInfoAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId)
+        [HttpGet("task-slns-info")]
+        public async Task<IActionResult> GetTaskSolutionsInfoAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId)
         {
             var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
             if (errorString != null)
