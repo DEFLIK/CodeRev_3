@@ -4,7 +4,7 @@ import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { CanvasPos, NgxVideoTimelineComponent, VideoCellType } from 'ngx-video-timeline';
 import { interval, Observable, Subscription } from 'rxjs';
 import { EntryPoint } from 'src/app/code-editor/models/entryPoint';
-import { CodeStorageService } from 'src/app/code-editor/services/storage-service/code-storage.service';
+// import { CodeStorageService } from 'src/app/code-editor/services/storage-service/code-storage.service';
 import { CompileService } from 'src/app/code-editor/services/compile-service/compile-service.service';
 import { RecordService } from 'src/app/code-editor/services/record-service/record.service';
 import { IOperationMark, RecordInfo } from '../../models/codeRecord';
@@ -14,6 +14,7 @@ import { ExecutionResultResponse } from '../../models/response/executionResult-r
 import { PlayerService } from '../../services/player-service/player.service';
 import { PatchedTimelineComponent } from '../patched-timeline/patched-timeline.component';
 import { SavingService } from '../../services/saving-service/saving.service';
+import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
 
 @Component({
     selector: 'app-controls',
@@ -31,11 +32,12 @@ export class ControlsComponent implements OnInit, OnDestroy {
     @Input()
     public editorMode!: EditorMode;
     @Input()
-    public taskSelected$!: Observable<string>;
+    public taskSelected$!: Observable<TaskSolutionInfo>;
     // public startTime: number = new Date().getTime();
     public get isPlaying(): boolean {
         return this._player.isPlaying;
     }
+    public readOnly = false;
     // public get width(): number {
     //     console.log(this.timeline?.nativeElement.offsetWidth);
         
@@ -51,7 +53,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
         private _record: RecordService,
         private _saving: SavingService,
         private _player: PlayerService,
-        private _codeStorage: CodeStorageService,
+        // private _codeStorage: CodeStorageService,
     ) {
     }
 
@@ -61,36 +63,60 @@ export class ControlsComponent implements OnInit, OnDestroy {
     }
     public ngOnInit(): void {
         this._taskUpdater = this.taskSelected$
-            .subscribe(taskId => {
-                if (this.editorMode === EditorMode.write) {
-                    this.save();
-                    this._bindedEditor?.codeMirror?.setValue(this._saving.getLastSave(taskId)?.code ?? this._bindedEditor?.codeMirror?.getValue());
-                    this._record.changeRecordingTask(taskId);
+            .subscribe(task => {
+                if (this.editorMode === EditorMode.write && this._bindedEditor) {
+                    if (!this.readOnly) {
+                        this.save();
+                    } else {
+                        this.stopRecord();
+                    }
+
+                    if (task.isDone) {
+                        this._bindedEditor.setDisabledState(true);
+                        this.readOnly = true;
+                        
+                    } else {
+                        this.readOnly = false;
+                        this._bindedEditor.setDisabledState(false);
+                    }
+
+                    this._bindedEditor.codeMirror?.setValue(this._saving.getLastSave(task.id)?.code ?? task.startCode);
+                    this._record.changeRecordingTask(task.id);
+                    
                 }
 
                 if (this.editorMode === EditorMode.review) {
-                    const saves = this._saving.getTaskSaves(taskId);
+                    const saves = this._saving.getTaskSaves(task.id);
                     // console.log(saves);
-                    
 
-                    this._player.selectSavesRecords(saves);
-                    this.patchedTimeline.setProperties(
-                        saves[0].record.recordStartTime, 
-                        this._player.getSaveDuration(), 
-                        this._player.getSaveRecords());
-
-                    this._rangeUpdater = interval(100)
-                        .subscribe(() => {
-                            if (this._player.isPlaying) {
-                                // this.patchedTimeline.timeLineComp!.isPlayClick = true;
-                                this.patchedTimeline.setCurrentTime(this._player.getCurrentTime());
-                            } else {
-                                // this.patchedTimeline.timeLineComp!.isPlayClick = false;
-                            }
-                        });
+                    if (saves.length !== 0) {
+                        this._player.selectSavesRecords(saves);
+                        this.patchedTimeline.setProperties(
+                            saves[0].record.recordStartTime, 
+                            this._player.getSaveDuration(), 
+                            this._player.getSaveRecords());
+    
+                        this._rangeUpdater = interval(100)
+                            .subscribe(() => {
+                                if (this._player.isPlaying) {
+                                    // this.patchedTimeline.timeLineComp!.isPlayClick = true;
+                                    this.patchedTimeline.setCurrentTime(this._player.getCurrentTime());
+                                } else {
+                                    // this.patchedTimeline.timeLineComp!.isPlayClick = false;
+                                }
+                            });
+                    } else {
+                        this._player.clear();
+                        this.patchedTimeline.setProperties(
+                            Date.now(),
+                            1000000,
+                            []
+                        );
+                        this._bindedEditor?.codeMirror?.setValue('');
+                    }
                 }
 
-                this._currentTask = taskId;
+                this._currentTask = task.id;
             });
     }
 
@@ -116,18 +142,11 @@ export class ControlsComponent implements OnInit, OnDestroy {
 
         this._compiler
             .execute(
-                this._codeStorage.getSavedCode(this._currentTask),
+                this._bindedEditor?.codeMirror?.getValue() ?? '',
                 new EntryPoint(
-                    this._codeStorage.entryNamespace, 
-                    this._codeStorage.entryClass, 
-                    this._codeStorage.entryMethod))
-            .subscribe(resp => {
-                if (resp.ok) {
-                    this._codeStorage.storeOutput(resp.body ?? new ExecutionResult(new ExecutionResultResponse()));
-                } else {
-                    //todo
-                }
-            });
+                    'CodeRev', 
+                    'Program', 
+                    'Main'));
     }
 
     public startRecord(): void {

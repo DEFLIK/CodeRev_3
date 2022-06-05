@@ -1,23 +1,43 @@
-:host {
+@import (reference) "/src/styles.less";
+
+:host {    
     display: flex;
+    flex-direction: column;
     padding-top: 30px;
     padding-bottom: 30px;
     height: 100%;
-    width: 100%;
+    overflow: hidden;
+    // width: 100%;
+    gap: 10px;
+    
+    .expired {
+        color: white;
+        text-align: center;
+        background-color: #009460;
+        padding: 10px;
+        border-radius: 5px;
+    }
 
-    .right {
-        height: 100%;
-        width: 100%;
+    .sln {
         display: flex;
-        overflow-x: hidden;
-        gap: 5px;
+        overflow: hidden;
+        gap: 10px;
+        height: 100%;
 
-        .editor {
-            width: 60%;
-        }
-
-        .task {
-            width: 40%;
+        .right {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            overflow-x: hidden;
+            gap: 5px;
+    
+            .editor {
+                width: 60%;
+            }
+    
+            .task {
+                width: 40%;
+            }
         }
     }
 }

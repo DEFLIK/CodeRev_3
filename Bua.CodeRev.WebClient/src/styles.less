@@ -2,32 +2,70 @@
 @import '~codemirror/theme/material';
 
 @color-main: #D33030;
-@color-active: saturate(@color-main, 30%);
+@color-active: lighten(@color-main, 5%);
 
 body {
     margin: 0;
 }
 
+// button {
+//     background-color: @color-main;
+//     color: white;
+//     border: none;
+//     padding: 10px;
+//     padding-left: 15px;
+//     padding-right: 15px;
+//     border-radius: 5px;
+
+//     &:hover {
+//         background-color: lighten(@color-main, 5%);
+//         cursor: pointer;
+//     }
+
+//     &:active {
+//         background-color: lighten(@color-main, 10%);
+//     }
+
+//     &:disabled {
+//         cursor: default;
+//         background-color: rgb(187, 187, 187);
+//     }
+// }
 button {
-    background-color: @color-main;
-    color: white;
-    border: none;
-    padding: 10px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 7px;
     border-radius: 5px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: space-evenly;
+    gap: 7px;
+    font-size: 16px;
+    background-color: white;
+    color: @color-main;
+    border: solid 1px @color-main;
+
+    img {
+        height: 1.3em;
+    }
 
     &:hover {
-        background-color: lighten(@color-main, 5%);
         cursor: pointer;
+        color: white;
+        background-color: @color-main;
+
+        img {
+            filter: invert(97%) sepia(5%) saturate(0%) hue-rotate(128deg) brightness(1106%) contrast(100%);
+        }
     }
 
     &:active {
-        background-color: lighten(@color-main, 10%);
+        background-color: @color-active;
     }
 
     &:disabled {
         cursor: default;
+        color: white;
+        border: solid 1px rgb(187, 187, 187);
         background-color: rgb(187, 187, 187);
     }
 }

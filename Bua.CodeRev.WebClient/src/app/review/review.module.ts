@@ -7,17 +7,9 @@ import { ReviewComponent } from './review.component';
 import { CandidateFilterPipe } from './pipes/candidate-filter.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CandidateGradeComponent } from './components/candidate-grade/candidate-grade.component';
-
-const routes: Routes = [
-    {
-        path: '',
-        component: ReviewComponent
-    },
-    {
-        path: 'grade/:solutionId',
-        component: CandidateGradeComponent
-    }
-];
+import { ContestModule } from '../contest/contest.module';
+import { ContestComponent } from '../contest/contest.component';
+import { ReviewRoutingModule } from './review-routing.module';
 
 @NgModule({
     declarations: [
@@ -28,8 +20,9 @@ const routes: Routes = [
         CandidateGradeComponent
     ],
     imports: [
+        ReviewRoutingModule,
         CommonModule,
-        RouterModule.forChild(routes),
+        ContestModule,
         ReactiveFormsModule,
         FormsModule
     ]

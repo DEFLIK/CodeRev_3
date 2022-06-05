@@ -12,8 +12,8 @@ export class CandidateFilterPipe implements PipeTransform {
     public transform(value: CandidateCardInfo[], filterCriteria: CandidateFitlerCriteria, serachCriteria: string): CandidateCardInfo[] {
         return value
             .filter((card: CandidateCardInfo) => 
-                (card.fullName.includes(serachCriteria) 
-                    || card.vacancy.includes(serachCriteria))
+                (card.fullName.toLowerCase().includes(serachCriteria.toLowerCase()) 
+                    || card.vacancy.toLowerCase().includes(serachCriteria.toLowerCase()))
                 && (filterCriteria.vacancies.some(vacan => CandidateVacancy[vacan as CandidateVacancyKeys] === card.vacancy) 
                     || filterCriteria.vacancies.length === 0)
                 && (filterCriteria.states.some(state => CandidateState[state as CandidateStateKeys] === card.getState())

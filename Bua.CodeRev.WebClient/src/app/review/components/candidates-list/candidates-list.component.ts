@@ -15,7 +15,7 @@ import { CandidateCardComponent } from '../candidate-card/candidate-card.compone
 })
 export class CandidatesListComponent implements OnInit {
     @ViewChildren('candidateCard')
-    public deviceCards!: QueryList<CandidateCardComponent>;
+    public cards!: QueryList<CandidateCardComponent>;
     public candidates?: CandidateCardInfo[];
     public searchForm: FormGroup = new FormGroup({
         serachInput: new FormControl('')
@@ -27,6 +27,7 @@ export class CandidatesListComponent implements OnInit {
         vacancy: new FormArray([])
     });
     public states: any[] = [];
+    public state = CandidateState;
 
     public vacancies: any[] = [];
     public get currentTimeMs(): number {
@@ -58,7 +59,9 @@ export class CandidatesListComponent implements OnInit {
                 name: stateVals[i],
                 value: stateKeys[i]
             });
+        }
 
+        for (let i = 0; i < vacanKeys.length; i++) {
             this.vacancies.push({
                 name: vacanVals[i],
                 value: vacanKeys[i]
@@ -76,8 +79,8 @@ export class CandidatesListComponent implements OnInit {
         this._router.navigateByUrl(`review/grade/${candidate.interviewSolutionId}`);
     }
 
-    public log(): void {
-        console.log(this.searchForm.get('serachInput')?.value);
+    public invite(): void {
+
     }
 
     public onCheckboxChange(e: any, groupName: string): void {

@@ -1,14 +1,16 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import * as CodeMirror from 'codemirror';
-import { interval, Observable, Subject } from 'rxjs';
+import { interval, Observable, Subject, Subscription } from 'rxjs';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { ControlsComponent } from './components/controls/controls.component';
 import { OutputComponent } from './components/output/output.component';
 import { EditorMode } from './models/editorMode';
 import { ExecutionResult } from './models/executionResult';
-import { CodeStorageService } from './services/storage-service/code-storage.service';
+// import { CodeStorageService } from './services/storage-service/code-storage.service';
 import { RecordService } from './services/record-service/record.service';
+import { TaskSolutionInfo } from '../contest/models/taskSolutionInfo';
+import { CompileService } from './services/compile-service/compile-service.service';
 
 type CodeMirrorOptions = {[key: string]: any};
 
@@ -17,7 +19,7 @@ type CodeMirrorOptions = {[key: string]: any};
     templateUrl: './code-editor.component.html',
     styleUrls: ['./code-editor.component.less']
 })
-export class CodeEditorComponent implements AfterViewInit {
+export class CodeEditorComponent implements AfterViewInit, OnDestroy {
     public editor: HTMLElement | null = document.getElementById('codeEdtior');
     @ViewChild('codeMirror') 
     public codeMirrorCmpt!: CodemirrorComponent;
@@ -28,7 +30,7 @@ export class CodeEditorComponent implements AfterViewInit {
     @Input()
     public editorMode!: EditorMode;
     @Input()
-    public taskSelected$!: Observable<string>;
+    public taskSelected$!: Observable<TaskSolutionInfo>;
     public types = EditorMode;
     // @Input()
     // public tasks?: string[];
@@ -39,15 +41,18 @@ export class CodeEditorComponent implements AfterViewInit {
         indentUnit: 4
     };
 
-    constructor(
-        private _record: RecordService,
-        private _codeStorage: CodeStorageService
-    ) { }
+    private _outputRefresh?: Subscription;
 
+    constructor(
+        private _compiler: CompileService
+    ) { }
+    public ngOnDestroy(): void {
+        this._outputRefresh?.unsubscribe();
+    }
     public ngAfterViewInit(): void {    
-        this.options['readOnly']= this.editorMode === EditorMode.review;
+        this.options['readOnly'] = this.editorMode === EditorMode.review;
         
-        this._codeStorage
+        this._outputRefresh = this._compiler
             .onOutputRefresh$
             .subscribe((result: ExecutionResult) => {
                 if (!result.success) {
@@ -88,8 +93,6 @@ export class CodeEditorComponent implements AfterViewInit {
                     'Down': () => {}
                 });
             }
-
-            this.codeMirrorCmpt.codeMirror.setValue(this._codeStorage.defaultCode);
 
             this.codeMirrorCmpt.codeMirror.on('change', () => {
                 this.codeMirrorCmpt.codeMirror?.getAllMarks().forEach(marker => marker.clear());

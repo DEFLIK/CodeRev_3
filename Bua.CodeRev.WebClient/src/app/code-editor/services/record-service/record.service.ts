@@ -4,7 +4,7 @@ import { CodeRecord, CodePlay } from 'codemirror-record/src';
 import { ICodeOperation, ICodeRecord, RecordInfo } from '../../models/codeRecord';
 import { EditorMode } from '../../models/editorMode';
 import { SavingService } from '../saving-service/saving.service';
-import { CodeStorageService } from '../storage-service/code-storage.service';
+// import { CodeStorageService } from '../storage-service/code-storage.service';
 // declare var CodeRecord: any;
 
 @Injectable({
@@ -40,9 +40,11 @@ export class RecordService {
     }
 
     public changeRecordingTask(taskId: string): void {
-        for (const [, recorder] of this._recorders) {      
+        console.log('changing', this._recorders);
+        
+        for (const [key, recorder] of this._recorders) {      
             if (recorder) {    
-                this.stopRecord(taskId);
+                this.stopRecord(key);
             }
         }
 
@@ -66,11 +68,13 @@ export class RecordService {
         this._recorders.set(taskId, recorder);
         this._recorders.get(taskId).listen();
         this._codeMirror.setValue(this._codeMirror.getValue());
+        console.log('started');
+        
     }
 
     public stopRecord(taskId: string): void {
         if (!this._recorders || !this._recorders.get(taskId)) {
-            console.log('Recording not started');
+            console.log('Recording not started', taskId);
             
             return;
         }

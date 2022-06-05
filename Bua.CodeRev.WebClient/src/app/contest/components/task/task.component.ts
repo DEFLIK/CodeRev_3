@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { InterviewSolutionInfo } from '../../models/interviewSolutionInfo';
+import { TaskSolutionInfo } from '../../models/taskSolutionInfo';
+import { ContestService } from '../../services/contest-service/contest.service';
 
 @Component({
     selector: 'app-task',
@@ -6,10 +9,28 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./task.component.less']
 })
 export class TaskComponent implements OnInit {
-
-  	constructor() { }
-
-    ngOnInit(): void {
+    public get isSolutionExpired(): boolean {
+        return this._contest.isSolutionExpired;
+    }
+    public taskInfo?: TaskSolutionInfo;
+  	constructor(private _contest: ContestService) { }
+    public ngOnInit(): void {
+        this._contest
+            .taskSelected$
+            .subscribe(task => this.taskInfo = task);
     }
 
+    public endTask(): void {
+        if (!this.taskInfo) {
+            return;
+        }
+        
+        this._contest
+            .endTask(this.taskInfo?.id)
+            .subscribe(resp => {
+                if (resp.ok && this.taskInfo) {
+                    this.taskInfo.isDone = true;
+                }
+            });
+    }
 }

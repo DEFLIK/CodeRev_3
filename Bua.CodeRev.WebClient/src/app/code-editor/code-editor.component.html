@@ -2,11 +2,13 @@
     <link rel="stylesheet" href="/../../assets/code-themes/coderev.css">
 </head>
 
-<app-controls #controls [editorMode]="editorMode" [taskSelected$]="taskSelected$"></app-controls>
-<ngx-codemirror
-    class="editor"
-    #codeMirror
-    [(ngModel)]="editor"
-    [options]="options"
-></ngx-codemirror>
-<app-output #output class="output" *ngIf="editorMode === types.write"></app-output>
+<ng-container>
+    <app-controls #controls [editorMode]="editorMode" [taskSelected$]="taskSelected$"></app-controls>
+    <ngx-codemirror
+        class="editor"
+        #codeMirror
+        [(ngModel)]="editor"
+        [options]="options"
+    ></ngx-codemirror>
+    <app-output #output class="output" *ngIf="editorMode === types.write"></app-output>
+</ng-container>

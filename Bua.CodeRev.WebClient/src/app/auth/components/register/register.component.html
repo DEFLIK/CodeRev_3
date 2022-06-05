@@ -1,16 +1,16 @@
 
 <div class="main">
     <div class="cont">
-        <div class="RegBox">
+        <form class="RegBox" [formGroup]="regForm">
             <h1>Заполните профиль</h1>
-            <input type="text" placeholder="ФИО">
-            <input type="text" placeholder="Телефон">
-            <input type="text" placeholder="Почта">
-            <input class="password" type="password" placeholder="Пароль">
-            <input class="password" type="password" placeholder="Повторите пароль">
+            <input type="text" placeholder="ФИО" formControlName="userName">
+            <input type="text" placeholder="Телефон" formControlName="userPhone">
+            <input type="text" placeholder="Почта" formControlName="userEmail">
+            <input class="password" type="password" placeholder="Пароль" formControlName="userPassword">
+            <!-- <input class="password" type="password" placeholder="Повторите пароль" formControlName="userPassword"> -->
 
-            <button>Продолжить</button>
+            <button (click)="submit()">Продолжить</button>
 
-        </div>
+        </form>
     </div>  
 </div>

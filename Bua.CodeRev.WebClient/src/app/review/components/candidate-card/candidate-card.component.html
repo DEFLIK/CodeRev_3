@@ -7,20 +7,25 @@
     <div class="bottom">
         <span>
             Начало:
-            <span *ngIf="candidate.startTimeMs !== -1" class="time">
+            <span *ngIf="candidate.startTimeMs !== -1 else startElse" class="time">
                 {{ candidate.startTimeMs | date : 'dd-MM-yyyy HH:mm:ss' }}
             </span>
     
-            <span *ngIf="candidate.startTimeMs === -1" class="alert">
-                не приступал
-            </span>
+            <ng-template #startElse>
+                <span class="alert"> не приступал </span>
+            </ng-template>
         </span>
     
         <span>
             Срок проверки:
-            <span class="time">
+
+            <span class="time" *ngIf="candidate.timeToCheckMs > 0 else checkElse">
                 {{ candidate.timeToCheckMs | date : 'dd-MM-yyyy HH:mm:ss' }}
             </span>
+
+            <ng-template #checkElse>
+                без срока
+            </ng-template>
         </span>
     </div>
 </div>
@@ -28,6 +33,6 @@
 <div class="right">
     <span class="grade"> {{ candidate.doneTasksCount }} / {{ candidate.tasksCount }} </span>
     <div class="controls">
-        <button [disabled]="candidate.doneTasksCount < candidate.tasksCount">Оценить</button>
+        <button [disabled]="candidate.getState() === state.notStarted" (click)="select()">Оценить</button>
     </div>
 </div>

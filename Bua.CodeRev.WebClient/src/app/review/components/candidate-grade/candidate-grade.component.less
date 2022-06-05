@@ -4,7 +4,7 @@
 :host {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 10px;
     flex: 1 1 auto;
     padding-top: 30px;
     padding-bottom: 30px;
@@ -15,7 +15,7 @@
         justify-content: space-around;
         align-items: center;
         width: 100%;
-        flex: 0 0 100px;
+        flex: 0 0 90px;
         background-color: white;
         box-shadow: 0 1px 3px 0 #939393;
 
@@ -47,7 +47,7 @@
                 flex-direction: column;
 
                 .name {
-                    font-size: 26px;
+                    font-size: 22px;
                 }
 
                 .vacancy {
@@ -61,7 +61,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 5vw;
+            gap: 30px;
             text-align: center;
             
             .stamp {
@@ -76,7 +76,7 @@
 
                 .timestamp {
                     font-family: Recursive;
-                    font-size: 26px;
+                    font-size: 22px;
                 }
             }
 
@@ -114,7 +114,7 @@
             .task {
                 display: flex;
                 justify-content: space-between;
-                padding: 30px;
+                padding: 12px;
                 height: 50px;
                 font-size: 30px;
                 border-bottom: solid 2px #DFDFDF;
@@ -149,6 +149,8 @@
                 } 
 
                 &-grades {
+                    position: relative;
+                    top: -10px;
                     display: flex;
                     gap: 50px;
                     label {
@@ -185,7 +187,6 @@
                 
                 .submit {
                     align-self: flex-end;
-                    width: 100px;
                 }
             }
 

@@ -1,1 +1,10 @@
-<p>task works!</p>
+<div *ngIf="taskInfo" class="task">
+    <div class="text">
+        {{taskInfo.taskText}}
+    </div>
+
+    <button (click)="endTask()" class="submit" *ngIf="!taskInfo.isDone && !isSolutionExpired else done">Сдать задачу</button>
+    <ng-template #done>
+        <span>Задача окончена!</span>
+    </ng-template>
+</div>

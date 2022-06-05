@@ -1,1 +1,12 @@
-<div *ngFor="let task of tasks" (click)="change(task)">{{task}}</div>
+<div class="wrapper" *ngFor="let task of tasks" (click)="change(task)">
+    <div 
+        class="task"
+        [ngClass]="{
+            'done': task.isDone,
+            'in-process': !task.isDone,
+            'selected': currentTask?.id === task.id
+        }"
+    >
+    {{task.taskOrder}}
+    </div>
+</div>

@@ -3,7 +3,7 @@ import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { CodeRecord, CodePlay } from 'codemirror-record/src';
 import { RecordInfo } from '../../models/codeRecord';
 import { SaveChunk } from '../../models/saveChunk';
-import { CodeStorageService } from '../storage-service/code-storage.service';
+// import { CodeStorageService } from '../storage-service/code-storage.service';
 
 @Injectable({
     providedIn: 'root'
@@ -63,8 +63,11 @@ export class PlayerService {
         this._currentRecord = this._currentSaves[chunk].record;
         this._currentPlayingChunk = chunk;
         this._bindedEditor?.codeMirror?.setValue(this._currentSaves[chunk - 1]?.code ?? '');
+        const record = JSON.stringify(this._currentRecord.record);
 
-        this._player.addOperations(JSON.stringify(this._currentRecord.record));
+        if (record.length > 2) {
+            this._player.addOperations(record);
+        }
         
         // this.seek(this._currentRecord.recordStartTime + 1);
     }
