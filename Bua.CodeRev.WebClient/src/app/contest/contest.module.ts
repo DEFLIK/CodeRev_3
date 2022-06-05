@@ -7,13 +7,8 @@ import { NotificationComponent } from './components/notification/notification.co
 import { ContestComponent } from './contest.component';
 import { CodeEditorModule } from '../code-editor/code-editor.module';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
-
-const routes: Routes = [
-    {
-        path: '',
-        component: ContestComponent
-    },
-];
+import { EditorMode } from '../code-editor/models/editorMode';
+import { ContestRoutingModule } from './contest-routing.module';
 
 @NgModule({
     declarations: [
@@ -25,7 +20,10 @@ const routes: Routes = [
     imports: [
         CodeEditorModule,
         CommonModule,
-        RouterModule.forChild(routes)
+        ContestRoutingModule
+    ],
+    exports: [
+        ContestComponent
     ]
 })
 export class ContestModule { }
