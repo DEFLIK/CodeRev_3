@@ -92,6 +92,29 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         }
         
         //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpPut("put-i-sln-comment")]
+        public async Task<IActionResult> PutInterviewSolutionCommentAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId, 
+            [Required][FromBody] InterviewSolutionComment interviewSolutionComment)
+        {
+            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
+            var interviewSolution = await _dbRepository
+                .Get<InterviewSolution>(t => t.Id == interviewSolutionGuid)
+                .FirstOrDefaultAsync();
+            
+            if (interviewSolution == null)
+                return Conflict($"no {nameof(interviewSolution)} with such id");
+            var reviewerComment = interviewSolutionComment.ReviewerComment;
+            if (reviewerComment == null)
+                return Conflict($"{nameof(reviewerComment)} can't be null");
+            
+            interviewSolution.ReviewerComment = reviewerComment;
+            await _dbRepository.SaveChangesAsync();
+            return Ok();
+        }
+        
+        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPut("put-i-sln-review")]
         public async Task<IActionResult> PutInterviewSolutionReviewAsync([Required] [FromBody] InterviewSolutionReview interviewSolutionReview)
         {
