@@ -1,6 +1,6 @@
 
-<label class="search" for="search" [formGroup]="searchForm">
-    <input id="search" type="text" placeholder="Поиск..." formControlName="serachInput">
+<label class="search" for="card-search" [formGroup]="searchForm">
+    <input id="card-search" type="text" placeholder="Поиск..." formControlName="serachInput">
     <img src="../../../../assets/svg/loupe.svg">
 </label>
 
@@ -55,6 +55,9 @@
                   </div>
             </div>
             
+            <button (click)="invite()">
+                <img src="../../../../assets/svg/mail.svg">
+                Пригласить участника</button>
         </form>
     </div>
     
@@ -66,10 +69,10 @@
             (clickEvent)="selectCard($event)"
             [candidate]="candidate"
             [ngClass]="{
-                'done': candidate.tasksCount === candidate.doneTasksCount && candidate.startTimeMs !== -1 && currentTimeMs < candidate.timeToCheckMs,
-                'inProcess': candidate.tasksCount > candidate.doneTasksCount && candidate.startTimeMs !== -1 && currentTimeMs < candidate.timeToCheckMs,
-                'notStarted': candidate.startTimeMs === -1 && currentTimeMs < candidate.timeToCheckMs,
-                'skiped': currentTimeMs >= candidate.timeToCheckMs 
+                'done': candidate.getState() === state.done,
+                'inProcess': candidate.getState() === state.inProcess,
+                'notStarted': candidate.getState() === state.notStarted,
+                'skiped': candidate.getState() === state.skiped 
             }" >
         </app-candidate-card >
     </div>
