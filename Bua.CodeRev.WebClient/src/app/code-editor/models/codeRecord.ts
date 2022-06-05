@@ -30,6 +30,12 @@ export class RecordInfo {
         this.recordStartTime = startTime;
         this.record = records;
 
+        if (records.length === 0) {
+            this.duration = 0;
+            
+            return;
+        }
+
         switch(typeof(records[records.length - 1].t)) {
             case('number'):
                 this.duration = records[records.length - 1].t as number;
