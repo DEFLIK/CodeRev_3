@@ -1,65 +1,75 @@
-<div class="person">
-    <img routerLink="/review" class="back" src="../../../../assets/svg/arrow-left.svg" alt="back">
-    <div class="main">
-        <div class="left">
-            <img src="../../../../assets/svg/avatar-light.svg" alt="avatar">
+<ng-container *ngIf="slnReview else loading">
+    <div class="person">
+        <img routerLink="/review" class="back" src="../../../../assets/svg/arrow-left.svg" alt="back">
+        <div class="main">
+            <div class="left">
+                <img src="../../../../assets/svg/avatar-light.svg" alt="avatar">
+            </div>
+            <div class="right">
+                <span class="name">{{slnReview.fullName}}</span>
+                <span class="vacancy">{{slnReview.vacancy}}</span>
+            </div>
         </div>
-        <div class="right">
-            <span class="name">{{id}}</span>
-            <span class="vacancy">???</span>
+        <div class="time">
+            <div class="stamp">
+                <span class="edge">Начало</span>
+                <span class="timestamp">{{slnReview.startTimeMs | date : 'short'}}</span>
+            </div>
+            <span class="line">-</span>
+            <div class="stamp">
+                <span class="edge">Окончание</span>
+                <span class="timestamp">{{slnReview.endTimeMs | date : 'short'}}</span>
+            </div>
+        </div>
+        <div class="info">
+            <img src="../../../../assets/svg/info.svg" alt="info">
         </div>
     </div>
-    <div class="time">
-        <div class="stamp">
-            <span class="edge">Начало</span>
-            <span class="timestamp">???</span>
-        </div>
-        <span class="line">-</span>
-        <div class="stamp">
-            <span class="edge">Окончание</span>
-            <span class="timestamp">???</span>
-        </div>
-    </div>
-    <div class="info">
-        <img src="../../../../assets/svg/info.svg" alt="info">
-    </div>
-</div>
-
-<!-- <button (click)="log()">log</button> -->
-<div class="overview" [formGroup]="gradesForm">
-    <div class="tasks">
-        <div class="task" *ngFor="let num of tasks">
-            <div class="task-info">
-                <div class="number">
-                    {{ num }}
+    
+    <!-- <button (click)="log()">log</button> -->
+    <form class="overview" [formGroup]="gradesForm" *ngIf="!isWatching else contest">
+        <div class="tasks">
+            <div class="task" *ngFor="let task of slnReview.taskSolutionsInfos">
+                <div class="task-info">
+                    <div class="number">
+                        {{ task.taskOrder }}
+                    </div>
+                    <span class="language">C#</span>
                 </div>
-                <span class="language">C#</span>
-            </div>
-
-            <button (click)="watch()" class="watch">Просмотреть</button>
-
-            <div class="task-grades">
-                <label *ngFor="let i of [1, 2, 3, 4, 5]">
-                    {{ i }}
-                    <input id="grade" type="radio" class="task-grade" formControlName={{num}} [value]="i">
-                </label>
-            </div>      
-        </div>
-    </div>
-    <div class="result">
-        <div class="comment">
-            <textarea type="text" formControlName="resultComment" class="comment-input" placeholder="Комментарий по решению..."></textarea>
-            <button class="submit">Отправить</button>
-        </div>
-
-        <div class="result-grades">
-            <span>Общая оценка</span>
-            <div class="wrapper">
-                <label *ngFor="let i of [1, 2, 3, 4, 5]">
-                    {{ i }}
-                    <input id="grade" type="radio" class="comment-grade" formControlName="resultGrade" [value]="i">
-                </label>
+    
+                <button (click)="watch()" class="watch">Просмотреть</button>
+    
+                <div class="task-grades">
+                    <label *ngFor="let i of [1, 2, 3, 4, 5]">
+                        {{ i }}
+                        <input id="grade" type="radio" class="task-grade" formControlName={{task.taskOrder}} [value]="i">
+                    </label>
+                </div>      
             </div>
         </div>
-    </div>
-</div>
+        <div class="result">
+            <div class="comment">
+                <textarea type="text" formControlName="resultComment" class="comment-input" placeholder="Комментарий по решению..."></textarea>
+                <button class="submit" (click)="saveComment()">Сохранить комментарий</button>
+            </div>
+    
+            <div class="result-grades">
+                <span>Общая оценка</span>
+                <div class="wrapper">
+                    <label *ngFor="let i of [1, 2, 3, 4, 5]">
+                        {{ i }}
+                        <input id="grade" type="radio" class="comment-grade" formControlName="resultGrade" [value]="i">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <ng-template #contest>
+        <app-contest [editorMode]="modes.review" [review]="slnReview"></app-contest>
+    </ng-template>
+</ng-container>
+
+<ng-template #loading>
+    Загрузка...
+</ng-template>
