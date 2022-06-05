@@ -12,7 +12,17 @@ public class Serializer : ISerializer
         if (recordChunks == null)
             return null;
         var result = new List<JObject>();
-        foreach (var recordChunk in recordChunks) result.AddRange(recordChunk.Records.Select(SerializeRecord));
+        foreach (var recordChunk in recordChunks)
+        {
+            var t = recordChunk.Records.Select(SerializeRecord).ToArray();
+            var y = new JObject
+            {
+                {"SaveTime", recordChunk.SaveTime},
+                {"Code", recordChunk.Code},
+                {"Record", new JArray(t)}
+            };
+            result.Add(y);
+        } 
 
         return new JArray(result);
     }

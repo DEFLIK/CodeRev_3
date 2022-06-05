@@ -26,14 +26,15 @@ public class TrackerController : ControllerBase
     }
 
     [HttpGet("get")]
-    public string? Get([FromQuery] Guid taskSolutionId, [FromQuery] decimal? saveTime)
+    public IActionResult Get([FromQuery] Guid taskSolutionId, [FromQuery] decimal? saveTime)
     {
         var result = manager.Get(taskSolutionId, saveTime);
         var response = serializer.Serialize(result);
         if (response == null)
-            throw new BadHttpRequestException(
-                $"Not found {nameof(TaskRecordDto)} with taskSolutionId: {taskSolutionId}");
-        return response.ToString();
+            return NotFound();
+            // throw new BadHttpRequestException(
+            //     $"Not found {nameof(TaskRecordDto)} with taskSolutionId: {taskSolutionId}");
+        return Ok(response.ToString());
     }
 
     [HttpGet("get-last-code")]

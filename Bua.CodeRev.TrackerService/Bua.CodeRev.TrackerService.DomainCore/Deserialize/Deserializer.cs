@@ -14,7 +14,7 @@ public class Deserializer : IDeserializer
         var taskSolutionId = (Guid) jObject["TaskSolutionId"];
         var records = jObject["Records"].Select(ParseRecord).ToArray();
         var saveTime = (decimal) jObject["SaveTime"];
-        var recordChunk = new RecordChunkDto {SaveTime = saveTime, Records = records};
+        var recordChunk = new RecordChunkDto {SaveTime = saveTime, Records = records, Code = (string)jObject["Code"]};
         var code = (string) jObject["Code"];
         return new TaskRecordDto
         {
