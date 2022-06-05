@@ -1,91 +1,115 @@
 import { Injectable } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
-import * as CodeMirror from 'codemirror';
 import { CodeRecord, CodePlay } from 'codemirror-record/src';
-import { CodeStorageService } from '../code-storage-service/code-storage.service';
+import { ICodeOperation, ICodeRecord, RecordInfo } from '../../models/codeRecord';
+import { EditorMode } from '../../models/editorMode';
+import { SavingService } from '../saving-service/saving.service';
+import { CodeStorageService } from '../storage-service/code-storage.service';
 // declare var CodeRecord: any;
 
 @Injectable({
     providedIn: 'root'
 })
 export class RecordService {
-    private _recorder: any;
-    private _player: any;
-    private _maxDelayMs: number = 3000;
-    private _playSpeed: number = 0.8;
+    private _recordsStartTime: Map<string, number> = new Map();
+    private _recorders: Map<string, any> = new Map();
+    private _codeMirror!: any;
 
-    constructor(private _storage: CodeStorageService) { 
+    constructor() {  
     }
 
-    public playSavedRecord(editorComp: CodemirrorComponent): void {
+    public bindEditor(editorComp: CodemirrorComponent): void {
         if (!editorComp.codeMirror) {
-            return;
-        }
-
-        const savedRecord = this._storage.getSavedRecord();
-
-        if (!savedRecord) {
-            console.log('There is no any recorded data');
+            console.log('cant bind editor');
 
             return;
         }
 
-        editorComp.codeMirror.setValue('');
-        this._player = new CodePlay(editorComp.codeMirror, {
-            maxDelay: this._maxDelayMs,
-            autoplay: true,
-            autofocus: true,
-            speed: this._playSpeed,
-            extraActivityHandler: (activityRecorded: any): any => {
-                console.log(activityRecorded);
-            },
-            extraActivityReverter: (activityRecorded: any): any => {
-                console.log(activityRecorded);
+        this._codeMirror = editorComp.codeMirror;
+    }
+
+    public initRecordersStream(tasksId: string[]): void {
+        console.log(tasksId);
+        
+        for (const task of tasksId) {
+            this.startRecord(task);
+        }
+
+        console.log(this._recorders);
+        
+    }
+
+    public changeRecordingTask(taskId: string): void {
+        for (const [, recorder] of this._recorders) {      
+            if (recorder) {    
+                this.stopRecord(taskId);
             }
-        });
-        this._player.addOperations(savedRecord);
-        this._player.play();
-        this._player.on('end', () => {
-            console.log('end');
-            this._player.clear();
-        });
+        }
+
+        this.startRecord(taskId);
+        
+        // this._codeMirror.on('changes', curRecorder.changesListener);
+        // this._codeMirror.on('swapDoc', curRecorder.swapDocListener);
+        // this._codeMirror.on('cursorActivity', curRecorder.cursorActivityListener);
     }
 
-    public startRecord(editorComp: CodemirrorComponent): void {
-        if (!editorComp.codeMirror) {
+    public startRecord(taskId: string): void {
+        if (!this._codeMirror) {
             console.log('Unable to load code mirror model');
 
             return;
         }
 
-        this._recorder = new CodeRecord(editorComp.codeMirror);
-        this._recorder.listen();
-        editorComp.codeMirror?.setValue(editorComp.codeMirror.getValue());
-        console.log('record started');
+        const recorder = new CodeRecord(this._codeMirror);
+
+        this._recordsStartTime.set(taskId, recorder.initTime);
+        this._recorders.set(taskId, recorder);
+        this._recorders.get(taskId).listen();
+        this._codeMirror.setValue(this._codeMirror.getValue());
     }
 
-    public stopAndSaveRecord(editorComp: CodemirrorComponent): void {
-        if (!this._recorder) {
+    public stopRecord(taskId: string): void {
+        if (!this._recorders || !this._recorders.get(taskId)) {
             console.log('Recording not started');
             
             return;
         }
 
-        editorComp.codeMirror?.off('changes', this._recorder.changesListener); // some override
-        editorComp.codeMirror?.off('swapDoc', this._recorder.swapDocListener);
-        editorComp.codeMirror?.off('cursorActivity', this._recorder.cursorActivityListener);
+        this.stopEditorListening(taskId);
+    }
 
-        const record = this._recorder.getRecords() as string;
-        if (record.length === 2) {
-            console.log('Recording stoped, nothing to save');
+    public getTaskRecord(task: string): RecordInfo {
+        // return new RecordInfo(JSON.parse(this._storage.getSavedRecord(task) ?? '{}'));
+        const recorder = this._recorders.get(task);
+        const startTime = this._recordsStartTime.get(task);
 
-            return;
+        if (!recorder || !startTime) {
+            throw new Error('No recorder | startTime');
         }
 
-        this._storage.saveRecord(record);
+        const record = recorder.getRecords() as string;
+        const recordsModel = JSON.parse(record) as ICodeRecord[];
+        this.aproximateRecordInfo(recordsModel);
 
-        this._recorder = null;
-        console.log('Record saved');
+        return new RecordInfo(recordsModel, startTime);
     }
-    
+
+    private stopEditorListening(recorder: any): void {
+        this._codeMirror.off('changes', recorder.changesListener);
+        this._codeMirror.off('swapDoc', recorder.swapDocListener);
+        this._codeMirror.off('cursorActivity', recorder.cursorActivityListener);
+    }
+
+    private aproximateRecordInfo(records: ICodeRecord[]): void {
+        // Апроксимация первой операции (операция выставления начального кода)
+        if (records.length >= 1) {
+            switch(typeof records[0].t) {
+                case('number'):
+                    records[0].t = -1;
+                    break;
+                default:
+                    records[0].t = [-1, -1];
+            }
+        }
+    }
 }

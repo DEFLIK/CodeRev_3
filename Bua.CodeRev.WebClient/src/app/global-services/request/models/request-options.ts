@@ -16,5 +16,6 @@ export interface IRequestOptions<F = null> {
     responseType?: RequestResponseType;
     unsubscriber?: Subject<void>,
     contentType?: ContentType,
+    auth?: boolean,
     body?: F | null;
 }

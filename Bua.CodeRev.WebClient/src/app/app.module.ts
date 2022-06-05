@@ -18,7 +18,7 @@ import { HttpService } from './global-services/request/http.service';
     ],
     providers: [
         HttpService,
-        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+        // { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
     ],
     bootstrap: [AppComponent]
 })

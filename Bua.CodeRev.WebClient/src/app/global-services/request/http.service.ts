@@ -1,23 +1,20 @@
 import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable, isDevMode } from '@angular/core';
-import { map, merge, Observable, share, skipWhile, Subject, takeUntil } from 'rxjs';
+import { first, map, merge, Observable, share, skipWhile, Subject, takeUntil, timeout } from 'rxjs';
+import { SessionStorageService } from 'src/app/auth/services/sessionStorage-service/session-storage.service';
 import { ContentType } from './models/content-type';
 import { IRequestOptions } from './models/request-options';
 import { RequestResponseType } from './models/request-response-type';
 
-/** Обертка для HttpClient */
 @Injectable()
 export class HttpService {
-
-    /** Событие для отписки от всех запросов */
     private _takeUntil: Subject<void> = new Subject<void>();
 
-    /** Конструктор класса */
     constructor(
-        protected http: HttpClient
+        protected http: HttpClient,
+        private _session: SessionStorageService
     ) { }
 
-    /** Метод для отписки от всех запросов */
     public unsubscribeAll(): void {
         this._takeUntil.next();
     }
@@ -30,13 +27,9 @@ export class HttpService {
     public request<T, F = null>(requestParams: IRequestOptions<F>): Observable<HttpResponse<T>> {
 
         const httpOptions: {
-            /** Outgoing headers for this request. */
             headers?: HttpHeaders;
-            /** Whether this request should be made in a way that exposes progress events. */
             reportProgress?: boolean;
-            /** The expected response type of the server. */
             responseType?: RequestResponseType;
-            /** Whether this request should be sent with outgoing credentials (cookies). */
             withCredentials?: boolean;
         } = {
             headers: requestParams.headers || new HttpHeaders(),
@@ -49,12 +42,16 @@ export class HttpService {
             requestParams.contentType = ContentType.json;
         }
 
+        if (requestParams.auth) {
+            httpOptions.headers = httpOptions.headers?.set('authorization', `Bearer ${this._session.getJWTSession().accessToken}`);
+        }
+
         if (httpOptions.headers && !httpOptions.headers.has('Content-Type') && requestParams.contentType !== ContentType.multipartFormData && requestParams.contentType !== ContentType.textXml) {
             httpOptions.headers = httpOptions.headers.set('Content-Type', this.convertContentType(requestParams.contentType));
         }
 
         if (!requestParams.method) {
-            throw new Error('не указан метод запроса');
+            throw new Error('Specify request method');
         }
 
         if (!requestParams.body) {
@@ -82,7 +79,9 @@ export class HttpService {
                     return value;
                 }),
                 takeUntil(requestParams.unsubscriber ? merge(this._takeUntil, requestParams.unsubscriber) : this._takeUntil),
-                share()
+                timeout(10000),
+                share(),
+                first()
             );
 
     }

@@ -5,6 +5,7 @@ import { CandidateCardInfo } from '../../models/candidateCardInfo';
 import { CandidateFitlerCriteria } from '../../models/candidateFilterCriteria';
 import { CandidateState } from '../../models/candidateState';
 import { CandidateVacancy } from '../../models/candidateVacancy';
+import { ReviewService } from '../../services/review.service';
 import { CandidateCardComponent } from '../candidate-card/candidate-card.component';
 
 @Component({
@@ -12,10 +13,10 @@ import { CandidateCardComponent } from '../candidate-card/candidate-card.compone
     templateUrl: './candidates-list.component.html',
     styleUrls: ['./candidates-list.component.less']
 })
-export class CandidatesListComponent {
+export class CandidatesListComponent implements OnInit {
     @ViewChildren('candidateCard')
     public deviceCards!: QueryList<CandidateCardComponent>;
-    public candidates: CandidateCardInfo[] = this.generateRandomCardsInfo(30);
+    public candidates?: CandidateCardInfo[];
     public searchForm: FormGroup = new FormGroup({
         serachInput: new FormControl('')
     });
@@ -44,7 +45,8 @@ export class CandidatesListComponent {
     }
 
     constructor(
-        private _router: Router
+        private _router: Router,
+        private _review: ReviewService
     ) { 
         const stateVals = Object.values(CandidateState);
         const stateKeys = Object.keys(CandidateState);
@@ -62,6 +64,11 @@ export class CandidatesListComponent {
                 value: vacanKeys[i]
             });
         }
+    }
+    public ngOnInit(): void {    
+        this._review
+            .getCards()
+            .subscribe(resp => this.candidates = resp);
     }
 
     public selectCard(candidate: CandidateCardInfo): void {
@@ -90,38 +97,38 @@ export class CandidatesListComponent {
         }
     }
 
-    public generateRandomCardsInfo(count: number): CandidateCardInfo[] {
-        const result: CandidateCardInfo[] = [];
+    // public generateRandomCardsInfo(count: number): CandidateCardInfo[] {
+    //     const result: CandidateCardInfo[] = [];
 
-        for (let i = 0; i < count; i++) {
-            const newCardInfo = new CandidateCardInfo();
-            newCardInfo.userId = 'test id';
-            newCardInfo.averageGrade = this.getRandomGrade(5);
-            newCardInfo.fullName = 'Testy Test Testovich';
-            newCardInfo.vacancy = 'Testy developer';
-            newCardInfo.interviewSolutionId = `${this.getRandomInt(100000)}`;
-            newCardInfo.tasksCount = 3;
+    //     for (let i = 0; i < count; i++) {
+    //         const newCardInfo = new CandidateCardInfo();
+    //         newCardInfo.userId = 'test id';
+    //         newCardInfo.averageGrade = this.getRandomGrade(5);
+    //         newCardInfo.fullName = `Testy Test Testovich ${i}`;
+    //         newCardInfo.vacancy = 'Testy developer';
+    //         newCardInfo.interviewSolutionId = `${this.getRandomInt(100000)}`;
+    //         newCardInfo.tasksCount = 3;
 
-            if (Math.random() > 0.65) {
-                newCardInfo.doneTasksCount = newCardInfo.tasksCount;
-            } else {
-                newCardInfo.doneTasksCount = this.getRandomInt(3);
-            }
+    //         if (Math.random() > 0.65) {
+    //             newCardInfo.doneTasksCount = newCardInfo.tasksCount;
+    //         } else {
+    //             newCardInfo.doneTasksCount = this.getRandomInt(3);
+    //         }
 
-            newCardInfo.timeToCheckMs = Date.now() + 170000 - this.getRandomInt(200000);
+    //         newCardInfo.timeToCheckMs = Date.now() + 170000 - this.getRandomInt(200000);
 
-            if ( newCardInfo.doneTasksCount === 0 && Math.random() > 0.3) {
-                newCardInfo.startTimeMs = -1;
-            } else {
-                newCardInfo.startTimeMs = Date.now() - 100000 - this.getRandomInt(400000);
-            }
+    //         if ( newCardInfo.doneTasksCount === 0 && Math.random() > 0.3) {
+    //             newCardInfo.startTimeMs = -1;
+    //         } else {
+    //             newCardInfo.startTimeMs = Date.now() - 100000 - this.getRandomInt(400000);
+    //         }
             
 
-            result.push(newCardInfo);
-        }
+    //         result.push(newCardInfo);
+    //     }
 
-        return result;
-    }
+    //     return result;
+    // }
 
     private getRandomGrade(max: number): number {
         return Math.floor(Math.random() * max * 10) / 10;

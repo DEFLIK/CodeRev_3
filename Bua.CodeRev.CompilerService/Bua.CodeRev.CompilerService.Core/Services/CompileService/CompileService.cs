@@ -13,8 +13,7 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
 {
     public class CompileService : ICompileService
     {
-        private static readonly string[] Dependencies = new []
-        {
+        private static readonly string[] Dependencies = {
             "System.Private.CoreLib.dll",
             "System.Console.dll",
             "System.Runtime.dll"
@@ -26,10 +25,12 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
         {
             _assemblyPath = Path
                 .GetDirectoryName(typeof(object).Assembly.Location) 
-                ?? throw new NullReferenceException("Failed to create CompileService instance: unable to get assembly location");
+                ?? throw new NullReferenceException(
+                    "Failed to create CompileService instance: unable to get assembly location." +
+                    "Make sure to save your assembly if you loading it from bytes array");
         }
 
-        private static IEnumerable<Diagnostic> GetDiagnostics(EmitResult emitResult) =>
+        private static IEnumerable<Diagnostic> GetErrorDiagnostics(EmitResult emitResult) =>
             emitResult
                 .Diagnostics
                 .Where(diagnostic =>
@@ -63,8 +64,9 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
             catch (TargetInvocationException exception)
             {
                 var inner = exception.InnerException;
+
                 return inner is null 
-                    ? new[] { $"Серверная ошибка выполнения: {exception.Message}. Обратитесь к владельцу" } 
+                    ? new[] { $"Серверная ошибка выполнения: { exception }" } 
                     : new[] { inner.ToString() };
             }
 
@@ -73,9 +75,6 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
 
         public ExecutionResult Execute(string code, EntryPoint entryPoint)
         {
-            if (code is null)
-                throw new ArgumentException("Expected code string value, got null");
-
             var compilation = GetCompilation(code);
 
             using var ms = new MemoryStream();
@@ -85,7 +84,7 @@ namespace Bua.CodeRev.CompilerService.Core.Services.CompileService
             IEnumerable<string> output = new List<string>();
 
             if (!emitResult.Success)
-                foreach (var diagnostic in GetDiagnostics(emitResult))
+                foreach (var diagnostic in GetErrorDiagnostics(emitResult))
                     errors.Add(new CompilationError(diagnostic));
             else
                 output = RunAssemblyFromStream(ms, entryPoint);

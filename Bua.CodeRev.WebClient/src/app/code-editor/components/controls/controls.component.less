@@ -1,0 +1,91 @@
+@color-use: #00A65A;
+@color-stop: #DD4B39;
+
+:host {
+    width: 100%;
+    .range {
+        width: 100%;
+    }
+
+    // .timeline {
+    //     position: relative;
+    //     height: 20px;
+    //     width: 100%;
+
+    //     .point {
+    //         position: absolute;
+    //         font-size: 30px;
+    //     }
+    // }
+    .timeline {
+        width: 100%;
+        border-radius: 5px;
+        overflow: hidden;
+        background-color: white;
+    }
+
+    .write, .review {
+        align-items: flex-start;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    button {
+        gap: 5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .b-green {
+        padding: 8px;
+        text-align: center;
+        background-color: white;
+        color: @color-use;
+        border: solid 1px @color-use;
+
+        img {
+            filter: invert(48%) sepia(33%) saturate(3436%) hue-rotate(121deg) brightness(86%) contrast(101%);
+        }
+
+        &:hover {
+            color: white;
+            background-color: @color-use;
+            
+            img {
+                filter: none;
+            }
+        }
+
+        &:active {
+            background-color: lighten(@color-use, 3%);
+            border-color: lighten(@color-use, 3%);
+        }
+    }
+
+    .b-red {
+        padding: 8px;
+        text-align: center;
+        background-color: white;
+        color: @color-stop;
+        border: solid 1px @color-stop;
+
+        img {
+            filter: invert(39%) sepia(49%) saturate(1461%) hue-rotate(327deg) brightness(80%) contrast(168%);
+        }
+
+        &:hover {
+            color: white;
+            background-color: @color-stop;
+            
+            img {
+                filter: none;
+            }
+        }
+
+        &:active {
+            background-color: lighten(@color-stop, 3%);
+            border-color: lighten(@color-stop, 3%);
+        }
+    }
+}

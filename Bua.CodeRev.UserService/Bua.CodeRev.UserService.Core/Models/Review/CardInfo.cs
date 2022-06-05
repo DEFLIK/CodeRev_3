@@ -1,7 +1,7 @@
 ﻿using System;
 using Bua.CodeRev.UserService.DAL.Models;
 
-namespace Bua.CodeRev.UserService.Core.Models
+namespace Bua.CodeRev.UserService.Core.Models.Review
 {
     public class CardInfo
     {

@@ -1,5 +1,5 @@
 <header>
-    <div class="logo">CodeRev test WIP</div>
+    <img src="../assets/svg/logo.svg" class="logo">
     <div class="settings">
         <img src="../assets/svg/notification.svg" alt="notify" class="notify">
         <img src="../assets/svg/avatar.svg" alt="avatar" class="avatar">
@@ -7,4 +7,8 @@
 </header>
 <body class="route">
     <router-outlet></router-outlet>
+    <div class="load-process" *ngIf="loading">
+        <div class="loader" style="width: 70px; height: 70px"></div>
+        <span>Пожалуйста, ожидайте</span>
+    </div>
 </body>

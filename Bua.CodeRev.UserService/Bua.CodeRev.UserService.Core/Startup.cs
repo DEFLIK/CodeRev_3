@@ -76,8 +76,11 @@ namespace Bua.CodeRev.UserService.Core
             app.UseAuthentication();
             app.UseAuthorization();
 
+            //todo CORS blocks requests from Chrome
             app.UseCors(builder => builder
-                .AllowAnyOrigin()
+                .WithOrigins("https://localhost:5001", "http://localhost:5000", "http://localhost:62167", 
+                    "https://localhost:44393", "https://localhost:44395")
+                .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod());
 

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
 
 @Component({
     selector: 'app-root',
@@ -7,4 +8,28 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
     public title = 'Bua.CodeRev.WebClient';
+    public loading: boolean = false;
+
+    constructor(private _router: Router) {
+        this._router
+            .events
+            .subscribe((e: any) => {
+                this.navigationInterceptor(e);
+            });
+    }
+
+    public navigationInterceptor(event: RouterEvent): void {
+        if (event instanceof NavigationStart) {
+            this.loading = true;
+        }
+        if (event instanceof NavigationEnd) {
+            this.loading = false;
+        }
+        if (event instanceof NavigationCancel) {
+            this.loading = false;
+        }
+        if (event instanceof NavigationError) {
+            this.loading = false;
+        }
+    }
 }

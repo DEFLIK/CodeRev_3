@@ -1,12 +1,12 @@
-<app-controls #controls></app-controls>
+<head>
+    <link rel="stylesheet" href="/../../assets/code-themes/coderev.css">
+</head>
+
+<app-controls #controls [editorMode]="editorMode" [taskSelected$]="taskSelected$"></app-controls>
 <ngx-codemirror
+    class="editor"
     #codeMirror
     [(ngModel)]="editor"
-    [options]="{
-        lineNumbers: true,
-        theme: 'material',
-        mode: 'text/x-csharp',
-        indentUnit: 4
-    }"
+    [options]="options"
 ></ngx-codemirror>
-<app-output #output></app-output>
+<app-output #output class="output" *ngIf="editorMode === types.write"></app-output>

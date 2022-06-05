@@ -8,7 +8,9 @@ import { AuthService } from '../../services/auth-service/auth.service';
     styleUrls: ['./login.component.less']
 })
 export class LoginComponent {
-
+    public get isProcessing(): boolean {
+        return this._auth.isProcessing;
+    }
     public loginForm: FormGroup = new FormGroup({
         userName: new FormControl('', Validators.required),
         userPassword: new FormControl('', Validators.required)

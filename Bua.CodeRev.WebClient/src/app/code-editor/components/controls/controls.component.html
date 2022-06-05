@@ -1,4 +1,26 @@
-<button (click)="saveAndRun()">Save and run</button>
-<button (click)="startRecord()">Start record</button>
-<button (click)="stopAndSaveRecord()">Stop and save record</button>
-<button (click)="playSavedRecord()">Play saved record</button>
+
+<div class="review" *ngIf="editorMode === 1">
+    <button (click)="playSavedRecord()" *ngIf="!isPlaying" class="b-green">
+        <img src="../../../../assets/svg/play.svg" alt=">">
+        Play</button>
+    <button (click)="pauseSavedRecord()" *ngIf="isPlaying" class="b-red">
+        <img src="../../../../assets/svg/stop.svg" alt=">">
+        Pause</button>
+    <app-patched-timeline #timeline (valueChanges)="seek($event)" class="timeline"></app-patched-timeline>
+    <!-- <ngx-video-timeline #nxgtimeline
+        [videoCells]="videoCells"
+        [playTime]="playTime"
+        [startTimeThreshold]="startTimeThreshold"
+        [endTimeThreshold]="endTimeThreshold"
+    >
+    </ngx-video-timeline> -->
+</div>
+<div class="write" *ngIf="editorMode === 0">
+    <button (click)="run()" class="b-green">
+        <img src="../../../../assets/svg/play.svg" alt=">">
+        Run
+    </button>
+    <!-- <button (click)="startRecord()">Start record</button> -->
+    <button (click)="save()">Save chunk record</button>
+    <button (click)="stopRecord()">Stop record</button>
+</div>

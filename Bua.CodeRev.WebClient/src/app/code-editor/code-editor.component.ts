@@ -1,13 +1,16 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import * as CodeMirror from 'codemirror';
-import { interval } from 'rxjs';
+import { interval, Observable, Subject } from 'rxjs';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { ControlsComponent } from './components/controls/controls.component';
 import { OutputComponent } from './components/output/output.component';
+import { EditorMode } from './models/editorMode';
 import { ExecutionResult } from './models/executionResult';
-import { CodeStorageService } from './services/code-storage-service/code-storage.service';
+import { CodeStorageService } from './services/storage-service/code-storage.service';
 import { RecordService } from './services/record-service/record.service';
+
+type CodeMirrorOptions = {[key: string]: any};
 
 @Component({
     selector: 'app-code-editor',
@@ -22,23 +25,43 @@ export class CodeEditorComponent implements AfterViewInit {
     public controlsCmpt!: ControlsComponent;
     @ViewChild('output') 
     public outputCmpt!: OutputComponent;
+    @Input()
+    public editorMode!: EditorMode;
+    @Input()
+    public taskSelected$!: Observable<string>;
+    public types = EditorMode;
+    // @Input()
+    // public tasks?: string[];
+    public options: CodeMirrorOptions = {
+        lineNumbers: true,
+        theme: 'neat', // 'material',
+        mode: 'text/x-csharp',
+        indentUnit: 4
+    };
 
     constructor(
         private _record: RecordService,
         private _codeStorage: CodeStorageService
     ) { }
 
-    public ngAfterViewInit(): void {
+    public ngAfterViewInit(): void {    
+        this.options['readOnly']= this.editorMode === EditorMode.review;
+        
         this._codeStorage
             .onOutputRefresh$
             .subscribe((result: ExecutionResult) => {
                 if (!result.success) {
-                    for (const error of result.errors ?? []) {
+                    for (const error of result.errors) {
+                        if (error.endChar === error.startChar) {
+                            error.startChar ??= 1;
+                            error.startChar -= 1;
+                        }
+
                         this.codeMirrorCmpt
                             .codeMirror
                             ?.markText(
-                                { line: error.startLine ?? 0, ch:error.startChar ?? 0 }, 
-                                { line: error.endLine ?? 0 , ch: error.endChar ?? 1 },
+                                { line: error.startLine , ch:error.startChar }, 
+                                { line: error.endLine , ch: error.endChar },
                                 { css: 'background-color: yellow' });
                     }
                 }
@@ -53,13 +76,33 @@ export class CodeEditorComponent implements AfterViewInit {
                 return;
             }
 
-            this.codeMirrorCmpt.codeMirror?.setValue(this._codeStorage.defaultCode);
+            if (this.editorMode === EditorMode.review) {
+                this.codeMirrorCmpt.codeMirror?.setOption('extraKeys', {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    'Right': () => {},
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    'Left': () => {},
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    'Up': () => {}, 
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    'Down': () => {}
+                });
+            }
 
-            this.codeMirrorCmpt.codeMirror?.on('change', () => {
+            this.codeMirrorCmpt.codeMirror.setValue(this._codeStorage.defaultCode);
+
+            this.codeMirrorCmpt.codeMirror.on('change', () => {
                 this.codeMirrorCmpt.codeMirror?.getAllMarks().forEach(marker => marker.clear());
             });
+
+            this.codeMirrorCmpt.codeMirror.setSize('100%', '100%');
             
             this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
+            
+
+            // if (this.editorMode === EditorMode.write) {
+            //     this._record.initRecordersStream(this.tasks ?? []);
+            // }
         });
     }
 }

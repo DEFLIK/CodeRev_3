@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ExecutionResult } from '../../models/executionResult';
+import { ExecutionResultResponse } from '../../models/response/executionResult-response';
 
 @Injectable({
     providedIn: 'root'
@@ -22,7 +23,7 @@ export class CodeStorageService {
     private _entryNamespace: string = 'CodeRev';
     private _entryClass: string = 'Program';
     private _entryMethod: string ='Main';
-    private _outputLines: ExecutionResult = new ExecutionResult();
+    private _outputLines: ExecutionResult = new ExecutionResult(new ExecutionResultResponse());
     private _defaultCode: string = `using System;
 using System.Collections.Generic;
 
@@ -44,20 +45,20 @@ namespace CodeRev
         this.onOutputRefresh$.next(outputLines);
     }
 
-    public saveCode(code: string): void {
-        localStorage.setItem(this._codeKey, code);
+    public saveCode(task: string, code: string): void {
+        localStorage.setItem(this._codeKey + task, code);
     }
     
-    public saveRecord(record: string): void {
-        localStorage.setItem(this._recordKey, record);
+    public saveTaskRecord(task: string, record: string): void {
+        localStorage.setItem(this._recordKey + task, record);
     }
 
-    public getSavedCode(): string {
-        return localStorage.getItem(this._codeKey) ?? '';
+    public getSavedCode(task: string): string {
+        return localStorage.getItem(this._codeKey + task) ?? '';
     }
 
-    public getSavedRecord(): string | null {
-        return localStorage.getItem(this._recordKey);
+    public getSavedRecord(task: string): string | null {
+        return localStorage.getItem(this._recordKey + task);
     }
 
     public clearSavedCode(): void {
