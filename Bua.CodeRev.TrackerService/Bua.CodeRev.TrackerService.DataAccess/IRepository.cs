@@ -4,6 +4,6 @@ namespace Bua.CodeRev.TrackerService.DataAccess;
 
 public interface IRepository
 {
-    public RecordsRequestDto Get(Guid taskSolutionId);
-    public void Create(RecordsRequestDto request);
+    public RecordsRequestDto? Get(Guid taskSolutionId);
+    public void Save(RecordsRequestDto? request);
 }

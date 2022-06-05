@@ -13,7 +13,15 @@ public class Parser : IParser
         var jObject = JObject.Parse(request.ToString());
         var taskSolutionId = (Guid) jObject["TaskSolutionId"];
         var records = jObject["Records"].Select(ParseRecord).ToArray();
-        return new RecordsRequestDto {TaskSolutionId = taskSolutionId, Records = records};
+        var saveTime = (decimal) jObject["SaveTime"];
+        var recordChunk = new RecordChunkDto {SaveTime = saveTime, Records = records};
+        var code = (string) jObject["Code"];
+        return new RecordsRequestDto
+        {
+            TaskSolutionId = taskSolutionId,
+            RecordChunks = new[] {recordChunk},
+            Code = code
+        };
     }
 
     private RecordDto ParseRecord(JToken record)
@@ -55,29 +63,31 @@ public class Parser : IParser
         };
     }
 
-    private OperationTypeDto ParseOperationType(JToken? type) =>
-        (string) type! switch
+    private OperationTypeDto ParseOperationType(JToken? type)
+    {
+        return (string) type! switch
         {
-            "c" => OperationTypeDto.c,
-            "d" => OperationTypeDto.d,
-            "i" => OperationTypeDto.i,
-            "k" => OperationTypeDto.k,
-            "l" => OperationTypeDto.l,
-            "m" => OperationTypeDto.m,
-            "n" => OperationTypeDto.n,
-            "o" => OperationTypeDto.o,
-            "p" => OperationTypeDto.p,
-            "r" => OperationTypeDto.r,
-            "s" => OperationTypeDto.s,
-            "x" => OperationTypeDto.x,
-            "e" => OperationTypeDto.e,
+            "c" => OperationTypeDto.Compose,
+            "d" => OperationTypeDto.Delete,
+            "i" => OperationTypeDto.Input,
+            "k" => OperationTypeDto.MarkText,
+            "l" => OperationTypeDto.Select,
+            "m" => OperationTypeDto.Mouse,
+            "n" => OperationTypeDto.Rename,
+            "o" => OperationTypeDto.Move,
+            "p" => OperationTypeDto.Paste,
+            "r" => OperationTypeDto.Drag,
+            "s" => OperationTypeDto.SetValue,
+            "x" => OperationTypeDto.Cut,
+            "e" => OperationTypeDto.Extra,
             null => OperationTypeDto.NoType,
             _ => throw new ArgumentOutOfRangeException()
         };
+    }
 
     private SelectDto ParseSelect(JToken? select)
     {
-        var lineNumber = (int)select[0];
+        var lineNumber = (int) select[0];
         var move = select[1].Select(ParseMove).ToArray();
 
         return new SelectDto {LineNumber = lineNumber, TailMove = move};
@@ -87,8 +97,8 @@ public class Parser : IParser
     {
         if (move.Type == JTokenType.Array)
         {
-            var start = (int)move[0];
-            var end = (int)move[1];
+            var start = (int) move[0];
+            var end = (int) move[1];
             return new MoveDto {Start = start, End = end};
         }
 
@@ -98,35 +108,32 @@ public class Parser : IParser
     private PeriodDto ParsePeriod(JToken? period)
     {
         if (period[0].Type == JTokenType.Array)
-        {
             return new PeriodDto
             {
                 From = new IndexDto {LineNumber = (int) period[0][0], ColumnNumber = (int) period[0][1]},
-                To = new IndexDto {LineNumber = (int) period[1][0], ColumnNumber = (int) period[1][1]},
+                To = new IndexDto {LineNumber = (int) period[1][0], ColumnNumber = (int) period[1][1]}
             };
-        }
         return new PeriodDto
         {
             From = new IndexDto
             {
-                LineNumber = (int) period[0], 
+                LineNumber = (int) period[0],
                 ColumnNumber = (int) period[1]
             }
         };
     }
 
-    private RemoveDto ParseRemove(JToken? remove) => 
-        new RemoveDto {Count = (int) remove[0], Long = (int) remove[1]};
+    private RemoveDto ParseRemove(JToken? remove)
+    {
+        return new RemoveDto {Count = (int) remove[0], Long = (int) remove[1]};
+    }
 
     private ValueDto ParseValue(JToken? value)
     {
         if (value == null)
             return null;
-        if (value.Type == JTokenType.Array)
-        {
-            return new ValueDto {Value = value.Values<string>().ToArray()};
-        }
+        if (value.Type == JTokenType.Array) return new ValueDto {Value = value.Values<string>().ToArray()};
 
-        return new ValueDto {Value = new string[] {(string) value}};
+        return new ValueDto {Value = new[] {(string) value}};
     }
 }

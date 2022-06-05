@@ -6,70 +6,69 @@ namespace Bua.CodeRev.TrackerService.Contracts.Primitives;
 public enum OperationTypeDto
 {
     /// <summary>
-    ///     Compose
+    ///     c
     /// </summary>
-    [EnumMember]
-    c = 0,
+    [EnumMember] 
+    Compose = 0,
+
     /// <summary>
-    ///     Delete
+    ///     d
     /// </summary>
-    [EnumMember]
-    d = 1,
+    [EnumMember] Delete = 1,
+
     /// <summary>
-    ///     Input
+    ///     i
     /// </summary>
-    [EnumMember]
-    i = 2,
+    [EnumMember] Input = 2,
+
     /// <summary>
-    ///     MarkText
+    ///     k
     /// </summary>
-    [EnumMember]
-    k = 3,
+    [EnumMember] MarkText = 3,
+
     /// <summary>
-    ///     Select
+    ///     l
     /// </summary>
-    [EnumMember]
-    l = 4,
+    [EnumMember] Select = 4,
+
     /// <summary>
-    ///     Mouse
+    ///     m
     /// </summary>
-    [EnumMember]
-    m = 5,
+    [EnumMember] Mouse = 5,
+
     /// <summary>
-    ///     Rename
+    ///     n
     /// </summary>
-    [EnumMember]
-    n = 6,
+    [EnumMember] Rename = 6,
+
     /// <summary>
-    ///     Move
+    ///     o
     /// </summary>
-    [EnumMember]
-    o = 7,
+    [EnumMember] Move = 7,
+
     /// <summary>
-    ///     Paste
+    ///     p
     /// </summary>
-    [EnumMember]
-    p = 8,
+    [EnumMember] Paste = 8,
+
     /// <summary>
-    ///     Drag
+    ///     r
     /// </summary>
-    [EnumMember]
-    r = 9,
+    [EnumMember] Drag = 9,
+
     /// <summary>
-    ///     SetValue
+    ///     s
     /// </summary>
-    [EnumMember]
-    s = 10,
+    [EnumMember] SetValue = 10,
+
     /// <summary>
-    ///     Cut
+    ///     x
     /// </summary>
-    [EnumMember]
-    x = 11,
+    [EnumMember] Cut = 11,
+
     /// <summary>
-    ///     Extra
+    ///     e
     /// </summary>
-    [EnumMember]
-    e = 12,
-    [EnumMember]
-    NoType
+    [EnumMember] Extra = 12,
+    [EnumMember] NoType
 }

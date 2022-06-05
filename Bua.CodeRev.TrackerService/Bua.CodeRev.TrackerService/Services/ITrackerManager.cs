@@ -4,6 +4,7 @@ namespace Bua.CodeRev.TrackerService.Services;
 
 public interface ITrackerManager
 {
-    public RecordsRequestDto Get(Guid taskSolutionId);
-    public void Save(RecordsRequestDto request);
+    public RecordChunkDto[]? Get(Guid taskSolutionId, decimal? saveTime);
+    public string? GetLastCode(Guid taskSolutionId);
+    public void Save(RecordsRequestDto? request);
 }

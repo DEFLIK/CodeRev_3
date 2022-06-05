@@ -1,10 +1,9 @@
 ﻿using Bua.CodeRev.TrackerService.Contracts.Record;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Bua.CodeRev.TrackerService.DataAccess;
 
-public class Repository: IRepository
+public class Repository : IRepository
 {
     private readonly IMongoCollection<RecordsRequestDto> timelines;
 
@@ -16,13 +15,33 @@ public class Repository: IRepository
         timelines = database.GetCollection<RecordsRequestDto>(settings.TimelineCollectionName);
     }
 
-    public RecordsRequestDto Get(Guid taskSolutionId)
+    public RecordsRequestDto? Get(Guid taskSolutionId)
     {
-        return timelines.Find(record=>record.TaskSolutionId == taskSolutionId).FirstOrDefault();
+        return timelines.Find(record => record.TaskSolutionId == taskSolutionId)
+            .FirstOrDefault();
     }
 
-    public void Create(RecordsRequestDto request)
+    public void Save(RecordsRequestDto? request)
     {
-        timelines.InsertOne(request);
+        var record = timelines.Find(x => x.TaskSolutionId == request.TaskSolutionId)
+            .FirstOrDefault();
+        if (record == null)
+            timelines.InsertOne(request);
+        else
+            Update(new RecordsRequestDto
+            {
+                TaskSolutionId = record.TaskSolutionId,
+                Id = record.Id,
+                Code = request.Code,
+                RecordChunks = record.RecordChunks.ToList().Concat(request.RecordChunks).ToArray()
+            });
+    }
+
+    public void Update(RecordsRequestDto request)
+    {
+        var filter = Builders<RecordsRequestDto>.Filter.Eq(x => x.TaskSolutionId, request.TaskSolutionId);
+        var update = Builders<RecordsRequestDto>.Update.Set(x => x.RecordChunks, request.RecordChunks)
+            .Set(x => x.Code, request.Code);
+        timelines.UpdateOne(filter, update);
     }
 }

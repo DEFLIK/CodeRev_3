@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Bua.CodeRev.TrackerService.Contracts;
+﻿using Bua.CodeRev.TrackerService.Contracts;
 using Bua.CodeRev.TrackerService.Contracts.Primitives;
 using Bua.CodeRev.TrackerService.Contracts.Record;
 using Newtonsoft.Json.Linq;
@@ -8,10 +7,14 @@ namespace Bua.CodeRev.TrackerService.DomainCore;
 
 public class Serializer : ISerializer
 {
-    public JArray Serialize(RecordsRequestDto requestDto)
+    public JArray? Serialize(RecordChunkDto[]? recordChunks)
     {
-        var request = new JArray(requestDto.Records.Select(SerializeRecord).ToArray());
-        return request;
+        if (recordChunks == null)
+            return null;
+        var result = new List<JObject>();
+        foreach (var recordChunk in recordChunks) result.AddRange(recordChunk.Records.Select(SerializeRecord));
+
+        return new JArray(result);
     }
 
     private JObject SerializeRecord(RecordDto recordDto)
@@ -29,7 +32,7 @@ public class Serializer : ISerializer
     private JObject SerializeOperation(OperationDto operationDto)
     {
         var response = new JObject();
-        
+
         var type = SerializeType(operationDto.Type);
         if (type != null)
             response.Add("o", type);
@@ -37,10 +40,7 @@ public class Serializer : ISerializer
         var index = SerializePeriod(operationDto.Index);
         response.Add("i", index);
 
-        if (operationDto.Value != null)
-        {
-            response.Add("a", JToken.FromObject(operationDto.Value.Value));
-        }
+        if (operationDto.Value != null) response.Add("a", JToken.FromObject(operationDto.Value.Value));
 
         if (operationDto.Remove != null)
         {
@@ -61,7 +61,7 @@ public class Serializer : ISerializer
     {
         var lineNumber = JToken.FromObject(selectDto.LineNumber);
         var tailMove = JToken.FromObject(selectDto.TailMove.Select(SerializeMove).ToArray());
-        return JToken.FromObject(new[]{lineNumber, tailMove});
+        return JToken.FromObject(new[] {lineNumber, tailMove});
     }
 
     private JToken SerializeMove(MoveDto moveDto)
@@ -78,7 +78,7 @@ public class Serializer : ISerializer
 
     private JToken SerializePeriod(PeriodDto periodDto)
     {
-        var from = JToken.FromObject(new[] {periodDto.From.LineNumber, periodDto.From.ColumnNumber} );
+        var from = JToken.FromObject(new[] {periodDto.From.LineNumber, periodDto.From.ColumnNumber});
         if (periodDto.To != null)
         {
             var to = JToken.FromObject(new[] {periodDto.To.LineNumber, periodDto.To.ColumnNumber});
@@ -88,28 +88,32 @@ public class Serializer : ISerializer
         return JToken.FromObject(from);
     }
 
-    private string? SerializeType(OperationTypeDto type) =>
-        type switch
+    private string? SerializeType(OperationTypeDto type)
+    {
+        return type switch
         {
-            OperationTypeDto.c => "c",
-            OperationTypeDto.d => "d",
-            OperationTypeDto.i => "i",
-            OperationTypeDto.k => "k",
-            OperationTypeDto.l => "l",
-            OperationTypeDto.m => "m",
-            OperationTypeDto.n => "n",
-            OperationTypeDto.o => "o",
-            OperationTypeDto.p => "p",
-            OperationTypeDto.r => "r",
-            OperationTypeDto.s => "s",
-            OperationTypeDto.x => "x",
-            OperationTypeDto.e => "e",
+            OperationTypeDto.Compose => "c",
+            OperationTypeDto.Delete => "d",
+            OperationTypeDto.Input => "i",
+            OperationTypeDto.MarkText => "k",
+            OperationTypeDto.Select => "l",
+            OperationTypeDto.Mouse => "m",
+            OperationTypeDto.Rename => "n",
+            OperationTypeDto.Move => "o",
+            OperationTypeDto.Paste => "p",
+            OperationTypeDto.Drag => "r",
+            OperationTypeDto.SetValue => "s",
+            OperationTypeDto.Cut => "x",
+            OperationTypeDto.Extra => "e",
             OperationTypeDto.NoType => null,
             _ => throw new ArgumentOutOfRangeException()
         };
+    }
 
-    private JToken SerializeTime(TimelineDto timelineDto) =>
-        timelineDto.End == null
+    private JToken SerializeTime(TimelineDto timelineDto)
+    {
+        return timelineDto.End == null
             ? new JValue(timelineDto.Start)
             : JToken.FromObject(new[] {timelineDto.Start, timelineDto.End});
+    }
 }

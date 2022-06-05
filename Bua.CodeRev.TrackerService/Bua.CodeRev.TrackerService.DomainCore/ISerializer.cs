@@ -5,5 +5,5 @@ namespace Bua.CodeRev.TrackerService.DomainCore;
 
 public interface ISerializer
 {
-    public JArray Serialize(RecordsRequestDto requestDto);
+    public JArray? Serialize(RecordChunkDto[]? requestDto);
 }
