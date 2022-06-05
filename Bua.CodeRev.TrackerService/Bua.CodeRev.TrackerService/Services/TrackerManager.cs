@@ -15,7 +15,7 @@ public class TrackerManager : ITrackerManager
     public RecordChunkDto[]? Get(Guid taskSolutionId, decimal? saveTime)
     {
         var recordsRequest = repository.Get(taskSolutionId);
-        var result = recordsRequest.RecordChunks.Where(x => x.SaveTime > (saveTime ?? 0m))
+        var result = recordsRequest?.RecordChunks.Where(x => x.SaveTime > (saveTime ?? 0m))
             .OrderBy(x => x.SaveTime).ToArray();
         return result;
     }

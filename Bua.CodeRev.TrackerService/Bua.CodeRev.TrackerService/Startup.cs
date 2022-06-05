@@ -31,6 +31,7 @@ public class Startup
         services.AddAutoMapper(typeof(RecordProfile));
         services.AddControllers();
         services.AddApiVersioning(config => { config.ApiVersionReader = new HeaderApiVersionReader("api-version"); });
+        services.AddCors();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -40,7 +41,9 @@ public class Startup
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseAuthorization();
-
+        app.UseCors(builder => builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod());
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }
 }
