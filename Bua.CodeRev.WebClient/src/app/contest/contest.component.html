@@ -1,11 +1,24 @@
-<app-tasks-list></app-tasks-list>
-<!-- <button *ngFor="let task of tasks" (click)="change(task)">{{task}}</button> -->
-<div class="right">
-    <app-task class="task"></app-task>
-    <app-code-editor 
-        [editorMode]="types.review" 
-        class="editor"
-        [taskSelected$]="taskSelected$"
-    >
-    </app-code-editor>
+<div class="expired" *ngIf="(isSolutionExpired || isSolutionComplete) && editorMode === editType.write">Интервью было успешно заверешно! Ответы больше не принимаются</div>
+
+<div class="sln">
+    <app-notification 
+        class="notification"
+        *ngIf="!isStarted && !review"
+        (startInterview)="start($event)"
+        (continueInterview)="continue($event)"
+    ></app-notification>
+
+    <app-tasks-list #list></app-tasks-list>
+    <ng-container *ngIf="isStarted || review">
+        <!-- <button *ngFor="let task of tasks" (click)="change(task)">{{task}}</button> -->
+        <div class="right">
+            <app-task class="task"></app-task>
+            <app-code-editor 
+                [editorMode]="editorMode" 
+                class="editor"
+                [taskSelected$]="taskSelected$"
+            >
+            </app-code-editor>
+        </div>
+    </ng-container>
 </div>
