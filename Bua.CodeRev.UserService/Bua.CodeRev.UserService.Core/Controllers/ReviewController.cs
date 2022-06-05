@@ -107,7 +107,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 return Conflict($"no {nameof(interviewSolution)} with such id");
             var reviewerComment = interviewSolutionComment.ReviewerComment;
             if (reviewerComment == null)
-                return Conflict($"{nameof(reviewerComment)} can't be null");
+                return BadRequest($"{nameof(reviewerComment)} can't be null");
             
             interviewSolution.ReviewerComment = reviewerComment;
             await _dbRepository.SaveChangesAsync();
