@@ -1,9 +1,9 @@
-﻿using Bua.CodeRev.TrackerService.Contracts;
+﻿using Bua.CodeRev.TrackerService.Contracts.Actions;
 using Bua.CodeRev.TrackerService.Contracts.Primitives;
 using Bua.CodeRev.TrackerService.Contracts.Record;
 using Newtonsoft.Json.Linq;
 
-namespace Bua.CodeRev.TrackerService.DomainCore;
+namespace Bua.CodeRev.TrackerService.DomainCore.Serialize;
 
 public class Serializer : ISerializer
 {

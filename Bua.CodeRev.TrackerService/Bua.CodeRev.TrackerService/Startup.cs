@@ -1,6 +1,7 @@
-﻿using Bua.CodeRev.TrackerService.DataAccess;
-using Bua.CodeRev.TrackerService.DomainCore;
-using Bua.CodeRev.TrackerService.DomainCore.Parser;
+﻿using Bua.CodeRev.TrackerService.DataAccess.Infrastructure;
+using Bua.CodeRev.TrackerService.DataAccess.Repositories;
+using Bua.CodeRev.TrackerService.DomainCore.Deserialize;
+using Bua.CodeRev.TrackerService.DomainCore.Serialize;
 using Bua.CodeRev.TrackerService.Infrastructure.Mapping;
 using Bua.CodeRev.TrackerService.Services;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -19,14 +20,14 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.Configure<TimelineTrackerDataBaseSettings>(
-            configuration.GetSection(nameof(TimelineTrackerDataBaseSettings)));
-        services.AddSingleton<ITimelineTrackerDataBaseSettings>(sp =>
-            sp.GetRequiredService<IOptions<TimelineTrackerDataBaseSettings>>().Value);
+        services.Configure<TaskRecordsTrackerDataBaseSettings>(
+            configuration.GetSection(nameof(TaskRecordsTrackerDataBaseSettings)));
+        services.AddSingleton<ITaskRecordsTrackerDataBaseSettings>(sp =>
+            sp.GetRequiredService<IOptions<TaskRecordsTrackerDataBaseSettings>>().Value);
         services.AddTransient<ITrackerManager, TrackerManager>();
         services.AddTransient<IRepository, Repository>();
         services.AddTransient<ISerializer, Serializer>();
-        services.AddTransient<IParser, Parser>();
+        services.AddTransient<IDeserializer, Deserializer>();
         services.AddAutoMapper(typeof(RecordProfile));
         services.AddControllers();
         services.AddApiVersioning(config => { config.ApiVersionReader = new HeaderApiVersionReader("api-version"); });

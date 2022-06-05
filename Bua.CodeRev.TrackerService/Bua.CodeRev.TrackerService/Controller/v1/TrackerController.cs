@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
-using Bua.CodeRev.TrackerService.DomainCore;
+using Bua.CodeRev.TrackerService.DomainCore.Deserialize;
+using Bua.CodeRev.TrackerService.DomainCore.Serialize;
 using Bua.CodeRev.TrackerService.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,14 +11,14 @@ namespace Bua.CodeRev.TrackerService.Controller.v1;
 [Route("api/v{api-version:apiVersion}/tracker")]
 public class TrackerController : ControllerBase
 {
+    private readonly IDeserializer deserializer;
     private readonly ITrackerManager manager;
-    private readonly IParser parser; //rename
     private readonly ISerializer serializer;
 
-    public TrackerController(ITrackerManager manager, IParser parser, ISerializer serializer)
+    public TrackerController(ITrackerManager manager, IDeserializer deserializer, ISerializer serializer)
     {
         this.manager = manager;
-        this.parser = parser;
+        this.deserializer = deserializer;
         this.serializer = serializer;
     }
 
@@ -38,7 +39,7 @@ public class TrackerController : ControllerBase
     [HttpPut("save")]
     public string Save([FromBody] JsonElement entity)
     {
-        var request = parser.ParseRequestDto(entity);
+        var request = deserializer.ParseRequestDto(entity);
         manager.Save(request);
         return "ok";
     }

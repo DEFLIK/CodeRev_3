@@ -1,5 +1,5 @@
 ﻿using Bua.CodeRev.TrackerService.Contracts.Record;
-using Bua.CodeRev.TrackerService.DataAccess;
+using Bua.CodeRev.TrackerService.DataAccess.Repositories;
 
 namespace Bua.CodeRev.TrackerService.Services;
 
@@ -26,7 +26,7 @@ public class TrackerManager : ITrackerManager
         return taskRecord?.Code;
     }
 
-    public void Save(RecordsRequestDto request)
+    public void Save(TaskRecordDto request)
     {
         repository.Save(request);
     }

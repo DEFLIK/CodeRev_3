@@ -6,5 +6,5 @@ public interface ITrackerManager
 {
     public RecordChunkDto[]? Get(Guid taskSolutionId, decimal? saveTime);
     public string? GetLastCode(Guid taskSolutionId);
-    public void Save(RecordsRequestDto? request);
+    public void Save(TaskRecordDto? request);
 }

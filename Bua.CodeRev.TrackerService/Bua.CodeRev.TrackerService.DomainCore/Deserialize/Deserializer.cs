@@ -1,14 +1,14 @@
 ﻿using System.Text.Json;
-using Bua.CodeRev.TrackerService.Contracts;
+using Bua.CodeRev.TrackerService.Contracts.Actions;
 using Bua.CodeRev.TrackerService.Contracts.Primitives;
 using Bua.CodeRev.TrackerService.Contracts.Record;
 using Newtonsoft.Json.Linq;
 
-namespace Bua.CodeRev.TrackerService.DomainCore.Parser;
+namespace Bua.CodeRev.TrackerService.DomainCore.Deserialize;
 
-public class Parser : IParser
+public class Deserializer : IDeserializer
 {
-    public RecordsRequestDto ParseRequestDto(JsonElement request)
+    public TaskRecordDto ParseRequestDto(JsonElement request)
     {
         var jObject = JObject.Parse(request.ToString());
         var taskSolutionId = (Guid) jObject["TaskSolutionId"];
@@ -16,7 +16,7 @@ public class Parser : IParser
         var saveTime = (decimal) jObject["SaveTime"];
         var recordChunk = new RecordChunkDto {SaveTime = saveTime, Records = records};
         var code = (string) jObject["Code"];
-        return new RecordsRequestDto
+        return new TaskRecordDto
         {
             TaskSolutionId = taskSolutionId,
             RecordChunks = new[] {recordChunk},

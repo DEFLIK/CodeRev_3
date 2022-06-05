@@ -4,7 +4,7 @@ using MongoDB.Bson;
 namespace Bua.CodeRev.TrackerService.Contracts.Record;
 
 [DataContract]
-public class RecordsRequestDto
+public class TaskRecordDto
 {
     [DataMember] public ObjectId Id { get; set; }
 
