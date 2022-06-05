@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Bua.CodeRev.UserService.Core.LogicHelpers;
 using Bua.CodeRev.UserService.Core.Models.Contest;
 using Bua.CodeRev.UserService.DAL.Entities;
 using Bua.CodeRev.UserService.DAL.Models.Interfaces;
@@ -20,6 +21,55 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         
         public ContestController(IDbRepository dbRepository) : base(dbRepository)
         {
+        }
+        
+        //[Authorize]
+        [HttpGet("i-sln-info")]
+        public async Task<IActionResult> GetInterviewSolutionInfo([Required][FromHeader(Name = "Authorization")] string authorization)
+        {
+            if (!authorization.StartsWith("Bearer"))
+                return BadRequest($"Unexpected {nameof(authorization)} header value");
+            var splitValue = authorization.Split();
+            if (splitValue.Length != 2)
+                return BadRequest($"Unexpected {nameof(authorization)} header value");
+            
+            var userId = new TokenHelper().TakeUserIdFromToken(splitValue[1]);
+            if (userId == null)
+                return BadRequest($"Unexpected {nameof(authorization)} header value");
+            
+            var (userGuid, errorString) = TryParseGuid(userId, nameof(userId));
+            if (errorString != null)
+                return BadRequest(errorString);
+            
+            var user = await _dbRepository
+                .Get<User>(i => i.Id == userGuid)
+                .FirstOrDefaultAsync();
+            
+            if (user == null)
+                return Conflict($"no {nameof(user)} with such id");
+            
+            var interviewSolution = await _dbRepository
+                .Get<InterviewSolution>(i => i.UserId == user.Id)
+                .FirstOrDefaultAsync();
+            
+            if (interviewSolution == null)
+                return Conflict($"no {nameof(interviewSolution)} with such id");
+            
+            var interview = await _dbRepository
+                .Get<Interview>(i => i.Id == interviewSolution.InterviewId)
+                .FirstOrDefaultAsync();
+            
+            if (interview == null)
+                return Conflict($"no {nameof(interview)} with such id");
+
+            return Ok(new InterviewSolutionInfo
+            {
+                Id = interviewSolution.Id,
+                Vacancy = interview.Vacancy,
+                InterviewText = interview.InterviewText,
+                InterviewDurationMs = interview.InterviewDurationMs,
+                IsStarted = (interviewSolution.StartTimeMs >= 0)
+            });
         }
         
         //[Authorize]
