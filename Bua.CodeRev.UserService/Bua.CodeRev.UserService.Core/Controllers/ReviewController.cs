@@ -233,19 +233,22 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 ReviewerComment = interviewSolution.ReviewerComment,
                 AverageGrade = interviewSolution.AverageGrade,
                 InterviewResult = interviewSolution.InterviewResult,
-                TaskSolutionsInfos = new List<TaskSolutionInfoReview>()
+                TaskSolutionsInfos = new List<TaskSolutionInfo>()
             };
+            var letterOrder = (int)'A';
             foreach (var taskSolution in _dbRepository
                 .Get<TaskSolution>(t => t.InterviewSolutionId == interviewSolution.Id)
                 .ToList())
             {
-                interviewSolutionInfo.TaskSolutionsInfos.Add(await GetFromDbTaskSolutionInfoAsync(taskSolution.Id));
+                var taskSolutionInfo = await GetFromDbTaskSolutionInfoAsync(taskSolution.Id);
+                taskSolutionInfo.TaskOrder = (char) letterOrder++;
+                interviewSolutionInfo.TaskSolutionsInfos.Add(taskSolutionInfo);
             }
 
             return interviewSolutionInfo;
         }
 
-        private async Task<TaskSolutionInfoReview> GetFromDbTaskSolutionInfoAsync(Guid taskSolutionGuid)
+        private async Task<TaskSolutionInfo> GetFromDbTaskSolutionInfoAsync(Guid taskSolutionGuid)
         {
             var taskSolution = await _dbRepository
                 .Get<TaskSolution>(t => t.Id == taskSolutionGuid)
@@ -267,10 +270,11 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             if (user == null)
                 return null;
             
-            return new TaskSolutionInfoReview
+            return new TaskSolutionInfo
             {
                 TaskSolutionId = taskSolution.Id,
                 TaskId = taskSolution.TaskId,
+                TaskOrder = ' ',
                 InterviewSolutionId = taskSolution.InterviewSolutionId,
                 FullName = user.FullName,
                 Grade = taskSolution.Grade,

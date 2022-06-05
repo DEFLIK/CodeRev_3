@@ -17,6 +17,6 @@ namespace Bua.CodeRev.UserService.Core.Models.Review
         public string ReviewerComment { get; set; }
         public GradeEnum AverageGrade { get; set; }
         public InterviewResultEnum InterviewResult { get; set; }
-        public IList<TaskSolutionInfoReview> TaskSolutionsInfos { get; set; }
+        public IList<TaskSolutionInfo> TaskSolutionsInfos { get; set; }
     }
 }
