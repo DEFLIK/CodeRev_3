@@ -187,7 +187,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                     (tSln, t) => new TaskSolutionInfoContest
                     {
                         Id = tSln.Id,
-                        TaskId = t.Id,
+                        TaskId = tSln.TaskId,
                         TaskOrder = (char)letterOrder++,
                         TaskText = t.TaskText,
                         StartCode = t.StartCode,

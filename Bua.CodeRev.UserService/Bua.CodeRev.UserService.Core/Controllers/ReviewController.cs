@@ -256,18 +256,19 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 ReviewerComment = interviewSolution.ReviewerComment,
                 AverageGrade = interviewSolution.AverageGrade,
                 InterviewResult = interviewSolution.InterviewResult,
-                TaskSolutionsInfos = new List<TaskSolutionInfo>()
             };
             var letterOrder = (int)'A';
+            var taskSolutionsInfos = new List<TaskSolutionInfo>();
             foreach (var taskSolution in _dbRepository
                 .Get<TaskSolution>(t => t.InterviewSolutionId == interviewSolution.Id)
                 .ToList())
             {
                 var taskSolutionInfo = await GetFromDbTaskSolutionInfoAsync(taskSolution.Id);
                 taskSolutionInfo.TaskOrder = (char) letterOrder++;
-                interviewSolutionInfo.TaskSolutionsInfos.Add(taskSolutionInfo);
+                taskSolutionsInfos.Add(taskSolutionInfo);
             }
-
+            interviewSolutionInfo.TaskSolutionsInfos = taskSolutionsInfos.OrderBy(t => t.TaskId).ToList();
+            
             return interviewSolutionInfo;
         }
 
