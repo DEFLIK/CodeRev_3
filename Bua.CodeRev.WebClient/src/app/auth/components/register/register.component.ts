@@ -29,7 +29,7 @@ export class RegisterComponent implements OnInit {
         private _activatedRoute: ActivatedRoute
     ) {}
     public ngOnInit(): void {
-        this.inviteToken = this._activatedRoute.snapshot.paramMap.get('solutionId') ?? '';
+        this.inviteToken = this._activatedRoute.snapshot.paramMap.get('invite') ?? '';
     }
 
     public submit(): void {
