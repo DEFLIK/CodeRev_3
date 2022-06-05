@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { RecordInfo } from '../../models/codeRecord';
 import { SaveChunk } from '../../models/saveChunk';
-import { CodeStorageService as StorageService } from '../storage-service/code-storage.service';
+// import { CodeStorageService as StorageService } from '../storage-service/code-storage.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SavingService {
-    constructor(private _storage: StorageService) { }
+    constructor() { }
 
     public saveNext(taskId: string, code: string, record: RecordInfo): void {
         const time = Date.now();
