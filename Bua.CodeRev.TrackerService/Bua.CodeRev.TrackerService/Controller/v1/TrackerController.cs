@@ -1,12 +1,15 @@
 ﻿using System.Text.Json;
+using Bua.CodeRev.TrackerService.Contracts.Record;
 using Bua.CodeRev.TrackerService.DomainCore.Deserialize;
 using Bua.CodeRev.TrackerService.DomainCore.Serialize;
 using Bua.CodeRev.TrackerService.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bua.CodeRev.TrackerService.Controller.v1;
 
 [ApiController]
+[EnableCors]
 [ApiVersion("1.0")]
 [Route("api/v{api-version:apiVersion}/tracker")]
 public class TrackerController : ControllerBase
@@ -27,7 +30,10 @@ public class TrackerController : ControllerBase
     {
         var result = manager.Get(taskSolutionId, saveTime);
         var response = serializer.Serialize(result);
-        return response?.ToString();
+        if (response == null)
+            throw new BadHttpRequestException(
+                $"Not found {nameof(TaskRecordDto)} with taskSolutionId: {taskSolutionId}");
+        return response.ToString();
     }
 
     [HttpGet("get-last-code")]
