@@ -9,6 +9,8 @@ namespace Bua.CodeRev.UserService.Core.Models.Contest
         public string Vacancy { get; set; }
         public string InterviewText { get; set; }
         public long InterviewDurationMs { get; set; }
+        public long StartTimeMs { get; set; }
+        public long EndTimeMs { get; set; }
         public bool IsStarted { get; set; }
     }
 }

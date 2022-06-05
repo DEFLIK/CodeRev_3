@@ -68,6 +68,8 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 Vacancy = interview.Vacancy,
                 InterviewText = interview.InterviewText,
                 InterviewDurationMs = interview.InterviewDurationMs,
+                StartTimeMs = interviewSolution.StartTimeMs,
+                EndTimeMs = interviewSolution.EndTimeMs,
                 IsStarted = (interviewSolution.StartTimeMs >= 0)
             });
         }
