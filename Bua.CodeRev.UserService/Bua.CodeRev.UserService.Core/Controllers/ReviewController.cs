@@ -21,6 +21,13 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         public ReviewController(IDbRepository dbRepository) : base(dbRepository)
         {
         }
+
+        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpGet("interviews")]
+        public IActionResult GetInterviews()
+        {
+            return Ok(_dbRepository.Get<Interview>());
+        }
         
         //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPut("put-task-sln-grade")]
