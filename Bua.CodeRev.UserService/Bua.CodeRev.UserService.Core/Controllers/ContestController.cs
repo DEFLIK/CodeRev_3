@@ -152,6 +152,16 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             if (taskSolution.IsDone)
                 return Conflict($"{nameof(taskSolution)} is already done");
 
+            var interviewSolution = await _dbRepository
+                .Get<InterviewSolution>(i => i.Id == taskSolution.InterviewSolutionId)
+                .FirstOrDefaultAsync();
+            
+            if (interviewSolution == null)
+                return Conflict($"no {nameof(interviewSolution)} with such id");
+            
+            if (DateTimeOffset.Now.ToUnixTimeMilliseconds() > interviewSolution.EndTimeMs)
+                return Conflict($"{nameof(interviewSolution)} is already end (end time is less than now time) or wasn't started");
+
             taskSolution.IsDone = true;
             await _dbRepository.SaveChangesAsync();
             return Ok();
