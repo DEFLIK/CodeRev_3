@@ -1,5 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { CandidateCardInfo } from '../../models/candidateCardInfo';
+import { CandidateState, CandidateStateKeys } from '../../models/candidateState';
 
 @Component({
     selector: 'app-candidate-card',
@@ -11,10 +12,10 @@ export class CandidateCardComponent {
     public candidate!: CandidateCardInfo;
     @Output()
     public clickEvent: EventEmitter<CandidateCardInfo> = new EventEmitter<CandidateCardInfo>();
+    public state = CandidateState;
     constructor() { }
 
-    @HostListener('click')
-    public onClick(): void {
+    public select(): void {
         this.clickEvent.emit(this.candidate);
     }
 
