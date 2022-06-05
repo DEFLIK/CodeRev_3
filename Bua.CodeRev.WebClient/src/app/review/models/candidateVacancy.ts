@@ -1,9 +1,8 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 export enum CandidateVacancy {
-    'juniorCS' = 'Junior C# developer',
-    'middleCS' = 'Middle C# developer',
-    'seniorCS' = 'Senior C# developer',
-    'test' = 'Testy developer'
-
+    'juniorCS' = 'Junior C# Developer',
+    'middleCS' = 'Middle C# Developer',
+    'seniorCS' = 'Senior C# Developer'
 }
 
 export type CandidateVacancyKeys = keyof typeof CandidateVacancy
