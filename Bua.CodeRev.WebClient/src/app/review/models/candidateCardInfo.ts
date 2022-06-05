@@ -29,15 +29,17 @@ export class CandidateCardInfo {
     }
 
     public getState(): CandidateState {
-        if (this.tasksCount === this.doneTasksCount && this.startTimeMs !== -1 && Date.now() < this.timeToCheckMs) {
+        const isExpired = (Date.now() > this.timeToCheckMs && this.timeToCheckMs !== -1);
+
+        if (this.tasksCount === this.doneTasksCount && !isExpired) {
             return CandidateState.done;
         }
 
-        if (this.tasksCount > this.doneTasksCount && this.startTimeMs !== -1 && Date.now() < this.timeToCheckMs) {
+        if (this.startTimeMs !== -1 && !isExpired) {
             return CandidateState.inProcess;
         }
 
-        if (this.startTimeMs === -1 && Date.now() < this.timeToCheckMs) {
+        if (this.startTimeMs === -1 && !isExpired) {
             return CandidateState.notStarted;
         }
 
