@@ -187,11 +187,13 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                     (tSln, t) => new TaskSolutionInfoContest
                     {
                         Id = tSln.Id,
+                        TaskId = t.Id,
                         TaskOrder = (char)letterOrder++,
                         TaskText = t.TaskText,
                         StartCode = t.StartCode,
                         IsDone = tSln.IsDone
                     })
+                .OrderBy(t => t.TaskId)
                 .ToList();
             
             return Ok(taskInfos);
