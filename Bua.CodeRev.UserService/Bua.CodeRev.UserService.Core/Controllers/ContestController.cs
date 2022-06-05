@@ -188,12 +188,16 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                     {
                         Id = tSln.Id,
                         TaskId = tSln.TaskId,
-                        TaskOrder = (char)letterOrder++,
                         TaskText = t.TaskText,
                         StartCode = t.StartCode,
                         IsDone = tSln.IsDone
                     })
                 .OrderBy(t => t.TaskId)
+                .Select(t =>
+                {
+                    t.TaskOrder = (char) letterOrder++;
+                    return t;
+                })
                 .ToList();
             
             return Ok(taskInfos);

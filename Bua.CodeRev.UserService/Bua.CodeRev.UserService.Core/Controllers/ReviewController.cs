@@ -257,17 +257,22 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 AverageGrade = interviewSolution.AverageGrade,
                 InterviewResult = interviewSolution.InterviewResult,
             };
-            var letterOrder = (int)'A';
             var taskSolutionsInfos = new List<TaskSolutionInfo>();
             foreach (var taskSolution in _dbRepository
                 .Get<TaskSolution>(t => t.InterviewSolutionId == interviewSolution.Id)
                 .ToList())
             {
-                var taskSolutionInfo = await GetFromDbTaskSolutionInfoAsync(taskSolution.Id);
-                taskSolutionInfo.TaskOrder = (char) letterOrder++;
-                taskSolutionsInfos.Add(taskSolutionInfo);
+                taskSolutionsInfos.Add(await GetFromDbTaskSolutionInfoAsync(taskSolution.Id));
             }
-            interviewSolutionInfo.TaskSolutionsInfos = taskSolutionsInfos.OrderBy(t => t.TaskId).ToList();
+            var letterOrder = (int)'A';
+            interviewSolutionInfo.TaskSolutionsInfos = taskSolutionsInfos
+                .OrderBy(t => t.TaskId)
+                .Select(t =>
+                {
+                    t.TaskOrder = (char) letterOrder++;
+                    return t;
+                })
+                .ToList();
             
             return interviewSolutionInfo;
         }
