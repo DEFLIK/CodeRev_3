@@ -2,6 +2,7 @@ import { AfterContentInit, AfterViewInit, Component, ComponentFactoryResolver, I
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { EditorMode } from '../code-editor/models/editorMode'; 
+import { SavingService } from '../code-editor/services/saving-service/saving.service';
 import { InterviewSolutionReview } from '../review/models/interviewSolutionReview';
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
 import { InterviewSolutionInfo } from './models/interviewSolutionInfo';
@@ -38,7 +39,8 @@ export class ContestComponent implements AfterViewInit {
         return this.taskList.tasks.every(task => task.isDone);
     }
     constructor(
-        private _contest: ContestService
+        private _contest: ContestService,
+        private _saving: SavingService
     ) { }
     public ngAfterViewInit(): void {
         if (this.review) {

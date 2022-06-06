@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
+import { HttpService } from 'src/app/global-services/request/http.service';
 import { RecordInfo } from '../../models/codeRecord';
 import { SaveChunk } from '../../models/saveChunk';
 // import { CodeStorageService as StorageService } from '../storage-service/code-storage.service';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class SavingService {
-    constructor() { }
-
     public saveNext(taskId: string, code: string, record: RecordInfo): void {
         const time = Date.now();
         const nextChunk = new SaveChunk(taskId, time, code, record);
@@ -41,5 +38,21 @@ export class SavingService {
         const res = this.getTaskSaves(taskId);
 
         return res[res.length - 1];
+    }
+
+    public applySaves(saves: SaveChunk[]): void {
+        this.clearSaves();
+
+        for (const save of saves) {
+            localStorage.setItem('save' + save.taskId + save.saveTime, JSON.stringify(save));
+        }
+    }
+
+    public clearSaves(): void {
+        for (const key in localStorage) {
+            if (key.includes('save')) {
+                localStorage.removeItem(key);
+            }
+        }
     }
 }

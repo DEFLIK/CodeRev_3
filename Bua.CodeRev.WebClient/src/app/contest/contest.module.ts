@@ -9,6 +9,7 @@ import { CodeEditorModule } from '../code-editor/code-editor.module';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
 import { EditorMode } from '../code-editor/models/editorMode';
 import { ContestRoutingModule } from './contest-routing.module';
+import { SavingService } from '../code-editor/services/saving-service/saving.service';
 
 @NgModule({
     declarations: [
@@ -24,6 +25,9 @@ import { ContestRoutingModule } from './contest-routing.module';
     ],
     exports: [
         ContestComponent
+    ],
+    providers: [
+        SavingService
     ]
 })
 export class ContestModule { }
