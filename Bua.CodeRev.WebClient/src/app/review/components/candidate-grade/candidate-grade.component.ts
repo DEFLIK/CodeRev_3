@@ -84,6 +84,16 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
         
     }
 
+    public back(): void {
+        if (this.isWatching) {
+            this.isWatching = false;
+
+            return;
+        }
+
+        this._router.navigateByUrl('/review');
+    }
+
     private getControls(slnReview: InterviewSolutionReview): FormControlType {
         const res: FormControlType = {
             resultComment: new FormControl(''),
@@ -96,7 +106,7 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
             )
             .subscribe((value: number) => {
                 this._review
-                    .setInterviewResult(slnReview.interviewSolutionId, value)
+                    .setInterviewGrade(slnReview.interviewSolutionId, value)
                     .subscribe();
             });
 
