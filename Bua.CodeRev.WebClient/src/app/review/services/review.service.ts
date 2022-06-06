@@ -7,6 +7,7 @@ import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
 import { CandidateCardInfo } from '../models/candidateCardInfo';
 import { InterviewInfo } from '../models/interviewInfo';
 import { Invitation } from '../models/invitation';
+import { ReviewCommentRequest } from '../models/request/comment-request';
 import { InvitationRequest } from '../models/request/invitation-request';
 import { CandidateCardInfoResponse } from '../models/response/candidateCardInfo-response';
 import { InterviewInfoResponse } from '../models/response/interviewInfo-response';
@@ -72,6 +73,15 @@ export class ReviewService {
             method: RequestMethodType.post,
             auth: true,
             body: new InvitationRequest(invitation)
+        });
+    }
+
+    public setInterviewComment(slnId: string, comment: string): Observable<HttpResponse<void>> {
+        return this._http.request<void, ReviewCommentRequest>({
+            url: `${UrlRoutes.user}/api/review/put-i-sln-comment?id=${slnId}`,
+            method: RequestMethodType.put,
+            auth: true,
+            body: new ReviewCommentRequest(comment)
         });
     }
     
