@@ -45,9 +45,9 @@ export class ReviewService {
         });
     }
 
-    public setInterviewResult(slnId: string, result: number): Observable<HttpResponse<void>> {
+    public setInterviewGrade(slnId: string, grade: number): Observable<HttpResponse<void>> {
         return this._http.request<void>({
-            url: `${UrlRoutes.user}/api/review/put-i-sln-result?id=${slnId}&result=${result}`,
+            url: `${UrlRoutes.user}/api/review/put-i-sln-result?id=${slnId}&result=${grade}`,
             method: RequestMethodType.put,
             auth: true
         });
