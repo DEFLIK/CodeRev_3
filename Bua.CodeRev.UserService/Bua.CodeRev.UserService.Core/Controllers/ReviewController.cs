@@ -68,12 +68,15 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             await _dbRepository.SaveChangesAsync();
             return Ok();
         }
-
-        //[Authorize(Roles = "HrManager,Admin")]
-        [HttpPut("put-i-sln-result")]
-        public async Task<IActionResult> PutInterviewSolutionResultAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId,
-            [Required] [FromQuery(Name = "result")] int interviewResult)
+        
+        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpPut("put-i-sln-grade")]
+        public async Task<IActionResult> PutInterviewSolutionGradeAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId, 
+            [Required][FromQuery(Name = "grade")] int grade)
         {
+            if (!Enum.IsDefined(typeof(GradeEnum), grade))
+                return BadRequest($"{nameof(grade)} is invalid");
+            
             var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
             if (errorString != null)
                 return BadRequest(errorString);
@@ -83,8 +86,29 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             
             if (interviewSolution == null)
                 return Conflict($"no {nameof(interviewSolution)} with such id");
+
+            interviewSolution.AverageGrade = (GradeEnum) grade;
+            await _dbRepository.SaveChangesAsync();
+            return Ok();
+        }
+
+        //[Authorize(Roles = "HrManager,Admin")]
+        [HttpPut("put-i-sln-result")]
+        public async Task<IActionResult> PutInterviewSolutionResultAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId,
+            [Required] [FromQuery(Name = "result")] int interviewResult)
+        {
             if (!Enum.IsDefined(typeof(InterviewResultEnum), interviewResult))
                 return BadRequest($"{nameof(interviewResult)} is invalid");
+            
+            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
+            var interviewSolution = await _dbRepository
+                .Get<InterviewSolution>(t => t.Id == interviewSolutionGuid)
+                .FirstOrDefaultAsync();
+            
+            if (interviewSolution == null)
+                return Conflict($"no {nameof(interviewSolution)} with such id");
             
             interviewSolution.InterviewResult = (InterviewResultEnum) interviewResult;
             await _dbRepository.SaveChangesAsync();
