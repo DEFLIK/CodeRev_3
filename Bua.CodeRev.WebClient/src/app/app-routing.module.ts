@@ -14,7 +14,7 @@ const routes: Routes = [
     {
         path: 'contest',
         loadChildren: () => import('./contest/contest.module').then((m: any) => m.ContestModule),
-        // canActivate: [AuthGuard]
+        canActivate: [AuthGuard]
     },
     {
         path: 'review',
