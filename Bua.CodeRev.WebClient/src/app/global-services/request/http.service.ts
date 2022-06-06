@@ -57,9 +57,9 @@ export class HttpService {
         if (!requestParams.body) {
             requestParams.body = null;
         }
-
-
+        
         const request: HttpRequest<F> = new HttpRequest<F>(requestParams.method, requestParams.url, requestParams.body, httpOptions);
+        console.log(request);
 
         return (this.http.request<T>(request) as Observable<HttpResponse<T>>)
             .pipe(
