@@ -28,6 +28,13 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         {
             return Ok(_dbRepository.Get<Interview>());
         }
+
+        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpGet("vacancies")]
+        public IActionResult GetVacancies()
+        {
+            return Ok(_dbRepository.Get<Interview>().GroupBy(i => i.Vacancy).Select(g => g.Key));
+        }
         
         //[Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPut("put-task-sln-grade")]
