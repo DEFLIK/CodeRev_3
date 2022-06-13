@@ -56,6 +56,18 @@ namespace Bua.CodeRev.UserService.Core
                     };
                 });
 
+            // services.AddCors(options =>
+            // {
+            //     options.AddPolicy("AllowAnyOriginAndCredentials", builder =>
+            //     {
+            //         // builder.WithOrigins("https://localhost:5001", "http://localhost:5000", "http://localhost:62167", 
+            //         //         "https://localhost:44393", "https://localhost:44395")
+            //         //     .AllowCredentials()
+            //         //     .AllowAnyHeader()
+            //         //     .AllowAnyMethod()
+            //         builder.SetIsOriginAllowed(origin => true).AllowCredentials().AllowAnyHeader().AllowAnyMethod();
+            //     });
+            // });
             services.AddCors();
             services.AddControllers();
         }
@@ -72,17 +84,16 @@ namespace Bua.CodeRev.UserService.Core
             app.UseStaticFiles();
 
             app.UseRouting();
+            
+            // app.UseCors("AllowAnyOriginAndCredentials");
+            app.UseCors(builder => builder
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true)
+                .AllowCredentials());
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            //todo CORS blocks requests from Chrome
-            app.UseCors(builder => builder
-                .WithOrigins("https://localhost:5001", "http://localhost:5000", "http://localhost:62167", 
-                    "https://localhost:44393", "https://localhost:44395")
-                .AllowCredentials()
-                .AllowAnyHeader()
-                .AllowAnyMethod());
 
             app.UseEndpoints(endpoints =>
             {

@@ -7,6 +7,7 @@ using Bua.CodeRev.UserService.Core.Models.Users;
 using Bua.CodeRev.UserService.DAL.Entities;
 using Bua.CodeRev.UserService.DAL.Models;
 using Bua.CodeRev.UserService.DAL.Models.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -76,7 +77,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
         
-        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPost("create-invitation")]
         public async Task<IActionResult> CreateInvitationAsync(InvitationParams invitationParams)
         {
