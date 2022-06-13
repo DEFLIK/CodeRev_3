@@ -18,6 +18,8 @@ namespace Bua.CodeRev.UserService.Core.Controllers
     [ApiController]
     public class UsersController : ParentController
     {
+        private const long invitationDuration = 604800000; // == 1 week //todo make config setting
+        
         public UsersController(IDbRepository dbRepository) : base(dbRepository)
         {
         }
@@ -96,15 +98,28 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 .FirstOrDefaultAsync() == null)
                 return Conflict("no interview with such id");
 
+            var invitation = await _dbRepository
+                .Get<Invitation>(i => i.Role == roleEnum && i.InterviewId == interviewGuid)
+                .FirstOrDefaultAsync();
+
             var invitationGuid = Guid.NewGuid();
-            var invitation = new Invitation
+            if (invitation == null)
             {
-                Id = invitationGuid,
-                Role = roleEnum,
-                InterviewId = interviewGuid,
-                ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + (long) (6 * Math.Pow(10, 8))
-            };
-            await _dbRepository.Add(invitation);
+                invitation = new Invitation
+                {
+                    Id = invitationGuid,
+                    Role = roleEnum,
+                    InterviewId = interviewGuid,
+                    ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + invitationDuration
+                };
+                await _dbRepository.Add(invitation);
+            }
+            else
+            {
+                invitationGuid = invitation.Id;
+                invitation.ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + invitationDuration;
+            }
+            
             await _dbRepository.SaveChangesAsync();
 
             return Ok(new
