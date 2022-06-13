@@ -18,7 +18,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
     [ApiController]
     public class UsersController : ParentController
     {
-        private const long invitationDuration = 604800000; // == 1 week //todo make config setting
+        private const long InvitationDurationMs = 604800000; // == 1 week //todo make config setting
         
         public UsersController(IDbRepository dbRepository) : base(dbRepository)
         {
@@ -110,14 +110,14 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                     Id = invitationGuid,
                     Role = roleEnum,
                     InterviewId = interviewGuid,
-                    ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + invitationDuration
+                    ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + InvitationDurationMs
                 };
                 await _dbRepository.Add(invitation);
             }
             else
             {
                 invitationGuid = invitation.Id;
-                invitation.ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + invitationDuration;
+                invitation.ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + InvitationDurationMs;
             }
             
             await _dbRepository.SaveChangesAsync();
