@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { CodeRecord, CodePlay } from 'codemirror-record/src';
-import { RecordInfo } from '../../models/codeRecord';
+import { ExtraActions, ExtraActivity, ICodeOperation, RecordInfo } from '../../models/codeRecord';
+import { ExecutionResult } from '../../models/executionResult';
+import { ExecutionResultResponse } from '../../models/response/executionResult-response';
 import { SaveChunk } from '../../models/saveChunk';
 // import { CodeStorageService } from '../storage-service/code-storage.service';
 
@@ -9,6 +11,12 @@ import { SaveChunk } from '../../models/saveChunk';
     providedIn: 'root'
 })
 export class PlayerService {
+    @Output()
+    public pageHidden = new EventEmitter();
+    @Output()
+    public pageOpen = new EventEmitter();
+    @Output()
+    public execute = new EventEmitter<ExecutionResult>();
     
     public isPlaying: boolean = false;
     private _playSpeed: number = 0.8;
@@ -16,7 +24,6 @@ export class PlayerService {
     private _currentSaves: SaveChunk[] = [];
     private _bindedEditor?: CodemirrorComponent;
     private _currentPlayingChunk: number = 0;
-    
     private _maxDelayMs: number = 300000;
     private _player: any;
     constructor() { }
@@ -27,11 +34,39 @@ export class PlayerService {
             autoplay: false,
             autofocus: true,
             speed: this._playSpeed,
-            extraActivityHandler: (activityRecorded: any): any => {
-                console.log(activityRecorded);
+            extraActivityHandler: (extra: ExtraActivity): any => {
+                switch (extra.action) {
+                    case (ExtraActions.pageHidden):
+                        this.pageHidden.emit();
+                        break;
+                    case (ExtraActions.pageOpened):
+                        this.pageOpen.emit();
+                        break;
+                    case (ExtraActions.execute):
+                        this.execute
+                            .emit(
+                                (extra as ExtraActivity<ExecutionResult>).data 
+                                ?? new ExecutionResult(new ExecutionResultResponse()));
+                        break;
+                }
             },
-            extraActivityReverter: (activityRecorded: any): any => {
-                console.log(activityRecorded);
+            extraActivityReverter: (extra: ExtraActivity): any => {
+                switch (extra.action) {
+                    case (ExtraActions.pageHidden):
+                        this.pageOpen.emit();
+                        break;
+                    case (ExtraActions.pageOpened):
+                        this.pageHidden.emit();
+                        break;
+                    case (ExtraActions.execute):
+                        const res = new ExecutionResultResponse();
+                        res.success = true;
+                        res.output = [];
+                        this.execute
+                            .emit(
+                                (new ExecutionResult(res)));
+                        break;
+                }
             }
         });
         this._bindedEditor = editorComp;
@@ -41,7 +76,13 @@ export class PlayerService {
             if (this._currentPlayingChunk + 1 < this._currentSaves.length) {
                 // this.selectRecord(this._currentSaves[this._currentPlayingChunk + 1].record);
                 // this.play();
-                this.seek(this._currentSaves[this._currentPlayingChunk + 1].record.recordStartTime + 2);
+                const stateBefore = this.isPlaying;
+
+                this.seek(this._currentSaves[this._currentPlayingChunk + 1].recordInfo.recordStartTime + 2);
+
+                if (stateBefore) {
+                    setTimeout(() => this.play());
+                }
 
                 return;
             }
@@ -54,13 +95,13 @@ export class PlayerService {
         this._currentSaves = saves;
         this._currentPlayingChunk = 0;
         this.selectChunk(0);
-        this.seek(saves[0].record.recordStartTime);
+        this.seek(saves[0].recordInfo.recordStartTime);
     }
 
     public selectChunk(chunk: number): void {  
         this.clear();
         
-        this._currentRecord = this._currentSaves[chunk].record;
+        this._currentRecord = this._currentSaves[chunk].recordInfo;
         this._currentPlayingChunk = chunk;
         this._bindedEditor?.codeMirror?.setValue(this._currentSaves[chunk - 1]?.code ?? '');
         const record = JSON.stringify(this._currentRecord.record);
@@ -105,8 +146,6 @@ export class PlayerService {
         if (!this._player || !this._currentRecord) {
             return;
         }
-
-        console.log(this._currentSaves);
         
 
         let pos = time - this._currentRecord.recordStartTime;
@@ -116,14 +155,14 @@ export class PlayerService {
             pos = 1;
         }
 
-        while (pos > this._currentSaves[resultChunk].record.duration && resultChunk + 1 < this._currentSaves.length) {
+        while (pos > this._currentSaves[resultChunk].recordInfo.duration && resultChunk + 1 < this._currentSaves.length) {
             // if (this._currentSaves[resultChunk + 1].record.recordStartTime > time) {
 
             //     return;
             // }
 
             resultChunk += 1;
-            pos = time - this._currentSaves[resultChunk].record.recordStartTime + 1;
+            pos = time - this._currentSaves[resultChunk].recordInfo.recordStartTime + 1;
         }
         
         while (pos < 0 && resultChunk >= 0) {    
@@ -133,17 +172,16 @@ export class PlayerService {
             // }
 
             resultChunk -= 1;
-            pos = time - this._currentSaves[resultChunk].record.recordStartTime + 1;
+            pos = time - this._currentSaves[resultChunk].recordInfo.recordStartTime + 1;
         } 
         
         if (resultChunk !== this._currentPlayingChunk) {
             this.selectChunk(resultChunk);
         }
 
-        console.log(`seek > chunk: ${this._currentPlayingChunk}, duration: ${this._currentSaves[resultChunk].record.duration}, pos: ${pos}`);
+        console.log(`seek > chunk: ${this._currentPlayingChunk}, duration: ${this._currentSaves[resultChunk].recordInfo.duration}, pos: ${pos}`);
 
         this.pause();
-        console.log(this._player);
         
         this._player.seek(pos);
     }
@@ -154,10 +192,10 @@ export class PlayerService {
 
     public getSaveDuration(): number {
         let res = 0;
-        const firstRecord = this._currentSaves[0].record;
+        const firstRecord = this._currentSaves[0].recordInfo;
 
         if (this._currentSaves.length > 1) {
-            const lastRecord = this._currentSaves[this._currentSaves.length - 1].record;
+            const lastRecord = this._currentSaves[this._currentSaves.length - 1].recordInfo;
             res = lastRecord.recordStartTime + lastRecord.duration - firstRecord.recordStartTime;
         } else {
             res = firstRecord.duration;
@@ -171,7 +209,7 @@ export class PlayerService {
         const emptyTime = 0;
 
         for (const save of this._currentSaves) {
-            res.push(save.record);
+            res.push(save.recordInfo);
         }
 
         return res;
