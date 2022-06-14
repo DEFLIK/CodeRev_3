@@ -1,47 +1,43 @@
-﻿using Bua.CodeRev.TrackerService.Contracts.Actions;
+﻿using System.Text.Json.Nodes;
+using Bua.CodeRev.TrackerService.Contracts.Actions;
 using Bua.CodeRev.TrackerService.Contracts.Primitives;
 using Bua.CodeRev.TrackerService.Contracts.Record;
-using Newtonsoft.Json.Linq;
 
 namespace Bua.CodeRev.TrackerService.DomainCore.Serialize;
 
 public class Serializer : ISerializer
 {
-    public JArray? Serialize(RecordChunkDto[]? recordChunks)
+    public RecordChunkResponseDto[] Serialize(RecordChunkDto[]? recordChunks)
     {
         if (recordChunks == null)
             return null;
-        var result = new List<JObject>();
+        var result = new List<RecordChunkResponseDto>();
         foreach (var recordChunk in recordChunks)
-        {
-            var t = recordChunk.Records.Select(SerializeRecord).ToArray();
-            var y = new JObject
+            result.Add(new RecordChunkResponseDto
             {
-                {"SaveTime", recordChunk.SaveTime},
-                {"Code", recordChunk.Code},
-                {"Record", new JArray(t)}
-            };
-            result.Add(y);
-        } 
+                SaveTime = recordChunk.SaveTime,
+                Code = recordChunk.Code,
+                Records = recordChunk.Records.Select(SerializeRecord).ToArray()
+            });
 
-        return new JArray(result);
+        return result.ToArray();
     }
 
-    private JObject SerializeRecord(RecordDto recordDto)
+    private JsonObject SerializeRecord(RecordDto recordDto)
     {
-        var response = new JObject();
+        var response = new JsonObject();
         response.Add("t", SerializeTime(recordDto.Time));
         if (recordDto.Long != null)
             response.Add("l", recordDto.Long);
         var operations = recordDto.Operation.Select(SerializeOperation).ToArray();
-        response.Add("o", JToken.FromObject(operations));
+        response.Add("o", JsonValue.Create(operations));
 
         return response;
     }
 
-    private JObject SerializeOperation(OperationDto operationDto)
+    private JsonObject SerializeOperation(OperationDto operationDto)
     {
-        var response = new JObject();
+        var response = new JsonObject();
 
         var type = SerializeType(operationDto.Type);
         if (type != null)
@@ -50,52 +46,46 @@ public class Serializer : ISerializer
         var index = SerializePeriod(operationDto.Index);
         response.Add("i", index);
 
-        if (operationDto.Value != null) response.Add("a", JToken.FromObject(operationDto.Value.Value));
+        if (operationDto.Value != null) response.Add("a", JsonValue.Create(operationDto.Value.Value));
 
         if (operationDto.Remove != null)
         {
-            var remove = operationDto.Remove.Select(x => JToken.FromObject(new[] {x.Long, x.Count})).ToArray();
-            response.Add("r", JToken.FromObject(remove));
+            var remove = operationDto.Remove.Select(x => new[] {x.Long, x.Count}).ToArray();
+            response.Add("r", JsonValue.Create(remove));
         }
 
         if (operationDto.Select != null)
         {
             var select = operationDto.Select.Select(SerializeSelect).ToArray();
-            response.Add("s", JToken.FromObject(select));
+            response.Add("s", JsonValue.Create(select));
         }
 
         return response;
     }
 
-    private JToken SerializeSelect(SelectDto selectDto)
+    private JsonValue? SerializeSelect(SelectDto selectDto)
     {
-        var lineNumber = JToken.FromObject(selectDto.LineNumber);
-        var tailMove = JToken.FromObject(selectDto.TailMove.Select(SerializeMove).ToArray());
-        return JToken.FromObject(new[] {lineNumber, tailMove});
+        var lineNumber = JsonValue.Create(selectDto.LineNumber);
+        var tailMove = JsonValue.Create(selectDto.TailMove.Select(SerializeMove).ToArray());
+        return JsonValue.Create(new[] {lineNumber, tailMove});
     }
 
-    private JToken SerializeMove(MoveDto moveDto)
+    private JsonValue? SerializeMove(MoveDto moveDto)
     {
-        var start = JToken.FromObject(moveDto.Start);
-        if (moveDto.End != null)
-        {
-            var end = JToken.FromObject(moveDto.End);
-            return JToken.FromObject(new[] {start, end});
-        }
+        var start = moveDto.Start;
+        if (moveDto.End == null) return JsonValue.Create(start);
 
-        return JToken.FromObject(start);
+        var end = moveDto.End;
+        return JsonValue.Create(new[] {start, end});
     }
 
-    private JToken SerializePeriod(PeriodDto periodDto)
+    private static JsonValue? SerializePeriod(PeriodDto periodDto)
     {
-        var from = JToken.FromObject(new[] {periodDto.From.LineNumber, periodDto.From.ColumnNumber});
-        if (periodDto.To != null)
-        {
-            var to = JToken.FromObject(new[] {periodDto.To.LineNumber, periodDto.To.ColumnNumber});
-            return JToken.FromObject(new[] {from, to});
-        }
+        var from = new[] {periodDto.From.LineNumber, periodDto.From.ColumnNumber};
+        if (periodDto.To == null) return JsonValue.Create(from);
 
-        return JToken.FromObject(from);
+        var to = new[] {periodDto.To.LineNumber, periodDto.To.ColumnNumber};
+        return JsonValue.Create(new[] {from, to});
     }
 
     private string? SerializeType(OperationTypeDto type)
@@ -120,10 +110,10 @@ public class Serializer : ISerializer
         };
     }
 
-    private JToken SerializeTime(TimelineDto timelineDto)
+    private static JsonValue? SerializeTime(TimelineDto timelineDto)
     {
         return timelineDto.End == null
-            ? new JValue(timelineDto.Start)
-            : JToken.FromObject(new[] {timelineDto.Start, timelineDto.End});
+            ? JsonValue.Create(timelineDto.Start)
+            : JsonValue.Create(new[] {timelineDto.Start, timelineDto.End});
     }
 }

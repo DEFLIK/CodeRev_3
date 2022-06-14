@@ -2,7 +2,7 @@
 using Bua.CodeRev.TrackerService.DataAccess.Repositories;
 using Bua.CodeRev.TrackerService.DomainCore.Deserialize;
 using Bua.CodeRev.TrackerService.DomainCore.Serialize;
-using Bua.CodeRev.TrackerService.Infrastructure.Mapping;
+using Bua.CodeRev.TrackerService.EventHandling;
 using Bua.CodeRev.TrackerService.Services;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Options;
@@ -20,6 +20,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddTransient<ValidationMiddleware>();
         services.Configure<TaskRecordsTrackerDataBaseSettings>(
             configuration.GetSection(nameof(TaskRecordsTrackerDataBaseSettings)));
         services.AddSingleton<ITaskRecordsTrackerDataBaseSettings>(sp =>
@@ -28,7 +29,7 @@ public class Startup
         services.AddTransient<IRepository, Repository>();
         services.AddTransient<ISerializer, Serializer>();
         services.AddTransient<IDeserializer, Deserializer>();
-        services.AddAutoMapper(typeof(RecordProfile));
+
         services.AddControllers();
         services.AddApiVersioning(config => { config.ApiVersionReader = new HeaderApiVersionReader("api-version"); });
         services.AddCors();
@@ -44,6 +45,7 @@ public class Startup
         app.UseCors(builder => builder.AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod());
+        app.UseMiddleware<ValidationMiddleware>();
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }
 }
