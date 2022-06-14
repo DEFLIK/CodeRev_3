@@ -16,20 +16,20 @@ public class Repository : IRepository
         taskRecords = database.GetCollection<TaskRecordDto>(settings.TaskRecordsCollectionName);
     }
 
-    public TaskRecordDto? Get(Guid taskSolutionId)
+    public async Task<TaskRecordDto?> Get(Guid taskSolutionId)
     {
-        return taskRecords.Find(record => record.TaskSolutionId == taskSolutionId)
-            .FirstOrDefault();
+        var records = await taskRecords.FindAsync(record => record.TaskSolutionId == taskSolutionId)
+            .ConfigureAwait(false);
+        return records.FirstOrDefault();
     }
 
-    public void Save(TaskRecordDto? request)
+    public async Task Save(TaskRecordDto request)
     {
-        var record = taskRecords.Find(x => x.TaskSolutionId == request.TaskSolutionId)
-            .FirstOrDefault();
+        var record = await Get(request.TaskSolutionId);
         if (record == null)
-            taskRecords.InsertOne(request);
+            await taskRecords.InsertOneAsync(request);
         else
-            Update(new TaskRecordDto
+            await Update(new TaskRecordDto
             {
                 TaskSolutionId = record.TaskSolutionId,
                 Id = record.Id,
@@ -38,11 +38,11 @@ public class Repository : IRepository
             });
     }
 
-    public void Update(TaskRecordDto request)
+    private async Task Update(TaskRecordDto request)
     {
         var filter = Builders<TaskRecordDto>.Filter.Eq(x => x.TaskSolutionId, request.TaskSolutionId);
         var update = Builders<TaskRecordDto>.Update.Set(x => x.RecordChunks, request.RecordChunks)
             .Set(x => x.Code, request.Code);
-        taskRecords.UpdateOne(filter, update);
+        await taskRecords.UpdateOneAsync(filter, update);
     }
 }

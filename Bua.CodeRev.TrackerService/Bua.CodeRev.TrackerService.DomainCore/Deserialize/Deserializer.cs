@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+﻿using System.Text.Json.Nodes;
 using Bua.CodeRev.TrackerService.Contracts.Actions;
 using Bua.CodeRev.TrackerService.Contracts.Primitives;
 using Bua.CodeRev.TrackerService.Contracts.Record;
@@ -8,28 +8,25 @@ namespace Bua.CodeRev.TrackerService.DomainCore.Deserialize;
 
 public class Deserializer : IDeserializer
 {
-    public TaskRecordDto ParseRequestDto(JsonElement request)
+    public TaskRecordDto ParseRequestDto(TaskRecordRequestDto request)
     {
-        var jObject = JObject.Parse(request.ToString());
-        var taskSolutionId = (Guid) jObject["TaskSolutionId"];
-        var records = jObject["Records"].Select(ParseRecord).ToArray();
-        var saveTime = (decimal) jObject["SaveTime"];
-        var recordChunk = new RecordChunkDto {SaveTime = saveTime, Records = records, Code = (string)jObject["Code"]};
-        var code = (string) jObject["Code"];
+        var records = request.Records.Select(ParseRecord).ToArray();
+        var recordChunk = new RecordChunkDto {SaveTime = request.SaveTime, Records = records, Code = request.Code};
         return new TaskRecordDto
         {
-            TaskSolutionId = taskSolutionId,
+            TaskSolutionId = request.TaskSolutionId,
             RecordChunks = new[] {recordChunk},
-            Code = code
+            Code = request.Code
         };
     }
 
-    private RecordDto ParseRecord(JToken record)
+    private RecordDto ParseRecord(JsonValue record)
     {
-        var time = ParseTimeline(record["t"]);
-        var count = (int?) record["l"];
-        var t = record["o"];
-        var operation = record["o"]?.Select(ParseOperation).ToArray();
+        var jObject = JObject.Parse(record.ToString());
+        var time = ParseTimeline(jObject["t"]);
+        var count = (int?) jObject["l"];
+        var t = jObject["o"];
+        var operation = jObject["o"]?.Select(ParseOperation).ToArray();
         return new RecordDto {Time = time, Long = count, Operation = operation};
     }
 
