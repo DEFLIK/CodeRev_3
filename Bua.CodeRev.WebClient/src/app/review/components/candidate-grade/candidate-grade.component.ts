@@ -3,6 +3,8 @@ import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/for
 import { ActivatedRoute, Router } from '@angular/router';
 import { interval, Subject, takeUntil, takeWhile } from 'rxjs';
 import { EditorMode } from 'src/app/code-editor/models/editorMode';
+import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
+import { ContestService } from 'src/app/contest/services/contest-service/contest.service';
 import { CandidateCardInfo } from '../../models/candidateCardInfo';
 import { InterviewSolutionReview } from '../../models/interviewSolutionReview';
 import { InterviewSolutionReviewResponse } from '../../models/response/interviewSolutionReview-response';
@@ -20,6 +22,7 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
     // public tasks = ['A','B'];
     public gradesForm!: FormGroup;
     public modes = EditorMode;
+    public startTaskId: string = '';
 
     // public get controls(): FormControlType {
     //     const res: FormControlType = {
@@ -52,7 +55,8 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
-        private _review: ReviewService
+        private _review: ReviewService,
+        private _contest: ContestService
     ) { }
     public ngOnDestroy(): void {
         this._endListening.next();
@@ -75,7 +79,9 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
             });
     }
 
-    public watch(): void {
+    public watch(taskId: string): void {
+        // this._contest.selectTaskByOrder(taskOrder);
+        this.startTaskId = taskId;
         this.isWatching = true;
     }
     
@@ -102,7 +108,7 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
             resultComment: new FormControl(''),
             resultGrade: new FormControl(-1)
         };
-        res['resultGrade'].setValue(slnReview.interviewResult);
+        res['resultGrade'].setValue(slnReview.averageGrade);
         res['resultGrade'].valueChanges
             .pipe(
                 takeUntil(this._endListening)

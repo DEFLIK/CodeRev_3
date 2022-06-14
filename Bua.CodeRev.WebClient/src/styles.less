@@ -71,7 +71,7 @@ button {
 }
 
 * {
-    font-family: Railway, Arial, Helvetica, sans-serif;
+    font-family: Raleway, Arial, Helvetica, sans-serif;
     scrollbar-width: thin;
 }
 
@@ -92,12 +92,15 @@ button {
     background-clip: content-box;
 }
 
-input[type='radio']:after {
+input[type='radio'] {
+    display: none;
+}
+
+input[type='radio'] + label:after {
+    align-self: center;
     width: 17px;
     height: 17px;
     border-radius: 17px;
-    top: -3px;
-    left: -6px;
     position: relative;
     background-color: white;
     content: '';
@@ -106,12 +109,10 @@ input[type='radio']:after {
     border: solid 1px #606060;
 }
 
-input[type='radio']:checked:after {
+input[type='radio']:checked + label:after {
     width: 17px;
     height: 17px;
     border-radius: 17px;
-    top: -3px;
-    left: -6px;
     position: relative;
     background-color: @color-main;
     content: '';
@@ -215,8 +216,13 @@ input[type='radio']:checked:after {
 }
 
 @font-face {
-    font-family: 'Railway';
+    font-family: 'Raleway';
     src: url('./assets/fonts/Raleway-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Raleway-Bold';
+    src: url('./assets/fonts/Raleway-Bold.ttf');
 }
 
 @font-face {

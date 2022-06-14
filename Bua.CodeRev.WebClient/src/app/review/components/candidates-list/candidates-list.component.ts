@@ -50,30 +50,33 @@ export class CandidatesListComponent implements OnInit {
     constructor(
         private _router: Router,
         private _review: ReviewService
-    ) { 
-        const stateVals = Object.values(CandidateState);
-        const stateKeys = Object.keys(CandidateState);
-        const vacanVals = Object.values(CandidateVacancy);
-        const vacanKeys = Object.keys(CandidateVacancy);
-
-        for (let i = 0; i < stateKeys.length; i++) {
-            this.states.push({
-                name: stateVals[i],
-                value: stateKeys[i]
-            });
-        }
-
-        for (let i = 0; i < vacanKeys.length; i++) {
-            this.vacancies.push({
-                name: vacanVals[i],
-                value: vacanKeys[i]
-            });
-        }
-    }
+    ) { }
     public ngOnInit(): void {    
         this._review
             .getCards()
             .subscribe(resp => this.candidates = resp);
+        this._review
+            .getVacancies()
+            .subscribe(resp => {
+                if (resp.ok && resp.body) {
+                    const stateVals = Object.values(CandidateState);
+                    const stateKeys = Object.keys(CandidateState);
+            
+                    for (let i = 0; i < stateKeys.length; i++) {
+                        this.states.push({
+                            name: stateVals[i],
+                            value: stateKeys[i]
+                        });
+                    }
+            
+                    for (let i = 0; i < resp.body.length; i++) {
+                        this.vacancies.push({
+                            name: resp.body[i],
+                            value: resp.body[i]
+                        });
+                    }
+                }
+            });
     }
 
     public selectCard(candidate: CandidateCardInfo): void {
