@@ -19,6 +19,8 @@ export class ContestComponent implements AfterViewInit {
     public editorMode = EditorMode.write;
     @Input()
     public review?: InterviewSolutionReview;
+    @Input()
+    public startTaskId?: string;
     public isStarted = false;
     public editType = EditorMode;
     public get taskSelected$(): Observable<TaskSolutionInfo> {
@@ -44,8 +46,8 @@ export class ContestComponent implements AfterViewInit {
     ) { }
     public ngAfterViewInit(): void {
         if (this.review) {
-            this.taskList.loadInterviewTasks(this.review.interviewSolutionId);
-        }
+            this.taskList.loadInterviewTasks(this.review.interviewSolutionId, this.startTaskId);
+        } 
     }
 
     public start(sln: InterviewSolutionInfo): void {

@@ -5,7 +5,9 @@
         'output-failure': !success && success !== undefined
     }"
 >
-    <a *ngFor="let line of text">
-        {{ line }}
-    </a>
+    <div class="lines">
+        <a *ngFor="let line of text">
+            {{ line }}
+        </a>
+    </div>
 </div>

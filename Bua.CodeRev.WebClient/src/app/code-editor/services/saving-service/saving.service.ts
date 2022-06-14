@@ -11,13 +11,12 @@ import { SaveChunk } from '../../models/saveChunk';
 export class SavingService {
     constructor(private _http: HttpService) {}
 
-    public saveNext(taskId: string, code: string, record: RecordInfo): void {
+    public saveNext(taskId: string, code: string, recordInfo: RecordInfo): void {
         const time = Date.now();
-        const nextChunk = new SaveChunk(taskId, time, code, record);
+        const nextChunk = new SaveChunk(taskId, time, code, recordInfo);
 
         localStorage.setItem('save' + taskId + time, JSON.stringify(nextChunk));
 
-        // todo Fix certificate
         // this._http
         //     .request<void, SaveChunkRequest>({
         //         url: `${UrlRoutes.tracker}/api/v1/tracker/save?taskSolutionId=${taskId}`,
@@ -45,7 +44,6 @@ export class SavingService {
         }
 
         const sorted = res.sort((a, b) => a.saveTime - b.saveTime);
-        console.log('sorted:', sorted);
         
         return sorted;
     }

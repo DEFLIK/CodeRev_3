@@ -100,13 +100,12 @@ export class PatchedTimelineComponent implements OnDestroy {
         let prevRecord: RecordInfo | undefined = undefined;
 
         for (const record of records) {
-            console.log(record.points);
             
             for (const point of record.points) {
-                const endTime = record.recordStartTime + point.endTime + 1000;
+                const endTime = record.recordStartTime + point.endTime + (point.startTime === point.endTime ? 1000 : 0);
                 sourceContainer.push({
                     beginTime: record.recordStartTime + point.startTime,
-                    endTime: endTime < record.recordStartTime + record.duration ? endTime : record.recordStartTime + record.duration,
+                    endTime: (endTime < record.recordStartTime + record.duration) ? endTime : (record.recordStartTime + record.duration),
                     style: {
                         background: point.color
                     }

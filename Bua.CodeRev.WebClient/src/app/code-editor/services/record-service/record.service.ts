@@ -1,21 +1,39 @@
-import { Injectable } from '@angular/core';
+import { HostListener, Injectable, OnDestroy, OnInit } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { CodeRecord, CodePlay } from 'codemirror-record/src';
-import { ICodeOperation, ICodeRecord, RecordInfo } from '../../models/codeRecord';
+import { ExtraActions, ExtraActivity, ICodeOperation, ICodeRecord, RecordInfo } from '../../models/codeRecord';
 import { EditorMode } from '../../models/editorMode';
+import { ExecutionResult } from '../../models/executionResult';
 import { SavingService } from '../saving-service/saving.service';
 // import { CodeStorageService } from '../storage-service/code-storage.service';
 // declare var CodeRecord: any;
 
-@Injectable({
-    providedIn: 'root'
-})
-export class RecordService {
+@Injectable()
+export class RecordService implements OnDestroy {
     private _recordsStartTime: Map<string, number> = new Map();
     private _recorders: Map<string, any> = new Map();
     private _codeMirror!: any;
+    private _currentTaskId?: string;
+    private _bindedMethod?: () => void;
 
-    constructor() {  
+    constructor() { }
+
+    public enablePageChangesCheck(): void {
+        this._bindedMethod = this.onVisibilityChange.bind(this);
+        
+        document.addEventListener(
+            'visibilitychange',
+            this._bindedMethod
+        );
+    }
+
+    public ngOnDestroy(): void {
+        if (this._bindedMethod) {
+            document.removeEventListener(
+                'visibilitychange',
+                this._bindedMethod
+            );
+        }
     }
 
     public bindEditor(editorComp: CodemirrorComponent): void {
@@ -47,6 +65,8 @@ export class RecordService {
                 this.stopRecord(key);
             }
         }
+        
+        this._currentTaskId = taskId;
 
         this.startRecord(taskId);
         
@@ -98,6 +118,17 @@ export class RecordService {
         return new RecordInfo(recordsModel, startTime);
     }
 
+    public recordExecute(executionResult: ExecutionResult): void {
+        if (this._currentTaskId) {
+            this._recorders
+                .get(this._currentTaskId)
+                .recordExtraActivity(new ExtraActivity<ExecutionResult>(
+                    ExtraActions.execute,
+                    executionResult
+                ));
+        }
+    }
+
     private stopEditorListening(recorder: any): void {
         this._codeMirror.off('changes', recorder.changesListener);
         this._codeMirror.off('swapDoc', recorder.swapDocListener);
@@ -114,6 +145,22 @@ export class RecordService {
                 default:
                     records[0].t = [-1, -1];
             }
+        }
+    }
+
+    private onVisibilityChange(): void {
+        if (document.hidden && this._currentTaskId) { 
+            this._recorders
+                .get(this._currentTaskId)
+                .recordExtraActivity(new ExtraActivity(
+                    ExtraActions.pageHidden
+                ));
+        } else if (this._currentTaskId) {
+            this._recorders
+                .get(this._currentTaskId)
+                .recordExtraActivity(new ExtraActivity(
+                    ExtraActions.pageOpened
+                ));
         }
     }
 }

@@ -18,7 +18,7 @@ export class TasksListComponent {
         this._contest.selectTask(task);
     }
 
-    public loadInterviewTasks(slnId: string): void {
+    public loadInterviewTasks(slnId: string, startTaskId: string = ''): void {
         this._contest
             .getTasksInfo(slnId)
             .subscribe({
@@ -27,16 +27,14 @@ export class TasksListComponent {
                         this.tasks = [];
                         for (const task of resp.body) {
                             this.tasks.push(new TaskSolutionInfo(task));
-                        }
-                        
-                        console.log(this.tasks);
-                        
+                        }         
                     }
 
                     if (this.tasks.length > 0) {
                         setTimeout(() => { 
-                            this._contest.selectTask(this.tasks[0]);
-                            this.currentTask = this.tasks[0];
+                            const startTask = this.tasks.find(task => task.id === startTaskId) ?? this.tasks[0];
+                            this._contest.selectTask(startTask);
+                            this.currentTask = startTask;
                         });
                     }
                 }

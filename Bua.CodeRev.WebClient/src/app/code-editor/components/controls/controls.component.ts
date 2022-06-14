@@ -2,7 +2,7 @@ import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, Component, Co
 import { FormControl, FormGroup } from '@angular/forms';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { CanvasPos, NgxVideoTimelineComponent, VideoCellType } from 'ngx-video-timeline';
-import { interval, Observable, Subscription } from 'rxjs';
+import { interval, Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { EntryPoint } from 'src/app/code-editor/models/entryPoint';
 // import { CodeStorageService } from 'src/app/code-editor/services/storage-service/code-storage.service';
 import { CompileService } from 'src/app/code-editor/services/compile-service/compile-service.service';
@@ -44,9 +44,8 @@ export class ControlsComponent implements OnInit, OnDestroy {
     //     return this.timeline?.nativeElement.offsetWidth ?? 0;
     // }
     private _bindedEditor?: CodemirrorComponent;
-    private _rangeUpdater?: Subscription;
     private _currentTask?: string;
-    private _taskUpdater?: Subscription;
+    private _unsubscriber = new Subject<void>();
 
     constructor(
         private _compiler: CompileService,
@@ -58,11 +57,11 @@ export class ControlsComponent implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        this._rangeUpdater?.unsubscribe();
-        this._taskUpdater?.unsubscribe();
+        this._unsubscriber.next();
     }
     public ngOnInit(): void {
-        this._taskUpdater = this.taskSelected$
+        this.taskSelected$
+            .pipe(takeUntil(this._unsubscriber))
             .subscribe(task => {
                 if (this.editorMode === EditorMode.write && this._bindedEditor) {
                     if (!this.readOnly) {
@@ -92,11 +91,12 @@ export class ControlsComponent implements OnInit, OnDestroy {
                     if (saves.length !== 0) {
                         this._player.selectSavesRecords(saves);
                         this.patchedTimeline.setProperties(
-                            saves[0].record.recordStartTime, 
+                            saves[0].recordInfo.recordStartTime, 
                             this._player.getSaveDuration(), 
                             this._player.getSaveRecords());
     
-                        this._rangeUpdater = interval(100)
+                        interval(100)
+                            .pipe(takeUntil(this._unsubscriber))
                             .subscribe(() => {
                                 if (this._player.isPlaying) {
                                     // this.patchedTimeline.timeLineComp!.isPlayClick = true;
@@ -125,6 +125,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
 
         if (this.editorMode === EditorMode.write) {
             this._record.bindEditor(editor);
+            this._record.enablePageChangesCheck();
         }
 
         if (this.editorMode === EditorMode.review) {
