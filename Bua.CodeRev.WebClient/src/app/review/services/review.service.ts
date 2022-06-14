@@ -84,5 +84,13 @@ export class ReviewService {
             body: new ReviewCommentRequest(comment)
         });
     }
+
+    public getVacancies(): Observable<HttpResponse<string[]>> {
+        return this._http.request<string[]>({
+            url: `${UrlRoutes.user}/api/review/vacancies`,
+            method: RequestMethodType.get,
+            auth: true,
+        });
+    }
     
 }
