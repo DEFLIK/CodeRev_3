@@ -14,11 +14,11 @@ export class CandidateFilterPipe implements PipeTransform {
             .filter((card: CandidateCardInfo) => 
                 (card.fullName.toLowerCase().includes(serachCriteria.toLowerCase()) 
                     || card.vacancy.toLowerCase().includes(serachCriteria.toLowerCase()))
-                && (filterCriteria.vacancies.some(vacan => CandidateVacancy[vacan as CandidateVacancyKeys] === card.vacancy) 
+                && (filterCriteria.vacancies.some(vacan => vacan === card.vacancy) 
                     || filterCriteria.vacancies.length === 0)
                 && (filterCriteria.states.some(state => CandidateState[state as CandidateStateKeys] === card.getState())
                     || filterCriteria.states.length === 0))
-            .sort((card, next) => (card.startTimeMs * (filterCriteria.descending ? -1 : 1)) - next.startTimeMs);
+            .sort((card, next) => (card.startTimeMs * (filterCriteria.descending ? 1 : -1)) - next.startTimeMs);
     }
 
 }
