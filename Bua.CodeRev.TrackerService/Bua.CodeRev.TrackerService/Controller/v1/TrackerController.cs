@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Bua.CodeRev.TrackerService.Contracts;
+﻿using Bua.CodeRev.TrackerService.Contracts;
 using Bua.CodeRev.TrackerService.Contracts.Record;
 using Bua.CodeRev.TrackerService.DomainCore.Deserialize;
 using Bua.CodeRev.TrackerService.DomainCore.Serialize;
 using Bua.CodeRev.TrackerService.Services;
+using Bua.CodeRev.TrackerService.Validation;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,24 +30,24 @@ public class TrackerController : ControllerBase
     public async Task<RecordChunkResponseDto[]> Get([FromQuery] Guid taskSolutionId, [FromQuery] decimal? saveTime)
     {
         var result = await manager.Get(taskSolutionId, saveTime);
-        if (result == null)
-            throw new ValidationException($"Не найден id: {taskSolutionId}");
+        Validator.NotNull(result, nameof(taskSolutionId), $"Not found {nameof(taskSolutionId)}: {taskSolutionId}");
         var response = serializer.Serialize(result);
-        // throw new BadHttpRequestException(
-        //     $"Not found {nameof(TaskRecordDto)} with taskSolutionId: {taskSolutionId}");
         return response;
     }
 
     [HttpGet("get-last-code")]
-    public async Task<LastCodeDto?> GetLastCode([FromQuery] Guid taskSolutionId)
+    public async Task<LastCodeDto> GetLastCode([FromQuery] Guid taskSolutionId)
     {
-        return await manager.GetLastCode(taskSolutionId);
+        var result = await manager.GetLastCode(taskSolutionId);
+        Validator.NotNull(result, nameof(taskSolutionId), $"Not found {nameof(taskSolutionId)}: {taskSolutionId}");
+        return result;
     }
 
     [HttpPut("save")]
     public async Task Save([FromBody] TaskRecordRequestDto requestDto)
     {
         var request = deserializer.ParseRequestDto(requestDto);
+        TaskRecordRequestValidator.Validate(request);
         await manager.Save(request);
     }
 }

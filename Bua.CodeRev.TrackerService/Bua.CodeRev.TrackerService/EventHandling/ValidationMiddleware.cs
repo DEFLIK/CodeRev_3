@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Nodes;
 
 namespace Bua.CodeRev.TrackerService.EventHandling;
 
 public class ValidationMiddleware : IMiddleware
 {
+    private const string ContentType = "application/json";
+
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         try
@@ -12,20 +15,22 @@ public class ValidationMiddleware : IMiddleware
         }
         catch (ValidationException exception)
         {
-            const string message = "An unhandled exception has occurred while executing the request.";
-
-            const string contentType = "application/json";
             context.Response.Clear();
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            context.Response.ContentType = contentType;
+            context.Response.ContentType = ContentType;
 
-            var json = ToJson(exception);
-            await context.Response.WriteAsync(json);
+            var responseBody = ToJson(exception);
+            await context.Response.WriteAsJsonAsync(responseBody);
         }
     }
 
-    private static string ToJson(in Exception exception)
+    private static JsonObject ToJson(in ValidationException exception)
     {
-        return $"status code:400\n {exception.Message}";
+        return new()
+        {
+            {"errors", "Validation exception"},
+            {"message", exception.Message},
+            {"status", StatusCodes.Status400BadRequest}
+        };
     }
 }
