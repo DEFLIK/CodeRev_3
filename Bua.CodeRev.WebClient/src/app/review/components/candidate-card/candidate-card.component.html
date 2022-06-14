@@ -1,38 +1,68 @@
-<div class="left">
+<div 
+    class="comment"
+    [ngClass]="{
+        'show': isShowingComment
+    }"
+>
     <div class="top">
-        <span class="name">{{ candidate.fullName }}</span>
-        <span class="vacancy"> {{ candidate.vacancy }} </span>
+        <span class="head">Комментарий проверяющего</span>
+        <button class="close" (click)="closeComment()">X</button>
     </div>
-
-    <div class="bottom">
-        <span>
-            Начало:
-            <span *ngIf="candidate.startTimeMs !== -1 else startElse" class="time">
-                {{ candidate.startTimeMs | date : 'dd-MM-yyyy HH:mm:ss' }}
-            </span>
-    
-            <ng-template #startElse>
-                <span class="alert"> не приступал </span>
-            </ng-template>
-        </span>
-    
-        <span>
-            Срок проверки:
-
-            <span class="time" *ngIf="candidate.timeToCheckMs > 0 else checkElse">
-                {{ candidate.timeToCheckMs | date : 'dd-MM-yyyy HH:mm:ss' }}
-            </span>
-
-            <ng-template #checkElse>
-                без срока
-            </ng-template>
-        </span>
-    </div>
+    <span class="text">
+        {{candidate.reviewerComment}}
+    </span>
 </div>
 
-<div class="right">
-    <span class="grade"> {{ candidate.doneTasksCount }} / {{ candidate.tasksCount }} </span>
-    <div class="controls">
-        <button [disabled]="candidate.getState() === state.notStarted" (click)="select()">Оценить</button>
+<div 
+    class="review" 
+    [ngClass]="{
+        'hide': isShowingComment
+    }"
+>
+    <div class="left">
+        <div class="top">
+            <span class="name">{{ candidate.fullName }}</span>
+            <span class="vacancy"> {{ candidate.vacancy }} </span>
+        </div>
+    
+        <div class="bottom">
+            <span>
+                Начало:
+                <span *ngIf="candidate.startTimeMs !== -1 else startElse" class="time">
+                    {{ candidate.startTimeMs | date : 'dd.MM.yyyy' }}
+                </span>
+        
+                <ng-template #startElse>
+                    <span class="alert"> не приступал </span>
+                </ng-template>
+            </span>
+        
+            <span>
+                Срок проверки:
+    
+                <span class="time" *ngIf="candidate.timeToCheckMs > 0 else checkElse">
+                    {{ candidate.timeToCheckMs | date : 'dd.MM.yyyy' }}
+                </span>
+    
+                <ng-template #checkElse>
+                    без срока
+                </ng-template>
+            </span>
+        </div>
+    </div>
+    
+    <div class="right">
+        <span class="count"> {{ candidate.doneTasksCount }} / {{ candidate.tasksCount }} </span>
+        <div class="controls">
+            <img 
+                *ngIf="candidate.reviewerComment" 
+                (click)="showComment()"
+                src="../../../../assets/svg/comment.svg" 
+                alt="..." class="comment-img">
+            <div class="grade" *ngIf="candidate.averageGrade !== 0">
+                {{candidate.averageGrade}}
+            </div>
+            <button [disabled]="candidate.getState() === state.notStarted" (click)="select()">Оценить</button>
+        </div>
     </div>
 </div>

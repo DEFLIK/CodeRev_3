@@ -13,12 +13,12 @@
         <div class="time">
             <div class="stamp">
                 <span class="edge">Начало</span>
-                <span class="timestamp">{{slnReview.startTimeMs | date : 'short'}}</span>
+                <span class="timestamp">{{slnReview.startTimeMs | date : 'HH:mm:ss dd.MM.yyyy'}}</span>
             </div>
             <span class="line">-</span>
             <div class="stamp">
                 <span class="edge">Окончание</span>
-                <span class="timestamp">{{slnReview.endTimeMs | date : 'short'}}</span>
+                <span class="timestamp">{{slnReview.endTimeMs | date : 'HH:mm:ss dd.MM.yyyy'}}</span>
             </div>
         </div>
         <div class="info">
@@ -42,12 +42,13 @@
                     <span class="language">C#</span>
                 </div>
     
-                <button (click)="watch()" class="watch">Просмотреть</button>
+                <button (click)="watch(task.taskSolutionId)" class="watch">Просмотреть</button>
     
                 <div class="task-grades">
                     <label *ngFor="let i of [1, 2, 3, 4, 5]">
                         {{ i }}
-                        <input id="grade" type="radio" class="task-grade" formControlName={{task.taskOrder}} [value]="i">
+                        <input id="grade{{task.taskOrder}}{{i}}" type="radio" class="task-grade" formControlName={{task.taskOrder}} [value]="i">
+                        <label for="grade{{task.taskOrder}}{{i}}"></label>
                     </label>
                 </div>      
             </div>
@@ -63,7 +64,8 @@
                 <div class="wrapper">
                     <label *ngFor="let i of [1, 2, 3, 4, 5]">
                         {{ i }}
-                        <input id="grade" type="radio" class="comment-grade" formControlName="resultGrade" [value]="i">
+                        <input id="grade-res{{i}}" type="radio" class="comment-grade" formControlName="resultGrade" [value]="i">
+                        <label for="grade-res{{i}}"></label>
                     </label>
                 </div>
             </div>
@@ -71,7 +73,7 @@
     </form>
 
     <ng-template #contest>
-        <app-contest [editorMode]="modes.review" [review]="slnReview"></app-contest>
+        <app-contest [editorMode]="modes.review" [review]="slnReview" [startTaskId]="startTaskId"></app-contest>
     </ng-template>
 </ng-container>
 

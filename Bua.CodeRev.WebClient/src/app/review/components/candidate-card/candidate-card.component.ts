@@ -13,10 +13,19 @@ export class CandidateCardComponent {
     @Output()
     public clickEvent: EventEmitter<CandidateCardInfo> = new EventEmitter<CandidateCardInfo>();
     public state = CandidateState;
+    public isShowingComment = false;
     constructor() { }
 
     public select(): void {
         this.clickEvent.emit(this.candidate);
+    }
+
+    public showComment(): void {
+        this.isShowingComment = true;
+    }
+
+    public closeComment(): void {
+        this.isShowingComment = false;
     }
 
 
