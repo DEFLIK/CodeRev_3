@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import * as CodeMirror from 'codemirror';
-import { interval, Observable, Subject, Subscription } from 'rxjs';
+import { interval, Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { ControlsComponent } from './components/controls/controls.component';
 import { OutputComponent } from './components/output/output.component';
@@ -11,13 +11,17 @@ import { ExecutionResult } from './models/executionResult';
 import { RecordService } from './services/record-service/record.service';
 import { TaskSolutionInfo } from '../contest/models/taskSolutionInfo';
 import { CompileService } from './services/compile-service/compile-service.service';
+import { PlayerService } from './services/player-service/player.service';
 
 type CodeMirrorOptions = {[key: string]: any};
 
 @Component({
     selector: 'app-code-editor',
     templateUrl: './code-editor.component.html',
-    styleUrls: ['./code-editor.component.less']
+    styleUrls: ['./code-editor.component.less'],
+    providers: [
+        RecordService
+    ]
 })
 export class CodeEditorComponent implements AfterViewInit, OnDestroy {
     public editor: HTMLElement | null = document.getElementById('codeEdtior');
@@ -31,6 +35,7 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
     public editorMode!: EditorMode;
     @Input()
     public taskSelected$!: Observable<TaskSolutionInfo>;
+    public isHidden = false;
     public types = EditorMode;
     // @Input()
     // public tasks?: string[];
@@ -40,38 +45,38 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
         mode: 'text/x-csharp',
         indentUnit: 4
     };
-
-    private _outputRefresh?: Subscription;
+    private _unsubscriber = new Subject<void>();
 
     constructor(
+        private _player: PlayerService,
+        private _record: RecordService,
         private _compiler: CompileService
     ) { }
     public ngOnDestroy(): void {
-        this._outputRefresh?.unsubscribe();
+        this._unsubscriber.next();
     }
-    public ngAfterViewInit(): void {    
+    public ngAfterViewInit(): void { 
+        this._player.pageOpen
+            .pipe(takeUntil(this._unsubscriber))
+            .subscribe(() => this.isHidden = false);
+        this._player.pageHidden
+            .pipe(takeUntil(this._unsubscriber))
+            .subscribe(() => this.isHidden = true);
+        this._player.execute
+            .pipe(takeUntil(this._unsubscriber))
+            .subscribe(execRes => {
+                this.applyExecution(execRes);
+            });
+        
+
         this.options['readOnly'] = this.editorMode === EditorMode.review;
         
-        this._outputRefresh = this._compiler
+        this._compiler
             .onOutputRefresh$
+            .pipe(takeUntil(this._unsubscriber))
             .subscribe((result: ExecutionResult) => {
-                if (!result.success) {
-                    for (const error of result.errors) {
-                        if (error.endChar === error.startChar) {
-                            error.startChar ??= 1;
-                            error.startChar -= 1;
-                        }
-
-                        this.codeMirrorCmpt
-                            .codeMirror
-                            ?.markText(
-                                { line: error.startLine , ch:error.startChar }, 
-                                { line: error.endLine , ch: error.endChar },
-                                { css: 'background-color: #D33030' });
-                    }
-                }
-
-                this.outputCmpt.setOutput(result);
+                this._record.recordExecute(result);
+                this.applyExecution(result);
             });
 
         setTimeout(() => { // Закидываю в конец очереди, чтобы дать модулю CodeMirror подгрузить библиотеку
@@ -107,5 +112,25 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
             //     this._record.initRecordersStream(this.tasks ?? []);
             // }
         });
+    }
+
+    public applyExecution(result: ExecutionResult): void {
+        if (!result.success) {
+            for (const error of result.errors) {
+                if (error.endChar === error.startChar) {
+                    error.startChar ??= 1;
+                    error.startChar -= 1;
+                }
+
+                this.codeMirrorCmpt
+                    .codeMirror
+                    ?.markText(
+                        { line: error.startLine , ch:error.startChar }, 
+                        { line: error.endLine , ch: error.endChar },
+                        { css: 'background-color: #D33030' });
+            }
+        }
+
+        this.outputCmpt.setOutput(result);
     }
 }
