@@ -1,7 +1,10 @@
 <div *ngIf="taskInfo" class="task">
-    <div class="text">
+    <span class="text-top">
+        Задача {{taskInfo.taskOrder}}
+    </span>
+    <textarea class="text" readonly>
         {{taskInfo.taskText}}
-    </div>
+    </textarea>
 
     <ng-container *ngIf="editorMode === mode.write else review">
         <button (click)="endTask()" class="submit" *ngIf="!taskInfo.isDone && !isSolutionExpired else done">Сдать задачу</button>

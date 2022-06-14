@@ -8,14 +8,31 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        gap: 20px;
     }
 
-    .text {
+    .text-top {
+        font-size: 20px;
+        // font-weight: bold;
+        font-family: Raleway-Bold;
         text-align: center;
     }
 
+    .text {
+        flex: 1 1 auto;
+        resize: none;
+        background-color: transparent;
+        border: none;
+        // text-align: center;
+        font-size: 18px;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
     .done {
-        width: 100%;
+        // width: 100%;
         background-color: #009460;
         text-align: center;
         color: white;
