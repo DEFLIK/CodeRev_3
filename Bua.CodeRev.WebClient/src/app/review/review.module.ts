@@ -10,6 +10,7 @@ import { CandidateGradeComponent } from './components/candidate-grade/candidate-
 import { ContestModule } from '../contest/contest.module';
 import { ContestComponent } from '../contest/contest.component';
 import { ReviewRoutingModule } from './review-routing.module';
+import { CandidateInviteComponent } from './components/candidate-invite/candidate-invite.component';
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import { ReviewRoutingModule } from './review-routing.module';
         CandidatesListComponent,
         ReviewComponent,
         CandidateFilterPipe,
-        CandidateGradeComponent
+        CandidateGradeComponent,
+        CandidateInviteComponent
     ],
     imports: [
         ReviewRoutingModule,

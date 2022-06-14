@@ -67,7 +67,7 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
                             ?.markText(
                                 { line: error.startLine , ch:error.startChar }, 
                                 { line: error.endLine , ch: error.endChar },
-                                { css: 'background-color: yellow' });
+                                { css: 'background-color: #D33030' });
                     }
                 }
 

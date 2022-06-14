@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { EditorMode } from 'src/app/code-editor/models/editorMode';
 import { InterviewSolutionInfo } from '../../models/interviewSolutionInfo';
 import { TaskSolutionInfo } from '../../models/taskSolutionInfo';
 import { ContestService } from '../../services/contest-service/contest.service';
@@ -9,6 +10,9 @@ import { ContestService } from '../../services/contest-service/contest.service';
     styleUrls: ['./task.component.less']
 })
 export class TaskComponent implements OnInit {
+    @Input()
+    public editorMode!: EditorMode;
+    public mode = EditorMode;
     public get isSolutionExpired(): boolean {
         return this._contest.isSolutionExpired;
     }

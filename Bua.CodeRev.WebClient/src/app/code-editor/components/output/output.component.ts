@@ -7,8 +7,8 @@ import { ExecutionResult } from '../../models/executionResult';
     styleUrls: ['./output.component.less']
 })
 export class OutputComponent {
-    public success: boolean = false;
-    public text: string[] = ['Welcome to CodeRev!'];
+    public success: boolean | undefined = undefined;
+    public text: string[] = ['Добро пожаловать в CodeRev! Чтобы запустить программу нажмите "Запуск"'];
 
     constructor() { }
 

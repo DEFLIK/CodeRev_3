@@ -68,6 +68,7 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
                     if (resp.ok && resp.body) {                   
                         this.slnReview = new InterviewSolutionReview(resp.body);
                         this.gradesForm = new FormGroup(this.getControls(this.slnReview));
+                        this.gradesForm.get('resultComment')?.setValue(this.slnReview.reviewerComment);
                         // this.getControls(this.slnReview);
                     }
                 }
@@ -81,7 +82,19 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
     public saveComment(): void {
         const com = this.gradesForm.get('resultComment')?.value ?? '';
 
-        
+        this._review
+            .setInterviewComment(this._solutionId, com)
+            .subscribe();
+    }
+
+    public back(): void {
+        if (this.isWatching) {
+            this.isWatching = false;
+
+            return;
+        }
+
+        this._router.navigateByUrl('/review');
     }
 
     private getControls(slnReview: InterviewSolutionReview): FormControlType {
@@ -96,7 +109,7 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
             )
             .subscribe((value: number) => {
                 this._review
-                    .setInterviewResult(slnReview.interviewSolutionId, value)
+                    .setInterviewGrade(slnReview.interviewSolutionId, value)
                     .subscribe();
             });
 

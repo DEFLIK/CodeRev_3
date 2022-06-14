@@ -1,0 +1,108 @@
+@import (reference) "/src/styles.less";
+
+body{
+    background-color: #F3F3F3;
+    font-family: 'Raleway', sans-serif;
+}
+
+.contLogin{
+    margin: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.LoginBox{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 33%;    
+    background: #FFFFFF;    
+    border: 4px solid #DDDFE2;    
+    border-radius: 8px;    
+}    
+
+h1{    
+    font-size: 43px;        
+    font-weight: bold;    
+    text-align: center;    
+    margin: 4%;    
+}    
+
+input{    
+    padding-left: 5%;    
+    margin: 1%;    
+    border: 1px solid #DDDFE2;    
+    border-radius: 6px;    
+}    
+
+.txt{
+    width: 80%;
+    height: 40px;
+    
+
+    font-family: inherit;
+    font-size: 25px;
+    color: #90949C;
+    
+}
+
+.contCB{
+    display: flex;
+    gap: 10px;
+    width: 86%;
+    margin: 4%;
+}
+
+.checkbox {
+	position: absolute;
+	z-index: -1;
+	opacity: 0;
+	margin: 10px 0 0 20px;
+}
+
+label{
+    font-size: 20px;
+}
+
+.checkbox + label {
+	position: relative;
+	padding: 0 0 0 35px;
+	cursor: pointer;
+}
+.checkbox + label:before {
+	content: '';
+	position: absolute;
+	top: -4px;
+	left: 0;
+	width: 13%;
+	height: 120%;
+	border-radius: 5px;
+	background: #FFF;
+    border: 1px solid #DDDFE2;
+	box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.2);
+}
+
+.checkbox:checked + label:before {
+	background: #DDDFE2;
+}
+
+button{
+    height: 40px;
+    width: 85%;
+    margin-top: 5%;
+    margin-bottom: 4%;
+    border-radius: 6px; 
+    font-family: inherit;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+a{
+    margin-bottom: 5%;
+    font-size: 20px;
+    text-decoration: none;
+    color: @color-main;
+}

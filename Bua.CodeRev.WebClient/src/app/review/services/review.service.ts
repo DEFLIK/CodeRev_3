@@ -5,8 +5,14 @@ import { HttpService } from 'src/app/global-services/request/http.service';
 import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
 import { CandidateCardInfo } from '../models/candidateCardInfo';
+import { InterviewInfo } from '../models/interviewInfo';
+import { Invitation } from '../models/invitation';
+import { ReviewCommentRequest } from '../models/request/comment-request';
+import { InvitationRequest } from '../models/request/invitation-request';
 import { CandidateCardInfoResponse } from '../models/response/candidateCardInfo-response';
+import { InterviewInfoResponse } from '../models/response/interviewInfo-response';
 import { InterviewSolutionReviewResponse } from '../models/response/interviewSolutionReview-response';
+import { InvitationResponse } from '../models/response/invitation-response';
 
 @Injectable({
     providedIn: 'root'
@@ -45,11 +51,37 @@ export class ReviewService {
         });
     }
 
-    public setInterviewResult(slnId: string, result: number): Observable<HttpResponse<void>> {
+    public setInterviewGrade(slnId: string, grade: number): Observable<HttpResponse<void>> {
         return this._http.request<void>({
-            url: `${UrlRoutes.user}/api/review/put-i-sln-result?id=${slnId}&result=${result}`,
+            url: `${UrlRoutes.user}/api/review/put-i-sln-grade?id=${slnId}&grade=${grade}`,
             method: RequestMethodType.put,
             auth: true
+        });
+    }
+
+    public getInterviews(): Observable<HttpResponse<InterviewInfoResponse[]>> {
+        return this._http.request<InterviewInfoResponse[]>({
+            url: `${UrlRoutes.user}/api/review/interviews`,
+            method: RequestMethodType.get,
+            auth: true
+        });
+    }
+
+    public createInvite(invitation: Invitation): Observable<HttpResponse<InvitationResponse>> {
+        return this._http.request<InvitationResponse, InvitationRequest>({
+            url: `${UrlRoutes.user}/api/users/create-invitation`,
+            method: RequestMethodType.post,
+            auth: true,
+            body: new InvitationRequest(invitation)
+        });
+    }
+
+    public setInterviewComment(slnId: string, comment: string): Observable<HttpResponse<void>> {
+        return this._http.request<void, ReviewCommentRequest>({
+            url: `${UrlRoutes.user}/api/review/put-i-sln-comment?id=${slnId}`,
+            method: RequestMethodType.put,
+            auth: true,
+            body: new ReviewCommentRequest(comment)
         });
     }
     

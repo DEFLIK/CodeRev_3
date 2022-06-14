@@ -1,4 +1,4 @@
-<!-- <p class="auth-logo">CodeRev</p> -->
+<!-- 
 <p class="auth-title">Login</p>
 <div class="auth">
     <form class="auth-form" [formGroup] = "loginForm">
@@ -20,8 +20,23 @@
     <ng-template #allowed>
         <button class="auth-form-button" (click)="submit()">Confirm</button>
     </ng-template>
-    <!-- <a class="auth-anchor" [routerLink] = "'/auth/register'">No account?</a> -->
-</div>
+</div> -->
+
+
+<form class="contLogin" [formGroup] = "loginForm">
+    <div class="LoginBox">
+        <h1>Вход</h1>
+        <input class="txt" type="text" formControlName="userName" placeholder="Почта">
+        <input class="txt" type="password" formControlName="userPassword" placeholder="Пароль">
+        <div class="contCB">
+            <input class="checkbox" type="checkbox" id="rememberPW">
+            <label for="rememberPW">Запомнить пароль</label>
+        </div>
+        <button class="auth-form-button" (click)="submit()">Войти</button>
+        <a href="#">Не удается войти в систему?</a>
+    </div>
+</form>  
+
 
 <div class="load-process" *ngIf="isProcessing">
     <div class="loader" style="width: 70px; height: 70px"></div>

@@ -7,6 +7,7 @@ using Bua.CodeRev.UserService.Core.Models.Users;
 using Bua.CodeRev.UserService.DAL.Entities;
 using Bua.CodeRev.UserService.DAL.Models;
 using Bua.CodeRev.UserService.DAL.Models.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,8 @@ namespace Bua.CodeRev.UserService.Core.Controllers
     [ApiController]
     public class UsersController : ParentController
     {
+        private const long InvitationDurationMs = 604800000; // == 1 week //todo make config setting
+        
         public UsersController(IDbRepository dbRepository) : base(dbRepository)
         {
         }
@@ -74,7 +77,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
         
-        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPost("create-invitation")]
         public async Task<IActionResult> CreateInvitationAsync(InvitationParams invitationParams)
         {
@@ -96,15 +99,28 @@ namespace Bua.CodeRev.UserService.Core.Controllers
                 .FirstOrDefaultAsync() == null)
                 return Conflict("no interview with such id");
 
+            var invitation = await _dbRepository
+                .Get<Invitation>(i => i.Role == roleEnum && i.InterviewId == interviewGuid)
+                .FirstOrDefaultAsync();
+
             var invitationGuid = Guid.NewGuid();
-            var invitation = new Invitation
+            if (invitation == null)
             {
-                Id = invitationGuid,
-                Role = roleEnum,
-                InterviewId = interviewGuid,
-                ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + (long) (6 * Math.Pow(10, 8))
-            };
-            await _dbRepository.Add(invitation);
+                invitation = new Invitation
+                {
+                    Id = invitationGuid,
+                    Role = roleEnum,
+                    InterviewId = interviewGuid,
+                    ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + InvitationDurationMs
+                };
+                await _dbRepository.Add(invitation);
+            }
+            else
+            {
+                invitationGuid = invitation.Id;
+                invitation.ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + InvitationDurationMs;
+            }
+            
             await _dbRepository.SaveChangesAsync();
 
             return Ok(new

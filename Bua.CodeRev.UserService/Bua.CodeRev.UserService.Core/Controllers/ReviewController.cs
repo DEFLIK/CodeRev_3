@@ -7,6 +7,7 @@ using Bua.CodeRev.UserService.Core.Models.Review;
 using Bua.CodeRev.UserService.DAL.Entities;
 using Bua.CodeRev.UserService.DAL.Models;
 using Bua.CodeRev.UserService.DAL.Models.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,14 +23,21 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         {
         }
 
-        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet("interviews")]
         public IActionResult GetInterviews()
         {
             return Ok(_dbRepository.Get<Interview>());
         }
+
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpGet("vacancies")]
+        public IActionResult GetVacancies()
+        {
+            return Ok(_dbRepository.Get<Interview>().GroupBy(i => i.Vacancy).Select(g => g.Key));
+        }
         
-        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPut("put-task-sln-grade")]
         public async Task<IActionResult> PutTaskSolutionGradeAsync([Required] [FromQuery(Name = "id")] string taskSolutionId, 
             [Required][FromQuery(Name = "grade")] int grade, string interviewSolutionId)
@@ -68,12 +76,15 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             await _dbRepository.SaveChangesAsync();
             return Ok();
         }
-
-        //[Authorize(Roles = "HrManager,Admin")]
-        [HttpPut("put-i-sln-result")]
-        public async Task<IActionResult> PutInterviewSolutionResultAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId,
-            [Required] [FromQuery(Name = "result")] int interviewResult)
+        
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpPut("put-i-sln-grade")]
+        public async Task<IActionResult> PutInterviewSolutionGradeAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId, 
+            [Required][FromQuery(Name = "grade")] int grade)
         {
+            if (!Enum.IsDefined(typeof(GradeEnum), grade))
+                return BadRequest($"{nameof(grade)} is invalid");
+            
             var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
             if (errorString != null)
                 return BadRequest(errorString);
@@ -83,15 +94,36 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             
             if (interviewSolution == null)
                 return Conflict($"no {nameof(interviewSolution)} with such id");
+
+            interviewSolution.AverageGrade = (GradeEnum) grade;
+            await _dbRepository.SaveChangesAsync();
+            return Ok();
+        }
+
+        [Authorize(Roles = "HrManager,Admin")]
+        [HttpPut("put-i-sln-result")]
+        public async Task<IActionResult> PutInterviewSolutionResultAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId,
+            [Required] [FromQuery(Name = "result")] int interviewResult)
+        {
             if (!Enum.IsDefined(typeof(InterviewResultEnum), interviewResult))
                 return BadRequest($"{nameof(interviewResult)} is invalid");
+            
+            var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
+            if (errorString != null)
+                return BadRequest(errorString);
+            var interviewSolution = await _dbRepository
+                .Get<InterviewSolution>(t => t.Id == interviewSolutionGuid)
+                .FirstOrDefaultAsync();
+            
+            if (interviewSolution == null)
+                return Conflict($"no {nameof(interviewSolution)} with such id");
             
             interviewSolution.InterviewResult = (InterviewResultEnum) interviewResult;
             await _dbRepository.SaveChangesAsync();
             return Ok();
         }
         
-        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPut("put-i-sln-comment")]
         public async Task<IActionResult> PutInterviewSolutionCommentAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId, 
             [Required][FromBody] InterviewSolutionComment interviewSolutionComment)
@@ -114,7 +146,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
         
-        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPut("put-i-sln-review")]
         public async Task<IActionResult> PutInterviewSolutionReviewAsync([Required] [FromBody] InterviewSolutionReview interviewSolutionReview)
         {
@@ -150,7 +182,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
         
-        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet("i-sln-info")]
         public async Task<IActionResult> GetInterviewSolutionInfoAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId)
         {
@@ -164,7 +196,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok(interviewSolutionInfo);
         }
 
-        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet("task-sln-info")]
         public async Task<IActionResult> GetTaskSolutionInfoAsync([Required] [FromQuery(Name = "id")] string taskSolutionId)
         {
@@ -178,7 +210,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok(taskSolutionInfo);
         }
         
-        //[Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet("cards")]
         public IActionResult GetInterviewSolutions()
         {

@@ -12,7 +12,7 @@
     <ng-container *ngIf="isStarted || review">
         <!-- <button *ngFor="let task of tasks" (click)="change(task)">{{task}}</button> -->
         <div class="right">
-            <app-task class="task"></app-task>
+            <app-task class="task" [editorMode]="editorMode"></app-task>
             <app-code-editor 
                 [editorMode]="editorMode" 
                 class="editor"

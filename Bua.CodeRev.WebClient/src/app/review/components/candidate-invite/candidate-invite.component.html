@@ -1,0 +1,25 @@
+<div 
+    [ngClass]="{
+        'open': isOpen
+    }"
+    class="main"
+>
+    <div class="invite">
+        <span class="close" (click)="close()">X</span>
+        <span class="welcome">Приглашения на интервью</span>
+        <div class="interviews" *ngIf="interviews">
+            <div class="int" *ngFor="let int of interviews">
+                <span class="vacancy">
+                    {{ int.vacancy }}
+                </span>
+                <span class="text">
+                    {{ int.interviewText }}
+                </span> 
+                <button class="create" (click)="create(int)" *ngIf="!getInvitation(int.id)">
+                    Создать
+                </button>
+                <textarea class="link" *ngIf="getInvitation(int.id)">{{getInvitation(int.id)}}</textarea>
+            </div>
+        </div>
+    </div>
+</div>

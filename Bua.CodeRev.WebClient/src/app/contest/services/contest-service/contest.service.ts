@@ -81,4 +81,6 @@ export class ContestService {
     public continueInterview(sln: InterviewSolutionInfo): void {
         this.currentInterview = sln;
     }
+
+    // public getSaves(): 
 }

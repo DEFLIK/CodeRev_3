@@ -1,6 +1,6 @@
 <ng-container *ngIf="slnReview else loading">
     <div class="person">
-        <img routerLink="/review" class="back" src="../../../../assets/svg/arrow-left.svg" alt="back">
+        <img (click)="back()" class="back" src="../../../../assets/svg/arrow-left.svg" alt="back">
         <div class="main">
             <div class="left">
                 <img src="../../../../assets/svg/avatar-light.svg" alt="avatar">
@@ -31,7 +31,12 @@
         <div class="tasks">
             <div class="task" *ngFor="let task of slnReview.taskSolutionsInfos">
                 <div class="task-info">
-                    <div class="number">
+                    <div 
+                        class="number" 
+                        [ngClass]="{
+                            'done': task.isDone
+                        }"
+                    >
                         {{ task.taskOrder }}
                     </div>
                     <span class="language">C#</span>

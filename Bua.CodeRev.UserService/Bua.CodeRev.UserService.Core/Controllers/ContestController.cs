@@ -6,6 +6,7 @@ using Bua.CodeRev.UserService.Core.LogicHelpers;
 using Bua.CodeRev.UserService.Core.Models.Contest;
 using Bua.CodeRev.UserService.DAL.Entities;
 using Bua.CodeRev.UserService.DAL.Models.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
         {
         }
         
-        //[Authorize]
+        [Authorize]
         [HttpGet("i-sln-info")]
         public async Task<IActionResult> GetInterviewSolutionInfo([Required][FromHeader(Name = "Authorization")] string authorization)
         {
@@ -74,7 +75,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             });
         }
         
-        //[Authorize]
+        [Authorize]
         [HttpPut("start-i-sln")]
         public async Task<IActionResult> StartInterviewSolutionAsync([Required][FromQuery(Name = "id")] string interviewSolutionId)
         {
@@ -106,7 +107,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
         
-        //[Authorize]
+        [Authorize]
         [HttpPut("end-i-sln")]
         public async Task<IActionResult> EndInterviewSolutionAsync([Required][FromQuery(Name = "id")] string interviewSolutionId)
         {
@@ -138,7 +139,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
         
-        //[Authorize]
+        [Authorize]
         [HttpPut("end-task-sln")]
         public async Task<IActionResult> EndTaskSolutionAsync([Required][FromQuery(Name = "id")] string taskSolutionId)
         {
@@ -169,7 +170,7 @@ namespace Bua.CodeRev.UserService.Core.Controllers
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("task-slns-info")]
         public async Task<IActionResult> GetTaskSolutionsInfoAsync([Required] [FromQuery(Name = "id")] string interviewSolutionId)
         {

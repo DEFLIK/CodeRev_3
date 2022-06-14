@@ -1,4 +1,4 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CandidateCardInfo } from '../../models/candidateCardInfo';
@@ -16,6 +16,8 @@ import { CandidateCardComponent } from '../candidate-card/candidate-card.compone
 export class CandidatesListComponent implements OnInit {
     @ViewChildren('candidateCard')
     public cards!: QueryList<CandidateCardComponent>;
+    @Output()
+    public inviteEvent = new EventEmitter<void>();
     public candidates?: CandidateCardInfo[];
     public searchForm: FormGroup = new FormGroup({
         serachInput: new FormControl('')
@@ -80,7 +82,10 @@ export class CandidatesListComponent implements OnInit {
     }
 
     public invite(): void {
+        this.inviteEvent.emit();
+    }
 
+    public closeInvite(): void {
     }
 
     public onCheckboxChange(e: any, groupName: string): void {
