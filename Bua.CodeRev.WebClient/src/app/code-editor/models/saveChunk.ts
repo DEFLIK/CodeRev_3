@@ -5,6 +5,6 @@ export class SaveChunk {
         public taskId: string,
         public saveTime: number,
         public code: string,
-        public record: RecordInfo
+        public recordInfo: RecordInfo
     ) {}
 }
