@@ -5,12 +5,12 @@ export class SaveChunkRequest {
     public taskSolutionId: string;
     public saveTime: number;
     public code: string;
-    public record: ICodeRecord[];
+    public records: ICodeRecord[];
 
     constructor(model: SaveChunk) {
         this.taskSolutionId = model.taskId;
         this.saveTime = model.saveTime;
         this.code = model.code;
-        this.record = model.recordInfo.record;
+        this.records = model.recordInfo.record;
     }
 }
