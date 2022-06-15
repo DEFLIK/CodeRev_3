@@ -4,6 +4,7 @@ import { RequestMethodType } from 'src/app/global-services/request/models/reques
 import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
 import { RecordInfo } from '../../models/codeRecord';
 import { SaveChunkRequest } from '../../models/request/saveChunk-request';
+import { SaveChunkResponse } from '../../models/response/saveChunk-response';
 import { SaveChunk } from '../../models/saveChunk';
 // import { CodeStorageService as StorageService } from '../storage-service/code-storage.service';
 
@@ -15,27 +16,28 @@ export class SavingService {
         const time = Date.now();
         const nextChunk = new SaveChunk(taskId, time, code, recordInfo);
 
-        localStorage.setItem('save' + taskId + time, JSON.stringify(nextChunk));
+        // localStorage.setItem('save' + taskId + time, JSON.stringify(nextChunk));
+        // localStorage.setItem('code' + taskId, code);
 
-        // this._http
-        //     .request<void, SaveChunkRequest>({
-        //         url: `${UrlRoutes.tracker}/api/v1/tracker/save?taskSolutionId=${taskId}`,
-        //         method: RequestMethodType.put,
-        //         auth: true,
-        //         body: new SaveChunkRequest(nextChunk)
-        //     })
-        //     .subscribe(resp => {
-        //         if (!resp.ok) {
-        //             console.error('Record backend saving error!');
-        //         }
-        //     });
+        this._http
+            .request<void, SaveChunkRequest>({
+                url: `${UrlRoutes.tracker}/api/v1/tracker/save?taskSolutionId=${taskId}`,
+                method: RequestMethodType.put,
+                auth: true,
+                body: new SaveChunkRequest(nextChunk)
+            })
+            .subscribe(resp => {
+                if (!resp.ok) {
+                    console.error('Record backend saving error!');
+                }
+            });
     }
 
     public getTaskSaves(taskId: string): SaveChunk[] {
         const res: SaveChunk[] = [];
 
         for (const key in localStorage) {
-            if (key.includes(taskId)) {
+            if (key.includes(taskId) && key.includes('save')) {
                 const save = localStorage.getItem(key);
                 if (save) {
                     res.push(JSON.parse(save) as SaveChunk);
@@ -48,24 +50,37 @@ export class SavingService {
         return sorted;
     }
 
-    public getLastSave(taskId: string): SaveChunk { // Observable<SaveChunkResponse>
+    public getLastSavedCode(taskId: string): string | null { // Observable<SaveChunkResponse>
         // get from backend
-        const res = this.getTaskSaves(taskId);
-
-        return res[res.length - 1];
+        return localStorage.getItem('code' + taskId);
     }
 
-    public applySaves(saves: SaveChunk[]): void {
-        this.clearSaves();
+    public setSavedCode(taskId: string, code: string): void {
+        localStorage.setItem('code' + taskId, code);
+    }
 
+    public applySaves(taskId: string, saves: SaveChunkResponse[]): void {
         for (const save of saves) {
-            localStorage.setItem('save' + save.taskId + save.saveTime, JSON.stringify(save));
+            const newSaveModel = new SaveChunk(
+                taskId ?? '',
+                save.saveTime ?? 0, 
+                save.code ?? '', 
+                new RecordInfo(save.records ?? [], save.saveTime ?? 0));
+            localStorage.setItem('save' + taskId + save.saveTime, JSON.stringify(newSaveModel));
         }
     }
 
     public clearSaves(): void {
         for (const key in localStorage) {
             if (key.includes('save')) {
+                localStorage.removeItem(key);
+            }
+        }
+    }
+
+    public clearCodes(): void {
+        for (const key in localStorage) {
+            if (key.includes('code')) {
                 localStorage.removeItem(key);
             }
         }
