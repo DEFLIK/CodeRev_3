@@ -1,16 +1,20 @@
-
-<div class="main">
-    <div class="cont">
-        <form class="RegBox" [formGroup]="regForm">
-            <h1>Заполните профиль</h1>
-            <input type="text" placeholder="ФИО" formControlName="userName">
-            <input type="text" placeholder="Телефон" formControlName="userPhone">
-            <input type="text" placeholder="Почта" formControlName="userEmail">
-            <input class="password" type="password" placeholder="Пароль" formControlName="userPassword">
-            <!-- <input class="password" type="password" placeholder="Повторите пароль" formControlName="userPassword"> -->
-
-            <button (click)="submit()">Продолжить</button>
-
-        </form>
-    </div>  
+<div class="wrapper">
+    <img class="logo" src="../../../../assets/svg/logo.svg">
+    
+    <div class="main">
+        <div class="cont">
+            <form class="RegBox" [formGroup]="regForm">
+                <h1>Заполните профиль</h1>
+                <input type="text" placeholder="ФИО" formControlName="userName">
+                <input type="text" placeholder="Телефон" formControlName="userPhone">
+                <input type="text" placeholder="Почта" formControlName="userEmail">
+                <input class="password" type="password" placeholder="Пароль" formControlName="userPassword">
+                <!-- <input class="password" type="password" placeholder="Повторите пароль" formControlName="userPassword"> -->
+    
+                <button (click)="submit()">Продолжить</button>
+    
+            </form>
+        </div>  
+    </div>
+    
 </div>
