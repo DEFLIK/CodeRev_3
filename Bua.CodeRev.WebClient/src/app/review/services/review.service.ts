@@ -1,6 +1,8 @@
 import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { SaveChunkResponse } from 'src/app/code-editor/models/response/saveChunk-response';
+import { SaveChunk } from 'src/app/code-editor/models/saveChunk';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
@@ -93,4 +95,22 @@ export class ReviewService {
         });
     }
     
+    public getSaves(taskSlnId: string): Observable<HttpResponse<SaveChunkResponse[]>> {
+        return this._http.request<SaveChunkResponse[]>({
+            url: `${UrlRoutes.tracker}/api/v1/tracker/get?taskSolutionId=${taskSlnId}`,
+            method: RequestMethodType.get,
+            auth: true,
+        });
+    }
+
+    // 0 - ne prinyat
+    // 1 - podumat
+    // 2 - prinyat
+    public setInterviewResult(taskSlnId: string, result: number): Observable<HttpResponse<void>> {
+        return this._http.request<void>({
+            url: `${UrlRoutes.user}/api/review/put-i-sln-result?id=${taskSlnId}&result=${result}`,
+            method: RequestMethodType.put,
+            auth: true,
+        });
+    }
 }
