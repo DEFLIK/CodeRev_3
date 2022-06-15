@@ -42,7 +42,7 @@
                     <span class="language">C#</span>
                 </div>
     
-                <button (click)="watch(task.taskSolutionId)" class="watch">Просмотреть</button>
+                <button (click)="watch(task.taskSolutionId)" class="watch" *ngIf="isAllLoaded">Просмотреть</button>
     
                 <div class="task-grades">
                     <label *ngFor="let i of [1, 2, 3, 4, 5]">

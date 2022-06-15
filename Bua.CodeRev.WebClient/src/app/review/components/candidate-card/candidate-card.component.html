@@ -1,7 +1,7 @@
 <div 
     class="comment"
     [ngClass]="{
-        'show': isShowingComment
+        'comment-show': isShowingComment
     }"
 >
     <div class="top">
@@ -16,7 +16,8 @@
 <div 
     class="review" 
     [ngClass]="{
-        'hide': isShowingComment
+        'hide-right': isShowingComment,
+        'hide-left': isShowingGrade
     }"
 >
     <div class="left">
@@ -65,4 +66,33 @@
             <button [disabled]="candidate.getState() === state.notStarted" (click)="select()">Оценить</button>
         </div>
     </div>
+</div>
+
+<div 
+    class="hr-grade"
+    [ngClass]="{
+        'grade-show': isShowingGrade
+    }"
+>
+    <div class="top">
+        <span class="head">Результат интервью</span>
+        <button class="close" (click)="closeGrade()">X</button>
+    </div>
+    <form class="control" [formGroup]="hrGrade">
+        <div>
+            <input type="radio" formControlName="result" id="rad{{candidate.userId}}1" [value]="2">
+            <label for="rad{{candidate.userId}}1"></label>
+            <label for="rad{{candidate.userId}}1">Одобрено</label>
+        </div>
+        <div>
+            <input type="radio" formControlName="result" id="rad{{candidate.userId}}2" [value]="1">
+            <label for="rad{{candidate.userId}}2"></label>
+            <label for="rad{{candidate.userId}}2">Подумать</label>
+        </div>
+        <div>
+            <input type="radio" formControlName="result" id="rad{{candidate.userId}}3" [value]="0">
+            <label for="rad{{candidate.userId}}3"></label>
+            <label for="rad{{candidate.userId}}3">Отклонить</label>
+        </div>
+    </form>
 </div>

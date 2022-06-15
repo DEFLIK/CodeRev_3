@@ -1,8 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { interval, Subject, takeUntil, takeWhile } from 'rxjs';
+import { catchError, interval, of, Subject, takeUntil, takeWhile } from 'rxjs';
+import { RecordInfo } from 'src/app/code-editor/models/codeRecord';
 import { EditorMode } from 'src/app/code-editor/models/editorMode';
+import { SaveChunk } from 'src/app/code-editor/models/saveChunk';
+import { SavingService } from 'src/app/code-editor/services/saving-service/saving.service';
 import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
 import { ContestService } from 'src/app/contest/services/contest-service/contest.service';
 import { CandidateCardInfo } from '../../models/candidateCardInfo';
@@ -10,7 +13,7 @@ import { InterviewSolutionReview } from '../../models/interviewSolutionReview';
 import { InterviewSolutionReviewResponse } from '../../models/response/interviewSolutionReview-response';
 import { TaskReview } from '../../models/taskReview';
 import { ReviewService } from '../../services/review.service';
-type FormControlType = { [key: string]: AbstractControl };
+export type FormControlType = { [key: string]: AbstractControl };
 
 @Component({
     selector: 'app-candidate-grade',
@@ -49,6 +52,10 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
     // }
     public candidate!: CandidateCardInfo;
     public isWatching = false;
+    public get isAllLoaded(): boolean {
+        return Array.from(this._loadState.values()).every(state => state === true);
+    }
+    private _loadState: Map<string, boolean> = new Map<string, boolean>();
     private _solutionId!: string;
     private _endListening = new Subject<void>();
 
@@ -56,6 +63,7 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
         private _review: ReviewService,
+        private _saving: SavingService,
         private _contest: ContestService
     ) { }
     public ngOnDestroy(): void {
@@ -73,7 +81,31 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
                         this.slnReview = new InterviewSolutionReview(resp.body);
                         this.gradesForm = new FormGroup(this.getControls(this.slnReview));
                         this.gradesForm.get('resultComment')?.setValue(this.slnReview.reviewerComment);
-                        // this.getControls(this.slnReview);
+                        this._saving.clearSaves();
+                        this._saving.clearCodes();
+
+                        for (const taskSln of this.slnReview.taskSolutionsInfos) {
+                            this._loadState.set(taskSln.taskSolutionId, false);
+                            this._review
+                                .getSaves(taskSln.taskSolutionId)
+                                .pipe(
+                                    catchError(err => {
+                                        this._loadState.set(taskSln.taskSolutionId, true);
+
+                                        // return of();
+                                        throw err;
+                                    })
+                                )
+                                .subscribe({
+                                    next: saveResp => {
+                                        if (saveResp.ok && saveResp.body) {
+                                            this._saving.applySaves(taskSln.taskSolutionId, saveResp.body);
+                                            this._loadState.set(taskSln.taskSolutionId, true);
+                                        }
+                                    },
+                                    error: () => {}
+                                });
+                        }
                     }
                 }
             });
