@@ -92,6 +92,8 @@ export class PlayerService {
     }
 
     public selectSavesRecords(saves: SaveChunk[]): void {
+        console.log('selected', saves);
+        
         this._currentSaves = saves;
         this._currentPlayingChunk = 0;
         this.selectChunk(0);
@@ -165,7 +167,7 @@ export class PlayerService {
             pos = time - this._currentSaves[resultChunk].recordInfo.recordStartTime + 1;
         }
         
-        while (pos < 0 && resultChunk >= 0) {    
+        while (pos < 0 && resultChunk > 0) {    
             // if (this._currentSaves[resultChunk - 1].record.recordStartTime + this._currentSaves[resultChunk - 1].record.duration  < time) {
 
             //     return;
