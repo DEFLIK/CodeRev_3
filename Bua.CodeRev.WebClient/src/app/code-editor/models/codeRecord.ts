@@ -40,8 +40,8 @@ export class RecordInfo {
     public readonly duration: number;
     private _importantOperations: Set<OperationType> = new Set(['p']);
 
-    constructor(records: ICodeRecord[], startTime: number) {
-        this.recordStartTime = startTime;
+    constructor(records: ICodeRecord[], saveTime: number) {
+        this.recordStartTime = saveTime;
         this.record = records;
 
         if (records.length === 0) {
@@ -58,20 +58,16 @@ export class RecordInfo {
                 this.duration = (records[records.length - 1].t as number[])[1];
         }
 
+        this.recordStartTime -= this.duration;
         let lastHideTime = 0;
         for (const record of records) {
             for (const operation of record.o) {
                 if (operation.o === 'e') {
-                    console.log('extra');
-                    
                     switch (operation.activity?.action) {
                         case (ExtraActions.pageHidden):
-                            console.log('hid', record.t);
-                            
                             lastHideTime = record.t as number;
                             break;
                         case (ExtraActions.pageOpened):
-                            console.log('ope', record.t);
                             this.points.push({
                                 startTime: lastHideTime,
                                 endTime: record.t as number,
