@@ -1,6 +1,6 @@
 export enum CandidateState {
     'done' = 'Выполнено',
-    'inProcess' = 'В просессе',
+    'inProcess' = 'В процессе',
     'notStarted' = 'Не начато',
     'skiped' = 'Истёк срок'
 }
