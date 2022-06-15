@@ -1,6 +1,6 @@
 import { AfterContentInit, AfterViewInit, Component, ComponentFactoryResolver, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { flatMap, forkJoin, Observable, Subject, zip } from 'rxjs';
 import { EditorMode } from '../code-editor/models/editorMode'; 
 import { SavingService } from '../code-editor/services/saving-service/saving.service';
 import { InterviewSolutionReview } from '../review/models/interviewSolutionReview';
@@ -47,18 +47,18 @@ export class ContestComponent implements AfterViewInit {
     public ngAfterViewInit(): void {
         if (this.review) {
             this.taskList.loadInterviewTasks(this.review.interviewSolutionId, this.startTaskId);
-        } 
+        }
     }
 
     public start(sln: InterviewSolutionInfo): void {
-        this.isStarted = true;
+        // this.isStarted = true;
         this._contest
             .startInterview(sln.id)
             .subscribe({
                 next: (resp) => {
                     if (resp.ok) {
                         // this.createList(sln.id);
-                        this.taskList.loadInterviewTasks(sln.id);
+                        this.continue(sln);
                     }
                 }
             });
@@ -68,6 +68,10 @@ export class ContestComponent implements AfterViewInit {
         this.isStarted = true;
         this._contest.continueInterview(sln);
         this.taskList.loadInterviewTasks(sln.id);
+    }
+
+    public applyTaskError(task: TaskSolutionInfo): void {
+        
     }
 
     // private createList(interviewSolutionId: string): void {
