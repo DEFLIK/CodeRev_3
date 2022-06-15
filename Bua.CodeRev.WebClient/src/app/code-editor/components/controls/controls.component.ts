@@ -15,6 +15,9 @@ import { PlayerService } from '../../services/player-service/player.service';
 import { PatchedTimelineComponent } from '../patched-timeline/patched-timeline.component';
 import { SavingService } from '../../services/saving-service/saving.service';
 import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
+import { ReviewService } from 'src/app/review/services/review.service';
+import { SaveChunk } from '../../models/saveChunk';
+import { ContestService } from 'src/app/contest/services/contest-service/contest.service';
 
 @Component({
     selector: 'app-controls',
@@ -52,6 +55,8 @@ export class ControlsComponent implements OnInit, OnDestroy {
         private _record: RecordService,
         private _saving: SavingService,
         private _player: PlayerService,
+        private _contest: ContestService,
+        private _review: ReviewService
         // private _codeStorage: CodeStorageService,
     ) {
     }
@@ -79,14 +84,14 @@ export class ControlsComponent implements OnInit, OnDestroy {
                         this._bindedEditor.setDisabledState(false);
                     }
 
-                    this._bindedEditor.codeMirror?.setValue(this._saving.getLastSave(task.id)?.code ?? task.startCode);
+                    this._bindedEditor.codeMirror?.setValue(this._saving.getLastSavedCode(task.id) ?? task.startCode);
                     this._record.changeRecordingTask(task.id);
                     
                 }
 
                 if (this.editorMode === EditorMode.review) {
                     const saves = this._saving.getTaskSaves(task.id);
-                    // console.log(saves);
+                    console.log('saves', saves);
 
                     if (saves.length !== 0) {
                         this._player.selectSavesRecords(saves);
@@ -112,6 +117,12 @@ export class ControlsComponent implements OnInit, OnDestroy {
                             1000000,
                             []
                         );
+                        this._player.selectSavesRecords([
+                            new SaveChunk(
+                                task.id, 
+                                Date.now(),
+                                '', 
+                                new RecordInfo([], Date.now()))]);
                         this._bindedEditor?.codeMirror?.setValue('');
                     }
                 }
