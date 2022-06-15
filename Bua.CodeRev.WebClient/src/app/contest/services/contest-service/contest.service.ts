@@ -6,6 +6,7 @@ import { RequestMethodType } from 'src/app/global-services/request/models/reques
 import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
 import { InterviewSolutionInfo } from '../../models/interviewSolutionInfo';
 import { InterviewSolutionInfoResposne } from '../../models/response/interviewSolutionInfo-response';
+import { LastSavedCodeResponse } from '../../models/response/lastSavedCode-response';
 import { TaskSolutionInfoResponse } from '../../models/response/taskSolutionInfo-response';
 import { TaskSolutionInfo } from '../../models/taskSolutionInfo';
 
@@ -16,7 +17,8 @@ export class ContestService {
     public currentInterview?: InterviewSolutionInfo;
     public currentTask?: TaskSolutionInfo;
     public get isSolutionExpired(): boolean {
-        if (!this.currentInterview) {
+        // to fix after continue
+        if (!this.currentInterview || this.currentInterview.endTimeMs === -1) {
             return false;
         }
 
@@ -80,6 +82,14 @@ export class ContestService {
 
     public continueInterview(sln: InterviewSolutionInfo): void {
         this.currentInterview = sln;
+    }
+
+    public getLastSavedCode(taskSlnId: string): Observable<HttpResponse<LastSavedCodeResponse>> {
+        return this._http.request<LastSavedCodeResponse>({
+            url: `${UrlRoutes.tracker}/api/v1/tracker/get-last-code?taskSolutionId=${taskSlnId}`,
+            method: RequestMethodType.get,
+            auth: true
+        });
     }
 
     // public getSaves(): 
