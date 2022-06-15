@@ -59,6 +59,7 @@ public class Deserializer : IDeserializer
         var value = ParseValue(operation["a"]);
         var remove = operation["r"]?.Select(ParseRemove).ToArray();
         var select = operation["s"]?.Select(ParseSelect).ToArray();
+        var delete = operation["d"]?.ToString();
 
         return new OperationDto
         {
@@ -66,7 +67,8 @@ public class Deserializer : IDeserializer
             Index = period,
             Value = value,
             Remove = remove,
-            Select = select
+            Select = select,
+            Delete = delete
         };
     }
 

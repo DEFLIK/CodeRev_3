@@ -88,6 +88,12 @@ public class Serializer : ISerializer
             response.Add("s", JsonValue.Create(select));
         }
 
+        if (operationDto.Delete != null)
+        {
+            var delete = JsonSerializer.Deserialize<JsonValue>(operationDto.Delete);
+            response.Add("d", delete);
+        }
+
         return response;
     }
 

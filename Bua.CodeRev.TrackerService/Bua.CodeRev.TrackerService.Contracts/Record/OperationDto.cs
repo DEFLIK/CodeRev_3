@@ -38,8 +38,14 @@ public class OperationDto
     public SelectDto[]? Select { get; set; }
 
     /// <summary>
-    ///    e
+    ///     e
     /// </summary>
     [DataMember]
     public string? Extra { get; set; }
+
+    /// <summary>
+    ///     d
+    /// </summary>
+    [DataMember]
+    public string? Delete { get; set; }
 }
