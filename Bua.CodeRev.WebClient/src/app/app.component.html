@@ -1,4 +1,4 @@
-<header>
+<header *ngIf="!isAuthPage">
     <img [routerLink]="'/auth'" src="../assets/svg/logo.svg" class="logo">
     <div class="settings">
         <img src="../assets/svg/notification.svg" alt="notify" class="notify">

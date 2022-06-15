@@ -8,7 +8,9 @@ import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Rout
 })
 export class AppComponent {
     public title = 'Bua.CodeRev.WebClient';
-    public loading: boolean = false;
+    public loading = false;
+    public isAuthPage = false;
+
 
     constructor(private _router: Router) {
         this._router
@@ -23,6 +25,7 @@ export class AppComponent {
             this.loading = true;
         }
         if (event instanceof NavigationEnd) {
+            this.isAuthPage = event.urlAfterRedirects.includes('auth');
             this.loading = false;
         }
         if (event instanceof NavigationCancel) {
