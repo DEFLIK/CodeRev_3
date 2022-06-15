@@ -1,5 +1,7 @@
-<div class="wrapper" *ngFor="let task of tasks" (click)="change(task)">
+<div class="wrapper" *ngFor="let task of tasks">
     <div 
+        (click)="change(task)"
+        *ngIf="tasksStates.get(task.id)"
         class="task"
         [ngClass]="{
             'done': task.isDone,
@@ -7,6 +9,9 @@
             'selected': currentTask?.id === task.id
         }"
     >
-    {{task.taskOrder}}
+        {{task.taskOrder}}
+    </div>
+    <div *ngIf="!tasksStates.get(task.id)" class="task-sk">
+        ?
     </div>
 </div>

@@ -1,4 +1,4 @@
-<div *ngIf="taskInfo" class="task">
+<div *ngIf="taskInfo else noTask" class="task">
     <span class="text-top">
         Задача {{taskInfo.taskOrder}}
     </span>
@@ -19,3 +19,7 @@
         </div>
     </ng-template>
 </div>
+
+<ng-template #noTask>
+    Задача не выбрана
+</ng-template>
