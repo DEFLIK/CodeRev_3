@@ -36,4 +36,10 @@ public class OperationDto
     /// </summary>
     [DataMember]
     public SelectDto[]? Select { get; set; }
+
+    /// <summary>
+    ///    e
+    /// </summary>
+    [DataMember]
+    public string? Extra { get; set; }
 }

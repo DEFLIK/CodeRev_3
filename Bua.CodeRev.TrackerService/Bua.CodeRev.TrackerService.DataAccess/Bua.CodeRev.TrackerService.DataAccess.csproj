@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Bua.CodeRev.TrackerService.Contracts\Bua.CodeRev.TrackerService.Contracts.csproj" />
+        <ProjectReference Include="..\Bua.CodeRev.TrackerService.Contracts\Bua.CodeRev.TrackerService.Contracts.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MongoDB.Driver" Version="2.15.1" />
+        <PackageReference Include="MongoDB.Driver" Version="2.15.1"/>
     </ItemGroup>
 
 </Project>

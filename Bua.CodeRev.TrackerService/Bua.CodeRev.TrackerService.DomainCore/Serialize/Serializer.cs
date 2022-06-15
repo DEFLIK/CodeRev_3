@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 using Bua.CodeRev.TrackerService.Contracts.Actions;
 using Bua.CodeRev.TrackerService.Contracts.Primitives;
 using Bua.CodeRev.TrackerService.Contracts.Record;
@@ -23,6 +24,22 @@ public class Serializer : ISerializer
         return result.ToArray();
     }
 
+    private static JsonValue? SerializePeriod(PeriodDto periodDto)
+    {
+        var from = new[] {periodDto.From.LineNumber, periodDto.From.ColumnNumber};
+        if (periodDto.To == null) return JsonValue.Create(from);
+
+        var to = new[] {periodDto.To.LineNumber, periodDto.To.ColumnNumber};
+        return JsonValue.Create(new[] {from, to});
+    }
+
+    private static JsonValue? SerializeTime(TimelineDto timelineDto)
+    {
+        return timelineDto.End == null
+            ? JsonValue.Create(timelineDto.Start)
+            : JsonValue.Create(new[] {timelineDto.Start, timelineDto.End});
+    }
+
     private JsonObject SerializeRecord(RecordDto recordDto)
     {
         var response = new JsonObject();
@@ -42,11 +59,22 @@ public class Serializer : ISerializer
         var type = SerializeType(operationDto.Type);
         if (type != null)
             response.Add("o", type);
+        if (operationDto.Type == OperationTypeDto.Extra)
+        {
+            var extra = JsonSerializer.Deserialize<JsonValue>(operationDto.Extra);
+            response.Add("activity", extra);
+            return response;
+        }
 
         var index = SerializePeriod(operationDto.Index);
         response.Add("i", index);
 
-        if (operationDto.Value != null) response.Add("a", JsonValue.Create(operationDto.Value.Value));
+        if (operationDto.Value != null)
+        {
+            response.Add("a", operationDto.Value.Value.Length == 1
+                             ? JsonValue.Create(operationDto.Value.Value[0])
+                             : JsonValue.Create(operationDto.Value.Value));
+        }
 
         if (operationDto.Remove != null)
         {
@@ -79,15 +107,6 @@ public class Serializer : ISerializer
         return JsonValue.Create(new[] {start, end});
     }
 
-    private static JsonValue? SerializePeriod(PeriodDto periodDto)
-    {
-        var from = new[] {periodDto.From.LineNumber, periodDto.From.ColumnNumber};
-        if (periodDto.To == null) return JsonValue.Create(from);
-
-        var to = new[] {periodDto.To.LineNumber, periodDto.To.ColumnNumber};
-        return JsonValue.Create(new[] {from, to});
-    }
-
     private string? SerializeType(OperationTypeDto type)
     {
         return type switch
@@ -108,12 +127,5 @@ public class Serializer : ISerializer
             OperationTypeDto.NoType => null,
             _ => throw new ArgumentOutOfRangeException()
         };
-    }
-
-    private static JsonValue? SerializeTime(TimelineDto timelineDto)
-    {
-        return timelineDto.End == null
-            ? JsonValue.Create(timelineDto.Start)
-            : JsonValue.Create(new[] {timelineDto.Start, timelineDto.End});
     }
 }

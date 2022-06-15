@@ -45,6 +45,16 @@ public class Deserializer : IDeserializer
     private OperationDto ParseOperation(JToken? operation)
     {
         var type = ParseOperationType(operation["o"]);
+        if (type == OperationTypeDto.Extra)
+        {
+            var extra = operation["activity"].ToString();
+            return new OperationDto
+            {
+                Type = type,
+                Extra = extra
+            };
+        }
+
         var period = ParsePeriod(operation["i"]);
         var value = ParseValue(operation["a"]);
         var remove = operation["r"]?.Select(ParseRemove).ToArray();

@@ -24,7 +24,7 @@ public class Startup
         services.Configure<TaskRecordsTrackerDataBaseSettings>(
             configuration.GetSection(nameof(TaskRecordsTrackerDataBaseSettings)));
         services.AddSingleton<ITaskRecordsTrackerDataBaseSettings>(sp =>
-            sp.GetRequiredService<IOptions<TaskRecordsTrackerDataBaseSettings>>().Value);
+                                                                       sp.GetRequiredService<IOptions<TaskRecordsTrackerDataBaseSettings>>().Value);
         services.AddTransient<ITrackerManager, TrackerManager>();
         services.AddTransient<IRepository, Repository>();
         services.AddTransient<ISerializer, Serializer>();
@@ -43,8 +43,8 @@ public class Startup
         app.UseRouting();
         app.UseAuthorization();
         app.UseCors(builder => builder.AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod());
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod());
         app.UseMiddleware<ValidationMiddleware>();
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }

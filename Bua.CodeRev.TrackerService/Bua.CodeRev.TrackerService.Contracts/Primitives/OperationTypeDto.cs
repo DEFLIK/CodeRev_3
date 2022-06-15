@@ -8,7 +8,7 @@ public enum OperationTypeDto
     /// <summary>
     ///     c
     /// </summary>
-    [EnumMember] 
+    [EnumMember]
     Compose = 0,
 
     /// <summary>

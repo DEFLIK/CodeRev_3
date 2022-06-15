@@ -19,7 +19,7 @@ public class Repository : IRepository
     public async Task<TaskRecordDto?> Get(Guid taskSolutionId)
     {
         var records = await taskRecords.FindAsync(record => record.TaskSolutionId == taskSolutionId)
-            .ConfigureAwait(false);
+                                       .ConfigureAwait(false);
         return records.FirstOrDefault();
     }
 
@@ -42,7 +42,7 @@ public class Repository : IRepository
     {
         var filter = Builders<TaskRecordDto>.Filter.Eq(x => x.TaskSolutionId, request.TaskSolutionId);
         var update = Builders<TaskRecordDto>.Update.Set(x => x.RecordChunks, request.RecordChunks)
-            .Set(x => x.Code, request.Code);
+                                            .Set(x => x.Code, request.Code);
         await taskRecords.UpdateOneAsync(filter, update);
     }
 }

@@ -17,7 +17,7 @@ public class TrackerManager : ITrackerManager
     {
         var recordsRequest = await repository.Get(taskSolutionId);
         var result = recordsRequest?.RecordChunks.Where(x => x.SaveTime > (saveTime ?? 0m))
-            .OrderBy(x => x.SaveTime).ToArray();
+                                   .OrderBy(x => x.SaveTime).ToArray();
         return result;
     }
 
