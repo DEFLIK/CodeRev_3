@@ -47,7 +47,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
     //     return this.timeline?.nativeElement.offsetWidth ?? 0;
     // }
     private _bindedEditor?: CodemirrorComponent;
-    private _currentTask?: string;
+    private _currentTask?: TaskSolutionInfo;
     private _unsubscriber = new Subject<void>();
 
     constructor(
@@ -65,6 +65,26 @@ export class ControlsComponent implements OnInit, OnDestroy {
         this._unsubscriber.next();
     }
     public ngOnInit(): void {
+        // Костыль, переделать в вебсокеты
+        // if (this.editorMode === EditorMode.review) {
+        //     interval(2000)
+        //         .pipe(takeUntil(this._unsubscriber))
+        //         .subscribe(() => {
+        //             const task = this._currentTask;
+        //             if (task) {
+        //                 this._review
+        //                     .getSaves(task.id)
+        //                     .subscribe((saveResp) => {
+        //                         if (saveResp.ok && saveResp.body && this._currentTask === task) {
+        //                             this._saving.applySaves(task.id, saveResp.body);
+        //                             this.updateTimeLine(task);
+        //                         }
+        //                     });
+        //             }
+        //         });
+        // }
+
+        // Перетащить в место получше
         this.taskSelected$
             .pipe(takeUntil(this._unsubscriber))
             .subscribe(task => {
@@ -90,44 +110,10 @@ export class ControlsComponent implements OnInit, OnDestroy {
                 }
 
                 if (this.editorMode === EditorMode.review) {
-                    const saves = this._saving.getTaskSaves(task.id);
-                    console.log('saves', saves);
-
-                    if (saves.length !== 0) {
-                        this._player.selectSavesRecords(saves);
-                        this.patchedTimeline.setProperties(
-                            saves[0].recordInfo.recordStartTime, 
-                            this._player.getSaveDuration(), 
-                            this._player.getSaveRecords());
-    
-                        interval(100)
-                            .pipe(takeUntil(this._unsubscriber))
-                            .subscribe(() => {
-                                if (this._player.isPlaying) {
-                                    // this.patchedTimeline.timeLineComp!.isPlayClick = true;
-                                    this.patchedTimeline.setCurrentTime(this._player.getCurrentTime());
-                                } else {
-                                    // this.patchedTimeline.timeLineComp!.isPlayClick = false;
-                                }
-                            });
-                    } else {
-                        this._player.clear();
-                        this.patchedTimeline.setProperties(
-                            Date.now(),
-                            1000000,
-                            []
-                        );
-                        this._player.selectSavesRecords([
-                            new SaveChunk(
-                                task.id, 
-                                Date.now(),
-                                '', 
-                                new RecordInfo([], Date.now()))]);
-                        this._bindedEditor?.codeMirror?.setValue('');
-                    }
+                    this.updateTimeLine(task);
                 }
 
-                this._currentTask = task.id;
+                this._currentTask = task;
             });
     }
 
@@ -166,7 +152,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this._record.startRecord(this._currentTask);
+        this._record.startRecord(this._currentTask.id);
     }
 
     public stopRecord(): void {
@@ -174,7 +160,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this._record.stopRecord(this._currentTask);
+        this._record.stopRecord(this._currentTask.id);
     }
 
     public save(): void {
@@ -185,9 +171,9 @@ export class ControlsComponent implements OnInit, OnDestroy {
         this.stopRecord();
 
         this._saving.saveNext(
-            this._currentTask, 
+            this._currentTask.id, 
             this._bindedEditor.codeMirror?.getValue() ?? '', 
-            this._record.getTaskRecord(this._currentTask));
+            this._record.getTaskRecord(this._currentTask.id));
 
         this.startRecord();
     }
@@ -214,5 +200,43 @@ export class ControlsComponent implements OnInit, OnDestroy {
 
     public clear(): void {
         this._player.clear();
+    }
+
+    private updateTimeLine(task: TaskSolutionInfo): void {
+        const saves = this._saving.getTaskSaves(task.id);
+        console.log('saves', saves);
+
+        if (saves.length !== 0) {
+            this._player.selectSavesRecords(saves);
+            this.patchedTimeline.setProperties(
+                saves[0].recordInfo.recordStartTime, 
+                this._player.getSaveDuration(), 
+                this._player.getSaveRecords());
+
+            interval(100)
+                .pipe(takeUntil(this._unsubscriber))
+                .subscribe(() => {
+                    if (this._player.isPlaying) {
+                        // this.patchedTimeline.timeLineComp!.isPlayClick = true;
+                        this.patchedTimeline.setCurrentTime(this._player.getCurrentTime());
+                    } else {
+                        // this.patchedTimeline.timeLineComp!.isPlayClick = false;
+                    }
+                });
+        } else {
+            this._player.clear();
+            this.patchedTimeline.setProperties(
+                Date.now(),
+                1000000,
+                []
+            );
+            this._player.selectSavesRecords([
+                new SaveChunk(
+                    task.id, 
+                    Date.now(),
+                    '', 
+                    new RecordInfo([], Date.now()))]);
+            this._bindedEditor?.codeMirror?.setValue('');
+        }
     }
 }

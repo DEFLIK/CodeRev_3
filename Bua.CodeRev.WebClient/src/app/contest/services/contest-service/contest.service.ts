@@ -92,5 +92,5 @@ export class ContestService {
         });
     }
 
-    // public getSaves(): 
+    // todo endInterviewSln();
 }

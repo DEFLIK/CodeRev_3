@@ -73,7 +73,7 @@ export class HttpService {
                         }
                         log['request'] = { requestParams, httpOptions };
                         log['response'] = value;
-                        console.log(log);
+                        console.log('http log:', log);
                     }
 
                     return value;
@@ -81,7 +81,7 @@ export class HttpService {
                 takeUntil(requestParams.unsubscriber ? merge(this._takeUntil, requestParams.unsubscriber) : this._takeUntil),
                 timeout(10000),
                 share(),
-                first()
+                first(),
             );
 
     }
