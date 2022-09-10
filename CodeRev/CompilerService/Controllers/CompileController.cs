@@ -1,27 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Bua.CodeRev.CompilerService.Core.Models;
-using Bua.CodeRev.CompilerService.Core.Services.CompileService;
+using CodeRev.CompilerService.Helpers;
+using CodeRev.CompilerService.Models;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Bua.CodeRev.CompilerService.Core.Controllers
+namespace CodeRev.CompilerService.Controllers
 {
     [Route("api/compile")]
     [EnableCors]
     [ApiController]
     public class CompileController : ControllerBase
     {
-        private readonly ICompileService _compiler;
+        private readonly ICompiler compiler;
 
-        public CompileController(ICompileService _compiler)
+        public CompileController(ICompiler compiler)
         {
-            this._compiler = _compiler;
+            this.compiler = compiler;
         }
 
         [HttpPut("execute")]
@@ -30,7 +24,7 @@ namespace Bua.CodeRev.CompilerService.Core.Controllers
             ExecutionResult res;
             try
             {
-                res = _compiler.Execute(req.Code, req.EntryPoint);
+                res = compiler.Execute(req.Code, req.EntryPoint);
             }
             catch (ArgumentException)
             {

@@ -1,25 +1,30 @@
 using System.Linq;
-using Bua.CodeRev.CompilerService.Core.Models;
-using Bua.CodeRev.CompilerService.Core.Services.CompileService;
+using CodeRev.CompilerService.Helpers;
+using CodeRev.CompilerService.Models;
 using NUnit.Framework;
 
-namespace Bua.CodeRev.CompilerService.Tests
+namespace CodeRev.Tests
 {
-    public class Tests
+    public class CompilerServiceTest
     {
-        private static EntryPoint EntryPoint = new EntryPoint()
+        private static readonly EntryPoint _entryPoint = new()
         {
             NamespaceName = "CodeRevSolution",
             ClassName = "Program",
             MethodName = "Main"
         };
+        private Compiler compiler;
+
+        [SetUp]
+        public void SetUp()
+        {
+            compiler = new Compiler();
+        }
 
         [TestCase("hi")]
         [TestCase("Привет бобикам!")]
         public void Compile_ConsoleWriteLine_ShouldReturnText(string text)
         {
-            var compiler = new CompileService();
-
             var actual = compiler.Execute(@"
                 using System;
                 namespace CodeRevSolution
@@ -31,7 +36,7 @@ namespace Bua.CodeRev.CompilerService.Tests
                             Console.WriteLine(""" + text + @""");
                         }
                     }
-                }", EntryPoint);
+                }", _entryPoint);
 
             Assert.AreEqual(1, actual.Output.Count());
             Assert.AreEqual(text, actual.Output.First());
@@ -40,7 +45,6 @@ namespace Bua.CodeRev.CompilerService.Tests
         [Test]
         public void Compile_UseWrongLibrary_ShouldReturnError()
         {
-            var compiler = new CompileService();
             var expected = "CS0246";
 
             var actual = compiler.Execute(@"
@@ -53,7 +57,7 @@ namespace Bua.CodeRev.CompilerService.Tests
                         {
                         }
                     }
-                }", EntryPoint);
+                }", _entryPoint);
 
             Assert.AreEqual(1, actual.Errors.Count());
             Assert.AreEqual(expected, actual.Errors.First().ErrorCode);
@@ -62,7 +66,6 @@ namespace Bua.CodeRev.CompilerService.Tests
         [Test]
         public void Compile_UseUnassignedVariable_ShouldReturnError()
         {
-            var compiler = new CompileService();
             var expected = "CS0103";
 
             var actual = compiler.Execute(@"
@@ -76,7 +79,7 @@ namespace Bua.CodeRev.CompilerService.Tests
                             Console.WriteLine(bruh);
                         }
                     }
-                }", EntryPoint);
+                }", _entryPoint);
 
             Assert.AreEqual(1, actual.Errors.Count());
             Assert.AreEqual(expected, actual.Errors.First().ErrorCode);

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Bua.CodeRev.CompilerService.Core
+namespace CodeRev.CompilerService
 {
     public class Program
     {

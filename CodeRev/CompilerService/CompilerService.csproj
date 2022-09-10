@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
 	  <ServerGarbageCollection>false</ServerGarbageCollection>
 	  <Nullable>enable</Nullable>
+	  <RootNamespace>CodeRev.CompilerService</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

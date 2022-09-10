@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Bua.CodeRev.CompilerService.Core": {
+    "CodeRev.CompilerService": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": false,

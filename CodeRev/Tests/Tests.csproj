@@ -4,6 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <RootNamespace>CodeRev.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bua.CodeRev.CompilerService.Core\Bua.CodeRev.CompilerService.Core.csproj" />
+    <ProjectReference Include="..\CompilerService\CompilerService.csproj" />
   </ItemGroup>
 
 </Project>

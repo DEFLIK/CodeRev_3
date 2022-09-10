@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
-namespace Bua.CodeRev.CompilerService.Core.Models
+namespace CodeRev.CompilerService.Models
 {
     public class CompilationError
     {
