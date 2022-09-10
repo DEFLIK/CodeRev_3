@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Bua.CodeRev.Core": {
+    "CodeRev.Core": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",

@@ -1,19 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
-namespace Bua.CodeRev.Core
+namespace CodeRev.Core
 {
     public class Startup
     {
@@ -31,12 +24,12 @@ namespace Bua.CodeRev.Core
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bua.CodeRev.Core", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Core", Version = "v1" });
             });
 
             services.AddSpaStaticFiles(conf =>
             {
-                conf.RootPath = "../Bua.CodeRev.WebClient/dist";
+                conf.RootPath = "../WebClient/dist";
             });
         }
 
@@ -47,7 +40,7 @@ namespace Bua.CodeRev.Core
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bua.CodeRev.Core v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Core v1"));
             }
 
             app.UseHttpsRedirection();
@@ -67,7 +60,7 @@ namespace Bua.CodeRev.Core
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "../Bua.CodeRev.WebClient";
+                spa.Options.SourcePath = "../WebClient";
 
                 if (env.IsDevelopment())
                     spa.UseAngularCliServer("start");
