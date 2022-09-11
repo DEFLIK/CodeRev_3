@@ -26,11 +26,6 @@ namespace UserService
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(options => options.UseNpgsql(configuration.GetConnectionString("default"),
-                assembly => assembly.MigrationsAssembly("UserService.DAL")));
-
-            services.AddScoped<IDbRepository, DbRepository>();
-            
             // services.Configure<AuthOptions>(_configuration.GetSection("Auth")); // if auth options written in appsettings
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

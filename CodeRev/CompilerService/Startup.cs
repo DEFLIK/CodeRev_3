@@ -26,8 +26,6 @@ namespace CompilerService
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CompilerService", Version = "v1" });
             });
-
-            services.AddTransient<ICompiler, Compiler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

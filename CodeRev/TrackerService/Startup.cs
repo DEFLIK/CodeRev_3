@@ -20,16 +20,6 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddTransient<ValidationMiddleware>();
-        services.Configure<TaskRecordsTrackerDataBaseSettings>(
-            configuration.GetSection(nameof(TaskRecordsTrackerDataBaseSettings)));
-        services.AddSingleton<ITaskRecordsTrackerDataBaseSettings>(sp =>
-                                                                       sp.GetRequiredService<IOptions<TaskRecordsTrackerDataBaseSettings>>().Value);
-        services.AddTransient<ITrackerManager, TrackerManager>();
-        services.AddTransient<IRepository, Repository>();
-        services.AddTransient<ISerializer, Serializer>();
-        services.AddTransient<IDeserializer, Deserializer>();
-
         services.AddControllers();
         // services.AddApiVersioning(config => { config.ApiVersionReader = new HeaderApiVersionReader("api-version"); }); // todo repair versioning
         services.AddCors();
