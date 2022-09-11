@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CodeRev.CompilerService.Models
+namespace CompilerService.Models
 {
     public class ExecutionResult
     {

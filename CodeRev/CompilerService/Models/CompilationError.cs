@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace CodeRev.CompilerService.Models
+namespace CompilerService.Models
 {
     public class CompilationError
     {

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using CodeRev.CompilerService.Models;
+using CompilerService.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 
-namespace CodeRev.CompilerService.Helpers;
+namespace CompilerService.Helpers;
 
 public interface ICompiler
 {

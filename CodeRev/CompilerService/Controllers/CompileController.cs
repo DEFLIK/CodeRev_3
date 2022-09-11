@@ -1,10 +1,10 @@
 ﻿using System;
-using CodeRev.CompilerService.Helpers;
-using CodeRev.CompilerService.Models;
+using CompilerService.Helpers;
+using CompilerService.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CodeRev.CompilerService.Controllers
+namespace CompilerService.Controllers
 {
     [Route("api/compile")]
     [EnableCors]

@@ -1,9 +1,9 @@
 using System.Linq;
-using CodeRev.CompilerService.Helpers;
-using CodeRev.CompilerService.Models;
+using CompilerService.Helpers;
+using CompilerService.Models;
 using NUnit.Framework;
 
-namespace CodeRev.Tests
+namespace Tests
 {
     public class CompilerServiceTest
     {
