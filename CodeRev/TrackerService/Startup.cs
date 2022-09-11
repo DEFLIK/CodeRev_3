@@ -31,7 +31,7 @@ public class Startup
         services.AddTransient<IDeserializer, Deserializer>();
 
         services.AddControllers();
-        services.AddApiVersioning(config => { config.ApiVersionReader = new HeaderApiVersionReader("api-version"); });
+        // services.AddApiVersioning(config => { config.ApiVersionReader = new HeaderApiVersionReader("api-version"); }); // todo repair versioning
         services.AddCors();
     }
 

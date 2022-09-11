@@ -11,8 +11,9 @@ namespace TrackerService.Controller.v1;
 
 [ApiController]
 [EnableCors]
-[ApiVersion("1.0")]
-[Route("api/v{api-version:apiVersion}/tracker")]
+// [ApiVersion("1.0")]
+// [Route("api/v{api-version:apiVersion}/tracker")] // todo repair versioning
+[Route("api/v1.0/tracker")]
 public class TrackerController : ControllerBase
 {
     private readonly IDeserializer deserializer;
