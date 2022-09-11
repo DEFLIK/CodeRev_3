@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CompilerService\CompilerService.csproj" />
+    <ProjectReference Include="..\TrackerService\TrackerService.csproj" />
   </ItemGroup>
 
 </Project>
