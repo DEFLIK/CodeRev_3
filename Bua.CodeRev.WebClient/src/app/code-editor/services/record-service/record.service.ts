@@ -38,8 +38,6 @@ export class RecordService implements OnDestroy {
 
     public bindEditor(editorComp: CodemirrorComponent): void {
         if (!editorComp.codeMirror) {
-            console.log('cant bind editor');
-
             return;
         }
 
@@ -47,19 +45,12 @@ export class RecordService implements OnDestroy {
     }
 
     public initRecordersStream(tasksId: string[]): void {
-        console.log(tasksId);
-        
         for (const task of tasksId) {
             this.startRecord(task);
         }
-
-        console.log(this._recorders);
-        
     }
 
-    public changeRecordingTask(taskId: string): void {
-        console.log('changing', this._recorders);
-        
+    public startRecordingTask(taskId: string): void {
         for (const [key, recorder] of this._recorders) {      
             if (recorder) {    
                 this.stopRecord(key);
@@ -69,10 +60,6 @@ export class RecordService implements OnDestroy {
         this._currentTaskId = taskId;
 
         this.startRecord(taskId);
-        
-        // this._codeMirror.on('changes', curRecorder.changesListener);
-        // this._codeMirror.on('swapDoc', curRecorder.swapDocListener);
-        // this._codeMirror.on('cursorActivity', curRecorder.cursorActivityListener);
     }
 
     public startRecord(taskId: string): void {
@@ -88,8 +75,6 @@ export class RecordService implements OnDestroy {
         this._recorders.set(taskId, recorder);
         this._recorders.get(taskId).listen();
         this._codeMirror.setValue(this._codeMirror.getValue());
-        console.log('started');
-        
     }
 
     public stopRecord(taskId: string): void {
@@ -103,7 +88,6 @@ export class RecordService implements OnDestroy {
     }
 
     public getTaskRecord(task: string): RecordInfo {
-        // return new RecordInfo(JSON.parse(this._storage.getSavedRecord(task) ?? '{}'));
         const recorder = this._recorders.get(task);
         const startTime = this._recordsStartTime.get(task);
 

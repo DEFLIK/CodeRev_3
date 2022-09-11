@@ -16,8 +16,7 @@ export class SavingService {
         const time = Date.now();
         const nextChunk = new SaveChunk(taskId, time, code, recordInfo);
 
-        // localStorage.setItem('save' + taskId + time, JSON.stringify(nextChunk));
-        // localStorage.setItem('code' + taskId, code);
+        localStorage.setItem('code' + taskId, code);
 
         this._http
             .request<void, SaveChunkRequest>({
@@ -50,8 +49,7 @@ export class SavingService {
         return sorted;
     }
 
-    public getLastSavedCode(taskId: string): string | null { // Observable<SaveChunkResponse>
-        // get from backend
+    public getLastSavedCode(taskId: string): string | null {
         return localStorage.getItem('code' + taskId);
     }
 

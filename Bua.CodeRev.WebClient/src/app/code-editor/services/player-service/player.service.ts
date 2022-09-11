@@ -71,8 +71,6 @@ export class PlayerService {
         });
         this._bindedEditor = editorComp;
         this._player.on('end', () => {
-            console.log('end');
-
             if (this._currentPlayingChunk + 1 < this._currentSaves.length) {
                 // this.selectRecord(this._currentSaves[this._currentPlayingChunk + 1].record);
                 // this.play();
@@ -92,8 +90,6 @@ export class PlayerService {
     }
 
     public selectSavesRecords(saves: SaveChunk[]): void {
-        console.log('selected', saves);
-        
         this._currentSaves = saves;
         this._currentPlayingChunk = 0;
         this.selectChunk(0);
@@ -112,7 +108,7 @@ export class PlayerService {
             this._player.addOperations(record);
         }
         
-        // this.seek(this._currentRecord.recordStartTime + 1);
+        this.pageOpen.emit();
     }
 
     public setSpeed(speed: number): void {

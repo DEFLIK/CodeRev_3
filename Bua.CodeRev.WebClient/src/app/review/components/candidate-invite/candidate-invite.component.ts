@@ -35,8 +35,6 @@ export class CandidateInviteComponent implements OnInit, OnDestroy {
     }
 
     public close(): void {
-        console.log('close');
-        
         this.closeEvent.emit();
         this.isOpen = false;
     }
@@ -50,8 +48,6 @@ export class CandidateInviteComponent implements OnInit, OnDestroy {
     }
 
     public open(): void {
-        console.log('open');
-        
         this.isOpen = true;
     }
 

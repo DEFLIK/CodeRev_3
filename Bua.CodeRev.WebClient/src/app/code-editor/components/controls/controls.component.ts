@@ -57,7 +57,6 @@ export class ControlsComponent implements OnInit, OnDestroy {
         private _player: PlayerService,
         private _contest: ContestService,
         private _review: ReviewService
-        // private _codeStorage: CodeStorageService,
     ) {
     }
 
@@ -65,56 +64,10 @@ export class ControlsComponent implements OnInit, OnDestroy {
         this._unsubscriber.next();
     }
     public ngOnInit(): void {
-        // Костыль, переделать в вебсокеты
-        // if (this.editorMode === EditorMode.review) {
-        //     interval(2000)
-        //         .pipe(takeUntil(this._unsubscriber))
-        //         .subscribe(() => {
-        //             const task = this._currentTask;
-        //             if (task) {
-        //                 this._review
-        //                     .getSaves(task.id)
-        //                     .subscribe((saveResp) => {
-        //                         if (saveResp.ok && saveResp.body && this._currentTask === task) {
-        //                             this._saving.applySaves(task.id, saveResp.body);
-        //                             this.updateTimeLine(task);
-        //                         }
-        //                     });
-        //             }
-        //         });
-        // }
-
         // Перетащить в место получше
         this.taskSelected$
             .pipe(takeUntil(this._unsubscriber))
-            .subscribe(task => {
-                if (this.editorMode === EditorMode.write && this._bindedEditor) {
-                    if (!this.readOnly) {
-                        this.save();
-                    } else {
-                        this.stopRecord();
-                    }
-
-                    if (task.isDone) {
-                        this._bindedEditor.setDisabledState(true);
-                        this.readOnly = true;
-                        
-                    } else {
-                        this.readOnly = false;
-                        this._bindedEditor.setDisabledState(false);
-                    }
-
-                    this._bindedEditor.codeMirror?.setValue(this._saving.getLastSavedCode(task.id) ?? task.startCode);
-                    this._record.changeRecordingTask(task.id);
-                    
-                }
-
-                if (this.editorMode === EditorMode.review) {
-                    this.updateTimeLine(task);
-                }
-
-                this._currentTask = task;
-            });
+            .subscribe(nextTask => this.changeTask(nextTask));
     }
 
     public bindToEditor(editor: CodemirrorComponent): void {
@@ -135,8 +88,6 @@ export class ControlsComponent implements OnInit, OnDestroy {
         if (!this._currentTask) {
             return;
         }
-
-        // this._codeStorage.saveCode(this._currentTask, this._bindedEditor?.codeMirror?.getValue() ?? '');
 
         this._compiler
             .execute(
@@ -163,7 +114,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
         this._record.stopRecord(this._currentTask.id);
     }
 
-    public save(): void {
+    public save(continueRecord: boolean): void {
         if (!this._bindedEditor || !this._currentTask) {
             return;
         }
@@ -175,7 +126,9 @@ export class ControlsComponent implements OnInit, OnDestroy {
             this._bindedEditor.codeMirror?.getValue() ?? '', 
             this._record.getTaskRecord(this._currentTask.id));
 
-        this.startRecord();
+        if (continueRecord) {
+            this.startRecord();
+        }
     }
 
     public playSavedRecord(): void {
@@ -204,7 +157,6 @@ export class ControlsComponent implements OnInit, OnDestroy {
 
     private updateTimeLine(task: TaskSolutionInfo): void {
         const saves = this._saving.getTaskSaves(task.id);
-        console.log('saves', saves);
 
         if (saves.length !== 0) {
             this._player.selectSavesRecords(saves);
@@ -238,5 +190,39 @@ export class ControlsComponent implements OnInit, OnDestroy {
                     new RecordInfo([], Date.now()))]);
             this._bindedEditor?.codeMirror?.setValue('');
         }
+    }
+
+    private changeTask(nextTask: TaskSolutionInfo): void {
+        switch (this.editorMode) {
+            case (EditorMode.write):
+                if (!this._bindedEditor) {
+                    console.log('Cant resolve binded editor');
+                    break; 
+                }
+
+                if (!this._currentTask?.isDone) {
+                    this.save(false); 
+                }
+    
+                if (nextTask.isDone) {
+                    this._bindedEditor.setDisabledState(true);
+                    this.readOnly = true;
+                } else {
+                    this.readOnly = false;
+                    this._bindedEditor.setDisabledState(false);
+                }
+    
+                this._bindedEditor.codeMirror?.setValue(this._saving.getLastSavedCode(nextTask.id) ?? nextTask.startCode);
+
+                if (!nextTask.isDone) {
+                    this._record.startRecordingTask(nextTask.id);
+                }
+                break;
+            case (EditorMode.review):
+                this.updateTimeLine(nextTask);
+                break;
+        }
+
+        this._currentTask = nextTask;
     }
 }
