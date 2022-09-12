@@ -1,12 +1,15 @@
 using CompilerService.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TrackerService.DataAccess.Infrastructure;
 using TrackerService.DataAccess.Repositories;
@@ -14,6 +17,7 @@ using TrackerService.DomainCore.Deserialize;
 using TrackerService.DomainCore.Serialize;
 using TrackerService.EventHandling;
 using TrackerService.Services;
+using UserService;
 using UserService.DAL;
 using UserService.DAL.Models.Interfaces;
 using UserService.DAL.Repositories;
@@ -36,6 +40,24 @@ namespace Core
             services.AddDbContext<DataContext>(options => options.UseNpgsql(Configuration.GetConnectionString("default"),
                 assembly => assembly.MigrationsAssembly("UserService.DAL")));
             services.AddScoped<IDbRepository, DbRepository>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false; //todo change to true after dev for using ssl
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = AuthOptions.Issuer,
+                        
+                        ValidateAudience = true,
+                        ValidAudience = AuthOptions.Audience,
+                        
+                        ValidateLifetime = true,
+                        
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
+                    };
+                });
             
             // TrackerService
             services.AddTransient<ValidationMiddleware>();
@@ -47,10 +69,12 @@ namespace Core
             services.AddTransient<IRepository, Repository>();
             services.AddTransient<ISerializer, Serializer>();
             services.AddTransient<IDeserializer, Deserializer>();
+            // services.AddApiVersioning(config => { config.ApiVersionReader = new HeaderApiVersionReader("api-version"); });
             
             // CompilerService
             services.AddTransient<ICompilerService, CompilerService.Services.CompilerService>();
 
+            services.AddCors();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -82,6 +106,7 @@ namespace Core
                 .SetIsOriginAllowed(origin => true)
                 .AllowCredentials());
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
