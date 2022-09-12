@@ -1,5 +1,4 @@
 using System.Linq;
-using CompilerService.Helpers;
 using CompilerService.Models;
 using NUnit.Framework;
 
@@ -13,19 +12,19 @@ namespace Tests
             ClassName = "Program",
             MethodName = "Main"
         };
-        private Compiler compiler;
+        private CompilerService.Services.CompilerService compilerService;
 
         [SetUp]
         public void SetUp()
         {
-            compiler = new Compiler();
+            compilerService = new CompilerService.Services.CompilerService();
         }
 
         [TestCase("hi")]
         [TestCase("Привет бобикам!")]
         public void Compile_ConsoleWriteLine_ShouldReturnText(string text)
         {
-            var actual = compiler.Execute(@"
+            var actual = compilerService.Execute(@"
                 using System;
                 namespace CodeRevSolution
                 {
@@ -47,7 +46,7 @@ namespace Tests
         {
             var expected = "CS0246";
 
-            var actual = compiler.Execute(@"
+            var actual = compilerService.Execute(@"
                 using System123;
                 namespace CodeRevSolution
                 {
@@ -68,7 +67,7 @@ namespace Tests
         {
             var expected = "CS0103";
 
-            var actual = compiler.Execute(@"
+            var actual = compilerService.Execute(@"
                 using System;
                 namespace CodeRevSolution
                 {

@@ -9,7 +9,6 @@
     <ItemGroup>
         <ProjectReference Include="..\TrackerService.Contracts\TrackerService.Contracts.csproj"/>
         <ProjectReference Include="..\TrackerService.DataAccess\TrackerService.DataAccess.csproj"/>
-        <ProjectReference Include="..\TrackerService.DomainCore\TrackerService.DomainCore.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

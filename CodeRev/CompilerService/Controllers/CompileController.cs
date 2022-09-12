@@ -1,6 +1,6 @@
 ﻿using System;
-using CompilerService.Helpers;
 using CompilerService.Models;
+using CompilerService.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +11,11 @@ namespace CompilerService.Controllers
     [ApiController]
     public class CompileController : ControllerBase
     {
-        private readonly ICompiler compiler;
+        private readonly ICompilerService compilerService;
 
-        public CompileController(ICompiler compiler)
+        public CompileController(ICompilerService compilerService)
         {
-            this.compiler = compiler;
+            this.compilerService = compilerService;
         }
 
         [HttpPut("execute")]
@@ -24,7 +24,7 @@ namespace CompilerService.Controllers
             ExecutionResult res;
             try
             {
-                res = compiler.Execute(req.Code, req.EntryPoint);
+                res = compilerService.Execute(req.Code, req.EntryPoint);
             }
             catch (ArgumentException)
             {

@@ -8,9 +8,6 @@ namespace Core
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
-            CompilerService.Program.Main(args);
-            TrackerService.Program.Main(args);
-            UserService.Program.Main(args);
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)

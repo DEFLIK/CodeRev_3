@@ -1,4 +1,4 @@
-using CompilerService.Helpers;
+using CompilerService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -49,7 +49,7 @@ namespace Core
             services.AddTransient<IDeserializer, Deserializer>();
             
             // CompilerService
-            services.AddTransient<ICompiler, Compiler>();
+            services.AddTransient<ICompilerService, CompilerService.Services.CompilerService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

@@ -8,9 +8,9 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 
-namespace CompilerService.Helpers;
+namespace CompilerService.Services;
 
-public interface ICompiler
+public interface ICompilerService
 {
     /// <summary>
     /// Ассинхронно производит выполнение кода
@@ -21,7 +21,7 @@ public interface ICompiler
     public ExecutionResult Execute(string code, EntryPoint entryPoint);
 }
 
-public class Compiler : ICompiler
+public class CompilerService : ICompilerService
 {
     private static readonly string[] _dependencies =
     {
@@ -32,7 +32,7 @@ public class Compiler : ICompiler
 
     private readonly string assemblyPath;
 
-    public Compiler()
+    public CompilerService()
     {
         assemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location)
                         ?? throw new NullReferenceException(
