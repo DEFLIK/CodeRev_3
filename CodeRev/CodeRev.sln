@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilerService", "Compiler
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A45701FC-7830-4599-A97B-1C129895447D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{55E16E8C-62E8-46E0-9544-F3FBF3D0979A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{55E16E8C-62E8-46E0-9544-F3FBF3D0979A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TrackerService", "TrackerService", "{863712B4-6D39-4394-B8C7-33826F301539}"
 EndProject

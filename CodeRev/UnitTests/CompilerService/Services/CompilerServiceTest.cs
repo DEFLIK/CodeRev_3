@@ -2,7 +2,7 @@ using System.Linq;
 using CompilerService.Models;
 using NUnit.Framework;
 
-namespace Tests
+namespace UnitTests.CompilerService.Services
 {
     public class CompilerServiceTest
     {
@@ -12,12 +12,12 @@ namespace Tests
             ClassName = "Program",
             MethodName = "Main"
         };
-        private CompilerService.Services.CompilerService compilerService;
+        private global::CompilerService.Services.CompilerService compilerService;
 
         [SetUp]
         public void SetUp()
         {
-            compilerService = new CompilerService.Services.CompilerService();
+            compilerService = new global::CompilerService.Services.CompilerService();
         }
 
         [TestCase("hi")]

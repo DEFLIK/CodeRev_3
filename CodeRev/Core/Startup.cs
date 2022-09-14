@@ -37,6 +37,7 @@ namespace Core
         public void ConfigureServices(IServiceCollection services)
         {
             // UserService
+            // todo сделать нормальную настройку конфигурации
             services.AddDbContext<DataContext>(options => options.UseNpgsql(Configuration.GetConnectionString("default"),
                 assembly => assembly.MigrationsAssembly("UserService.DAL")));
             services.AddScoped<IDbRepository, DbRepository>();
