@@ -5,6 +5,6 @@
         Candidate,
         Interviewer,
         HrManager,
-        Admin
+        Admin,
     }
 }

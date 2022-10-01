@@ -5,6 +5,6 @@
         NotChecked = -1,
         NotPassed = 0,
         Probably = 1,
-        Passed = 2
+        Passed = 2,
     }
 }

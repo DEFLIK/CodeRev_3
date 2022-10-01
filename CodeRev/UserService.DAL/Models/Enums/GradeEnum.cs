@@ -7,6 +7,6 @@
         Two,
         Three,
         Four,
-        Five
+        Five,
     }
 }
