@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Interfaces;
-using UserService.LogicHelpers;
+using UserService.Helpers;
 using UserService.Models.Contest;
 using Task = UserService.DAL.Entities.Task;
 
@@ -43,21 +43,21 @@ namespace UserService.Controllers
             if (errorString != null)
                 return BadRequest(errorString);
             
-            var user = await _dbRepository
+            var user = await DbRepository
                 .Get<User>(i => i.Id == userGuid)
                 .FirstOrDefaultAsync();
             
             if (user == null)
                 return Conflict($"no {nameof(user)} with such id");
             
-            var interviewSolution = await _dbRepository
+            var interviewSolution = await DbRepository
                 .Get<InterviewSolution>(i => i.UserId == user.Id)
                 .FirstOrDefaultAsync();
             
             if (interviewSolution == null)
                 return Conflict($"no {nameof(interviewSolution)} with such id");
             
-            var interview = await _dbRepository
+            var interview = await DbRepository
                 .Get<Interview>(i => i.Id == interviewSolution.InterviewId)
                 .FirstOrDefaultAsync();
             
@@ -83,7 +83,7 @@ namespace UserService.Controllers
             var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
             if (errorString != null)
                 return BadRequest(errorString);
-            var interviewSolution = await _dbRepository
+            var interviewSolution = await DbRepository
                 .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
             
@@ -93,7 +93,7 @@ namespace UserService.Controllers
             if (interviewSolution.StartTimeMs >= 0)
                 return Conflict($"{nameof(interviewSolution)} is already started");
                 
-            var interview = await _dbRepository
+            var interview = await DbRepository
                 .Get<Interview>(iv => iv.Id == interviewSolution.InterviewId)
                 .FirstOrDefaultAsync();
                 
@@ -104,7 +104,7 @@ namespace UserService.Controllers
             interviewSolution.StartTimeMs = nowTime;
             interviewSolution.EndTimeMs = nowTime + interview.InterviewDurationMs;
             interviewSolution.TimeToCheckMs = nowTime + TimeToCheckInterviewSolutionMs;
-            await _dbRepository.SaveChangesAsync();
+            await DbRepository.SaveChangesAsync();
             return Ok();
         }
         
@@ -115,7 +115,7 @@ namespace UserService.Controllers
             var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
             if (errorString != null)
                 return BadRequest(errorString);
-            var interviewSolution = await _dbRepository
+            var interviewSolution = await DbRepository
                 .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
             
@@ -127,7 +127,7 @@ namespace UserService.Controllers
             if (nowTime > interviewSolution.EndTimeMs)
                 return Conflict($"{nameof(interviewSolution)} is already end (end time is less than now time) or wasn't started");
 
-            var interview = await _dbRepository
+            var interview = await DbRepository
                 .Get<Interview>(i => i.Id == interviewSolution.InterviewId)
                 .FirstOrDefaultAsync();
             
@@ -136,7 +136,7 @@ namespace UserService.Controllers
             
             interviewSolution.EndTimeMs = nowTime;
             interviewSolution.TimeToCheckMs = nowTime + TimeToCheckInterviewSolutionMs;
-            await _dbRepository.SaveChangesAsync();
+            await DbRepository.SaveChangesAsync();
             return Ok();
         }
         
@@ -147,7 +147,7 @@ namespace UserService.Controllers
             var (taskSolutionGuid, errorString) = TryParseGuid(taskSolutionId, nameof(taskSolutionId));
             if (errorString != null)
                 return BadRequest(errorString);
-            var taskSolution = await _dbRepository
+            var taskSolution = await DbRepository
                 .Get<TaskSolution>(t => t.Id == taskSolutionGuid)
                 .FirstOrDefaultAsync();
             
@@ -156,7 +156,7 @@ namespace UserService.Controllers
             if (taskSolution.IsDone)
                 return Conflict($"{nameof(taskSolution)} is already done");
 
-            var interviewSolution = await _dbRepository
+            var interviewSolution = await DbRepository
                 .Get<InterviewSolution>(i => i.Id == taskSolution.InterviewSolutionId)
                 .FirstOrDefaultAsync();
             
@@ -167,7 +167,7 @@ namespace UserService.Controllers
                 return Conflict($"{nameof(interviewSolution)} is already end (end time is less than now time) or wasn't started");
 
             taskSolution.IsDone = true;
-            await _dbRepository.SaveChangesAsync();
+            await DbRepository.SaveChangesAsync();
             return Ok();
         }
 
@@ -180,10 +180,10 @@ namespace UserService.Controllers
                 return BadRequest(errorString);
 
             var letterOrder = (int)'A';
-            var taskInfos = (await _dbRepository
+            var taskInfos = (await DbRepository
                     .Get<TaskSolution>(t => t.InterviewSolutionId == interviewSolutionGuid)
                     .ToListAsync())
-                .Join(_dbRepository.Get<Task>(),
+                .Join(DbRepository.Get<Task>(),
                     tSln => tSln.TaskId,
                     t => t.Id,
                     (tSln, t) => new TaskSolutionInfoContest

@@ -2,7 +2,6 @@ using CompilerService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +20,8 @@ using UserService;
 using UserService.DAL;
 using UserService.DAL.Models.Interfaces;
 using UserService.DAL.Repositories;
+using UserService.Helpers;
+using UserService.Helpers.Creators;
 
 namespace Core
 {
@@ -41,6 +42,10 @@ namespace Core
             services.AddDbContext<DataContext>(options => options.UseNpgsql(Configuration.GetConnectionString("default"),
                 assembly => assembly.MigrationsAssembly("UserService.DAL")));
             services.AddScoped<IDbRepository, DbRepository>();
+            services.AddScoped<IInterviewCreator, InterviewCreator>();
+            services.AddScoped<ITaskCreator, TaskCreator>();
+            services.AddScoped<IInvitationValidator, InvitationValidator>();
+            services.AddScoped<IInvitationCreator, InvitationCreator>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

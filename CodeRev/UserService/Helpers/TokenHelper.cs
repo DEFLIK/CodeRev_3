@@ -6,7 +6,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using UserService.DAL.Entities;
 
-namespace UserService.LogicHelpers
+namespace UserService.Helpers
 {
     public class TokenHelper
     {

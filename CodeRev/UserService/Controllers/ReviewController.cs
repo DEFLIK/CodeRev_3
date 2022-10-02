@@ -27,14 +27,14 @@ namespace UserService.Controllers
         [HttpGet("interviews")]
         public IActionResult GetInterviews()
         {
-            return Ok(_dbRepository.Get<Interview>());
+            return Ok(DbRepository.Get<Interview>());
         }
 
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet("vacancies")]
         public IActionResult GetVacancies()
         {
-            return Ok(_dbRepository.Get<Interview>().GroupBy(i => i.Vacancy).Select(g => g.Key));
+            return Ok(DbRepository.Get<Interview>().GroupBy(i => i.Vacancy).Select(g => g.Key));
         }
         
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
@@ -48,7 +48,7 @@ namespace UserService.Controllers
             var (taskSolutionGuid, errorString) = TryParseGuid(taskSolutionId, nameof(taskSolutionId));
             if (errorString != null)
                 return BadRequest(errorString);
-            var taskSolution = await _dbRepository
+            var taskSolution = await DbRepository
                 .Get<TaskSolution>(t => t.Id == taskSolutionGuid)
                 .FirstOrDefaultAsync();
             
@@ -62,7 +62,7 @@ namespace UserService.Controllers
                 var (interviewSolutionGuid, errorStringNew) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
                 if (errorStringNew != null)
                     return BadRequest(errorStringNew);
-                var interviewSolution = await _dbRepository
+                var interviewSolution = await DbRepository
                     .Get<InterviewSolution>(t => t.Id == interviewSolutionGuid)
                     .FirstOrDefaultAsync();
                 
@@ -73,7 +73,7 @@ namespace UserService.Controllers
             }
 
             taskSolution.Grade = (GradeEnum) grade;
-            await _dbRepository.SaveChangesAsync();
+            await DbRepository.SaveChangesAsync();
             return Ok();
         }
         
@@ -88,7 +88,7 @@ namespace UserService.Controllers
             var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
             if (errorString != null)
                 return BadRequest(errorString);
-            var interviewSolution = await _dbRepository
+            var interviewSolution = await DbRepository
                 .Get<InterviewSolution>(t => t.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
             
@@ -96,7 +96,7 @@ namespace UserService.Controllers
                 return Conflict($"no {nameof(interviewSolution)} with such id");
 
             interviewSolution.AverageGrade = (GradeEnum) grade;
-            await _dbRepository.SaveChangesAsync();
+            await DbRepository.SaveChangesAsync();
             return Ok();
         }
 
@@ -111,7 +111,7 @@ namespace UserService.Controllers
             var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
             if (errorString != null)
                 return BadRequest(errorString);
-            var interviewSolution = await _dbRepository
+            var interviewSolution = await DbRepository
                 .Get<InterviewSolution>(t => t.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
             
@@ -119,7 +119,7 @@ namespace UserService.Controllers
                 return Conflict($"no {nameof(interviewSolution)} with such id");
             
             interviewSolution.InterviewResult = (InterviewResultEnum) interviewResult;
-            await _dbRepository.SaveChangesAsync();
+            await DbRepository.SaveChangesAsync();
             return Ok();
         }
         
@@ -131,7 +131,7 @@ namespace UserService.Controllers
             var (interviewSolutionGuid, errorString) = TryParseGuid(interviewSolutionId, nameof(interviewSolutionId));
             if (errorString != null)
                 return BadRequest(errorString);
-            var interviewSolution = await _dbRepository
+            var interviewSolution = await DbRepository
                 .Get<InterviewSolution>(t => t.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
             
@@ -142,7 +142,7 @@ namespace UserService.Controllers
                 return BadRequest($"{nameof(reviewerComment)} can't be null");
             
             interviewSolution.ReviewerComment = reviewerComment;
-            await _dbRepository.SaveChangesAsync();
+            await DbRepository.SaveChangesAsync();
             return Ok();
         }
         
@@ -154,7 +154,7 @@ namespace UserService.Controllers
                 nameof(interviewSolutionReview.InterviewSolutionId));
             if (errorString != null)
                 return BadRequest(errorString);
-            var interviewSolution = await _dbRepository
+            var interviewSolution = await DbRepository
                 .Get<InterviewSolution>(t => t.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
             
@@ -178,7 +178,7 @@ namespace UserService.Controllers
             interviewSolution.ReviewerComment = interviewSolutionReview.ReviewerComment;
             interviewSolution.AverageGrade = interviewSolutionReview.AverageGrade;
             interviewSolution.InterviewResult = interviewSolutionReview.InterviewResult;
-            await _dbRepository.SaveChangesAsync();
+            await DbRepository.SaveChangesAsync();
             return Ok();
         }
         
@@ -214,10 +214,10 @@ namespace UserService.Controllers
         [HttpGet("cards")]
         public IActionResult GetInterviewSolutions()
         {
-            var groups = _dbRepository.Get<TaskSolution>().ToList()
+            var groups = DbRepository.Get<TaskSolution>().ToList()
                 .GroupBy(t => t.InterviewSolutionId)
                 .ToList(); //todo optimize
-            var cardsInfo = _dbRepository.Get<InterviewSolution>().ToList().Join(_dbRepository.Get<Interview>().ToList(),
+            var cardsInfo = DbRepository.Get<InterviewSolution>().ToList().Join(DbRepository.Get<Interview>().ToList(),
                 s => s.InterviewId,
                 i => i.Id,
                 (s, i) => new CardInfo
@@ -231,7 +231,7 @@ namespace UserService.Controllers
                     AverageGrade = s.AverageGrade,
                     InterviewResult = s.InterviewResult
                 }).ToList();
-            cardsInfo = cardsInfo.Join(_dbRepository.Get<User>().ToList(), 
+            cardsInfo = cardsInfo.Join(DbRepository.Get<User>().ToList(), 
                 c => c.UserId, 
                 u => u.Id,
                 (c, u) =>
@@ -254,21 +254,21 @@ namespace UserService.Controllers
         
         private async Task<InterviewSolutionInfo> GetFromDbInterviewSolutionInfoAsync(Guid interviewSolutionGuid)
         {
-            var interviewSolution = await _dbRepository
+            var interviewSolution = await DbRepository
                 .Get<InterviewSolution>(i => i.Id == interviewSolutionGuid)
                 .FirstOrDefaultAsync();
             
             if (interviewSolution == null)
                 return null;
 
-            var interview = await _dbRepository
+            var interview = await DbRepository
                 .Get<Interview>(i => i.Id == interviewSolution.InterviewId)
                 .FirstOrDefaultAsync();
             
             if (interview == null)
                 return null;
             
-            var user = await _dbRepository
+            var user = await DbRepository
                 .Get<User>(u => u.Id == interviewSolution.UserId)
                 .FirstOrDefaultAsync();
             
@@ -290,7 +290,7 @@ namespace UserService.Controllers
                 InterviewResult = interviewSolution.InterviewResult,
             };
             var taskSolutionsInfos = new List<TaskSolutionInfo>();
-            foreach (var taskSolution in _dbRepository
+            foreach (var taskSolution in DbRepository
                 .Get<TaskSolution>(t => t.InterviewSolutionId == interviewSolution.Id)
                 .ToList())
             {
@@ -311,20 +311,20 @@ namespace UserService.Controllers
 
         private async Task<TaskSolutionInfo> GetFromDbTaskSolutionInfoAsync(Guid taskSolutionGuid)
         {
-            var taskSolution = await _dbRepository
+            var taskSolution = await DbRepository
                 .Get<TaskSolution>(t => t.Id == taskSolutionGuid)
                 .FirstOrDefaultAsync();
             
             if (taskSolution == null)
                 return null;
             
-            var interviewSolution = await _dbRepository
+            var interviewSolution = await DbRepository
                 .Get<InterviewSolution>(i => i.Id == taskSolution.InterviewSolutionId)
                 .FirstOrDefaultAsync();
             
             if (interviewSolution == null)
                 return null;
-            var user = await _dbRepository
+            var user = await DbRepository
                 .Get<User>(u => u.Id == interviewSolution.UserId)
                 .FirstOrDefaultAsync();
             

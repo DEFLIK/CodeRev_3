@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 using UserService.DAL.Models.Interfaces;
-using UserService.LogicHelpers;
+using UserService.Helpers;
 using UserService.Models.Auth;
 
 namespace UserService.Controllers
@@ -17,11 +17,11 @@ namespace UserService.Controllers
     [ApiController]
     public class AuthController : ParentController
     {
-        private readonly TokenHelper _tokenHelper;
+        private readonly TokenHelper tokenHelper;
         
         public AuthController(IDbRepository dbRepository) : base(dbRepository)
         {
-            _tokenHelper = new TokenHelper();
+            tokenHelper = new TokenHelper();
         }
         
         [HttpPost("login")]
@@ -34,16 +34,16 @@ namespace UserService.Controllers
             
             return Ok(new
             {
-                accessToken = _tokenHelper.GenerateTokenString(user)
+                accessToken = tokenHelper.GenerateTokenString(user)
             });
         }
         
         [HttpGet("validate-role")]
         public IActionResult ValidateRoleFromToken([Required][FromQuery(Name = "token")] string token)
         {
-            if (!_tokenHelper.IsValidToken(token))
+            if (!tokenHelper.IsValidToken(token))
                 return Unauthorized();
-            var roleClaim = _tokenHelper.GetClaim(token, "role");
+            var roleClaim = tokenHelper.GetClaim(token, "role");
             if (roleClaim == null)
                 return Unauthorized();
             var role = roleClaim.Value;
@@ -58,13 +58,13 @@ namespace UserService.Controllers
         [HttpGet("validate-token")]
         public IActionResult ValidateToken([Required][FromQuery(Name = "token")] string token)
         {
-            if (!_tokenHelper.IsValidToken(token))
+            if (!tokenHelper.IsValidToken(token))
                 return Unauthorized();
             return Ok();
         }
 
         private async Task<User> AuthenticateUserAsync(LoginRequest request) =>
-            await _dbRepository
+            await DbRepository
                 .Get<User>(user => user.Email == request.Email && user.PasswordHash == request.PasswordHash)
                 .FirstOrDefaultAsync();
     }

@@ -32,7 +32,7 @@ export class ReviewService {
             withCredentials: true,
             auth: true
         }).pipe(
-            map(resp => 
+            map(resp =>
                 resp.body
                     ?.map(res => new CandidateCardInfo(res)) ?? []));
     }
@@ -71,7 +71,7 @@ export class ReviewService {
 
     public createInvite(invitation: Invitation): Observable<HttpResponse<InvitationResponse>> {
         return this._http.request<InvitationResponse, InvitationRequest>({
-            url: `${UrlRoutes.user}/api/users/create-invitation`,
+            url: `${UrlRoutes.user}/api/invitations/create`,
             method: RequestMethodType.post,
             auth: true,
             body: new InvitationRequest(invitation)
@@ -94,7 +94,7 @@ export class ReviewService {
             auth: true,
         });
     }
-    
+
     public getSaves(taskSlnId: string): Observable<HttpResponse<SaveChunkResponse[]>> {
         return this._http.request<SaveChunkResponse[]>({
             url: `${UrlRoutes.tracker}/api/v1.0/tracker/get?taskSolutionId=${taskSlnId}`,
