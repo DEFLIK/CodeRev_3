@@ -41,7 +41,7 @@ export class CandidateInviteComponent implements OnInit, OnDestroy {
 
     public getInvitation(id: string): string | undefined {
         if (this.links.get(id)) {
-            return `https://localhost:44395/auth/register/${this.links.get(id)}`;
+            return `https://localhost:5001/auth/register/${this.links.get(id)}`;
         }
 
         return undefined;
