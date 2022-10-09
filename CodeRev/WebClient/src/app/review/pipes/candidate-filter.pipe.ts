@@ -18,7 +18,7 @@ export class CandidateFilterPipe implements PipeTransform {
                     || filterCriteria.vacancies.length === 0)
                 && (filterCriteria.states.some(state => CandidateState[state as CandidateStateKeys] === card.getState())
                     || filterCriteria.states.length === 0))
-            .sort((card, next) => (card.startTimeMs * (filterCriteria.descending ? 1 : -1)) - next.startTimeMs);
+            .sort((card, next) => (card.startTimeMs - next.startTimeMs) * (filterCriteria.descending ? 1 : -1));
     }
 
 }
