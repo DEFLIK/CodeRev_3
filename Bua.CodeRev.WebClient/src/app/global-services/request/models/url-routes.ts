@@ -1,5 +1,5 @@
 export enum UrlRoutes {
-    'compiler' = 'https://localhost:43340',
-    'user' = 'https://localhost:44393',
-    'tracker' = 'https://localhost:44383'
+    'compiler' = 'https://localhost:5021',
+    'user' = 'https://localhost:5011',
+    'tracker' = 'https://localhost:5031'
 }
