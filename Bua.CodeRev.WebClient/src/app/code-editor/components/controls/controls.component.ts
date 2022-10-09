@@ -193,6 +193,10 @@ export class ControlsComponent implements OnInit, OnDestroy {
     }
 
     private changeTask(nextTask: TaskSolutionInfo): void {
+        if (nextTask.id === this._currentTask?.id) {
+            return;
+        }
+
         switch (this.editorMode) {
             case (EditorMode.write):
                 if (!this._bindedEditor) {

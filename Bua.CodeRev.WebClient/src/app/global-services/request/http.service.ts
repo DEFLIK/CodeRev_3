@@ -1,6 +1,6 @@
-import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable, isDevMode } from '@angular/core';
-import { first, map, merge, Observable, share, skipWhile, Subject, takeUntil, timeout } from 'rxjs';
+import { catchError, first, map, merge, Observable, of, share, skipWhile, Subject, takeUntil, timeout } from 'rxjs';
 import { SessionStorageService } from 'src/app/auth/services/sessionStorage-service/session-storage.service';
 import { ContentType } from './models/content-type';
 import { IRequestOptions } from './models/request-options';
@@ -59,13 +59,19 @@ export class HttpService {
         }
         
         const request: HttpRequest<F> = new HttpRequest<F>(requestParams.method, requestParams.url, requestParams.body, httpOptions);
-        console.log(request);
+        console.log('request:', request);
 
         return (this.http.request<T>(request) as Observable<HttpResponse<T>>)
             .pipe(
                 skipWhile((event: HttpResponse<T>) => event.type !== HttpEventType.Response),
-                map((value: HttpResponse<T>) => {
+                // catchError((err) => {
+                //     if ((err as HttpErrorResponse).status === 401) {
+                //         console.log('unatuh');
+                //     }
 
+                //     return of(err);
+                // }),
+                map((value: HttpResponse<T>) => {
                     if (isDevMode()) {
                         const log: any = {};
                         if (requestParams.method) {
