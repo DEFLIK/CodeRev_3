@@ -97,7 +97,7 @@ export class ReviewService {
     
     public getSaves(taskSlnId: string): Observable<HttpResponse<SaveChunkResponse[]>> {
         return this._http.request<SaveChunkResponse[]>({
-            url: `${UrlRoutes.tracker}/api/v1/tracker/get?taskSolutionId=${taskSlnId}`,
+            url: `${UrlRoutes.tracker}/api/v1.0/tracker/get?taskSolutionId=${taskSlnId}`,
             method: RequestMethodType.get,
             auth: true,
         });

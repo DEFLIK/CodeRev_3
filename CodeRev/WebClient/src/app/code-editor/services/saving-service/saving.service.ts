@@ -20,7 +20,7 @@ export class SavingService {
 
         this._http
             .request<void, SaveChunkRequest>({
-                url: `${UrlRoutes.tracker}/api/v1/tracker/save?taskSolutionId=${taskId}`,
+                url: `${UrlRoutes.tracker}/api/v1.0/tracker/save?taskSolutionId=${taskId}`,
                 method: RequestMethodType.put,
                 auth: true,
                 body: new SaveChunkRequest(nextChunk)

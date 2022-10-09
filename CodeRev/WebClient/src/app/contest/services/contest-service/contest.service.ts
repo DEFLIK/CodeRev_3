@@ -86,7 +86,7 @@ export class ContestService {
 
     public getLastSavedCode(taskSlnId: string): Observable<HttpResponse<LastSavedCodeResponse>> {
         return this._http.request<LastSavedCodeResponse>({
-            url: `${UrlRoutes.tracker}/api/v1/tracker/get-last-code?taskSolutionId=${taskSlnId}`,
+            url: `${UrlRoutes.tracker}/api/v1.0/tracker/get-last-code?taskSolutionId=${taskSlnId}`,
             method: RequestMethodType.get,
             auth: true
         });
