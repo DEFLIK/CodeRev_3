@@ -19,8 +19,8 @@ export class PlayerService {
     public execute = new EventEmitter<ExecutionResult>();
     
     public isPlaying: boolean = false;
+    public currentRecord?: RecordInfo;
     private _playSpeed: number = 0.8;
-    private _currentRecord?: RecordInfo;
     private _currentSaves: SaveChunk[] = [];
     private _bindedEditor?: CodemirrorComponent;
     private _currentPlayingChunk: number = 0;
@@ -99,10 +99,10 @@ export class PlayerService {
     public selectChunk(chunk: number): void {  
         this.clear();
         
-        this._currentRecord = this._currentSaves[chunk].recordInfo;
+        this.currentRecord = this._currentSaves[chunk].recordInfo;
         this._currentPlayingChunk = chunk;
         this._bindedEditor?.codeMirror?.setValue(this._currentSaves[chunk - 1]?.code ?? '');
-        const record = JSON.stringify(this._currentRecord.record);
+        const record = JSON.stringify(this.currentRecord.record);
 
         if (record.length > 2) {
             this._player.addOperations(record);
@@ -141,12 +141,12 @@ export class PlayerService {
     }
 
     public seek(time: number): void {
-        if (!this._player || !this._currentRecord) {
+        if (!this._player || !this.currentRecord) {
             return;
         }
         
 
-        let pos = time - this._currentRecord.recordStartTime;
+        let pos = time - this.currentRecord.recordStartTime;
         let resultChunk = this._currentPlayingChunk;
 
         if (pos === 0) {
@@ -185,7 +185,7 @@ export class PlayerService {
     }
 
     public getCurrentTime(): number {
-        return this._currentRecord?.recordStartTime + this._player.getCurrentTime();
+        return this.currentRecord?.recordStartTime + this._player.getCurrentTime();
     }
 
     public getSaveDuration(): number {

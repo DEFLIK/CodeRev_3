@@ -9,7 +9,7 @@ export class TimelinePatcherService {
 
     constructor() { }
 
-    // Monkey патч прикольной, но плохо сделанной, опенсурсной библиотеки ngx-video-timeline
+    // Monkey патч прикольной, но плохо сделанной, опенсурсной библиотеки ngx-video-timeline v0.1.1
     public patchTimelineComponent(timelineComp: NgxVideoTimelineComponent): void {
         // Фикс неправильного отслеживания позици мыши при выходе за рамки таймлайна
         const oldOnOut = timelineComp.mouseoutFunc.bind(timelineComp);
@@ -84,6 +84,13 @@ export class TimelinePatcherService {
         // Обновление отрисовки для применения новой логики
         timelineComp.onResize();
 
-        // timelineComp.onPlayClick();
+        // Настройка отрисовки блоков
+        timelineComp.draw_cell = (cell): void => {
+            const pxPerMs = timelineComp.canvasW / (timelineComp.hoursPerRuler * 60 * 60 * 1000); // px/ms
+            const beginX = (cell.beginTime - timelineComp.startTimestamp) * pxPerMs;
+            const cellWidth = (cell.endTime - cell.beginTime) * pxPerMs;
+            timelineComp.ctx.fillStyle = cell.style.background;
+            timelineComp.ctx.fillRect(beginX, 0, cellWidth, (timelineComp.scale * 0.75));
+        };
     }
 }

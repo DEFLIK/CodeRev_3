@@ -49,6 +49,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
     private _bindedEditor?: CodemirrorComponent;
     private _currentTask?: TaskSolutionInfo;
     private _unsubscriber = new Subject<void>();
+    private _timeLineUpdateSubscription?: Subscription;
 
     constructor(
         private _compiler: CompileService,
@@ -157,6 +158,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
 
     private updateTimeLine(task: TaskSolutionInfo): void {
         const saves = this._saving.getTaskSaves(task.id);
+        this._timeLineUpdateSubscription?.unsubscribe();
 
         if (saves.length !== 0) {
             this._player.selectSavesRecords(saves);
@@ -165,9 +167,13 @@ export class ControlsComponent implements OnInit, OnDestroy {
                 this._player.getSaveDuration(), 
                 this._player.getSaveRecords());
 
-            interval(100)
+            this._timeLineUpdateSubscription = interval(100)
                 .pipe(takeUntil(this._unsubscriber))
                 .subscribe(() => {
+                    if (this._player.currentRecord) {
+                        this.patchedTimeline.updateOperationLabel(this._player.currentRecord);
+                    }
+
                     if (this._player.isPlaying) {
                         // this.patchedTimeline.timeLineComp!.isPlayClick = true;
                         this.patchedTimeline.setCurrentTime(this._player.getCurrentTime());

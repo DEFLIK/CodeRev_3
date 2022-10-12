@@ -2,7 +2,7 @@ import { Component, ComponentFactoryResolver, OnDestroy, OnInit, Output, ViewChi
 import { NgxVideoTimelineComponent, VideoCellType } from 'ngx-video-timeline';
 import { interval, Subject, takeUntil } from 'rxjs';
 import { EventEmitter } from '@angular/core';
-import { RecordInfo } from '../../models/codeRecord';
+import { ActionColors, ActionLabels, IOperationMark, RecordInfo } from '../../models/codeRecord';
 import { TimelinePatcherService } from '../../services/timeline-patcher-service/timeline-patcher.service';
 
 @Component({
@@ -16,6 +16,7 @@ export class PatchedTimelineComponent implements OnDestroy {
     @ViewChild('container', { read: ViewContainerRef })
     public container!: ViewContainerRef;
     public timeLineComp?: NgxVideoTimelineComponent;
+    public currentOperationMark: IOperationMark = { startTime: 0, endTime: 0, action: ActionLabels.noAction, color: ActionColors.noAction };
     private _unsubscriber: Subject<void> = new Subject<void>();
     private _videoCells?: VideoCellType[];
 
@@ -81,8 +82,30 @@ export class PatchedTimelineComponent implements OnDestroy {
         });
     }
 
+    public updateOperationLabel(playingRecord: RecordInfo): void {
+        this.currentOperationMark = this.getCurrentOperationMark(playingRecord);
+    }
+
     public mfWheel(e: Event): void {
         this.timeLineComp?.mousewheelFunc(e);
+    }
+
+    private getCurrentOperationMark(playingRecord: RecordInfo): IOperationMark {
+        if (!this.timeLineComp) {       
+            throw new Error('Time line components is not initialized');
+        }
+
+        const currentTime = this.timeLineComp.playTime as number - playingRecord.recordStartTime;
+
+        for (const cell of playingRecord.points ?? []) {
+            if (cell.startTime <= currentTime && currentTime <= cell.endTime) {
+                return cell;
+            }
+        }
+
+        return this.timeLineComp.playTime <= playingRecord.recordStartTime || playingRecord.recordStartTime + playingRecord.duration <= this.timeLineComp.playTime
+            ? { startTime: 0, endTime: 0, action: ActionLabels.noAction, color: ActionColors.noAction }
+            : { startTime: 0, endTime: 0, action: ActionLabels.solving, color: ActionColors.solving };
     }
 
     private subscribeToValueChange(event: EventEmitter<number>): void {
