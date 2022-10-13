@@ -11,10 +11,12 @@ export interface ICodeRecord {
     t: number | number[],
     l: number
 }
-export enum OperationColors {
-    'p' = '#FDD116',
-    'e' = '#DD4B39',
-    'exec' = '#009460'
+export enum ActionColors {
+    paste = '#FDD116',
+    pageHidden = '#DD4B39',
+    execute = '#009460',
+    noAction = '#878787',
+    solving = '#90cbff'
 }
 export enum ExtraActions {
     pageOpened = 'open',
@@ -24,13 +26,21 @@ export enum ExtraActions {
 export interface IOperationMark {
     startTime: number,
     endTime: number,
-    color: OperationColors
+    color: ActionColors,
+    action: ActionLabels
 }
 export class ExtraActivity<T = void> {
     constructor(
         public action: ExtraActions,
         public data?: T 
     ) {}
+}
+export enum ActionLabels {
+    noAction = 'Задача не просматривается',
+    paste = 'Использование буфера обмена',
+    solving = 'Прогресс решения',
+    pageHidden = 'Вкладка с задачей скрыта',
+    execute = 'Выполнение программы'
 }
 
 export class RecordInfo {
@@ -71,14 +81,16 @@ export class RecordInfo {
                             this.points.push({
                                 startTime: lastHideTime,
                                 endTime: record.t as number,
-                                color: OperationColors.e
+                                color: ActionColors.pageHidden,
+                                action: ActionLabels.pageHidden
                             });
                             break;
                         case (ExtraActions.execute):
                             this.points.push({
                                 startTime: record.t as number,
                                 endTime: record.t as number,
-                                color: OperationColors.exec
+                                color: ActionColors.execute,
+                                action: ActionLabels.execute
                             });
                             break;
                     }   
@@ -96,7 +108,21 @@ export class RecordInfo {
                             start = (record.t as number[])[0];
                             end = (record.t as number[])[1];
                     }
-                    this.points.push({ startTime: start, endTime: end, color: OperationColors[operation.o as keyof typeof OperationColors] });
+
+                    let actionKey = 'none';
+
+                    switch (operation.o) {
+                        case ('p'):
+                            actionKey = 'paste';
+                            break;
+                    }
+
+                    this.points.push({ 
+                        startTime: start, 
+                        endTime: end + 1000, 
+                        color: ActionColors[actionKey as keyof typeof ActionColors], 
+                        action: ActionLabels[actionKey as keyof typeof ActionLabels]
+                    });
                 }
             }
         }    

@@ -1,5 +1,11 @@
-<div class="wrapper" (DOMMouseScroll)="mfWheel($event)">
-    <ng-container #container>
+<div class="action-wrapper">
+    <span class="action-status" [style]="{color: currentOperationMark.color}">{{currentOperationMark.action}}</span>
+</div>
 
-    </ng-container>
+<div class="wrapper">
+    <div class="wrapper" (DOMMouseScroll)="mfWheel($event)">
+        <ng-container #container>
+    
+        </ng-container>
+    </div>
 </div>

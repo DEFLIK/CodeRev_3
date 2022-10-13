@@ -35,23 +35,19 @@ export class CandidateInviteComponent implements OnInit, OnDestroy {
     }
 
     public close(): void {
-        console.log('close');
-        
         this.closeEvent.emit();
         this.isOpen = false;
     }
 
     public getInvitation(id: string): string | undefined {
         if (this.links.get(id)) {
-            return `https://localhost:44395/auth/register/${this.links.get(id)}`;
+            return `https://localhost:5001/auth/register/${this.links.get(id)}`;
         }
 
         return undefined;
     }
 
     public open(): void {
-        console.log('open');
-        
         this.isOpen = true;
     }
 

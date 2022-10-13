@@ -80,7 +80,6 @@ export class CandidatesListComponent implements OnInit {
     }
 
     public selectCard(candidate: CandidateCardInfo): void {
-        console.log(candidate);
         this._router.navigateByUrl(`review/grade/${candidate.interviewSolutionId}`);
     }
 

@@ -106,11 +106,6 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
             this.codeMirrorCmpt.codeMirror.setSize('100%', '100%');
             
             this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
-            
-
-            // if (this.editorMode === EditorMode.write) {
-            //     this._record.initRecordersStream(this.tasks ?? []);
-            // }
         });
     }
 
