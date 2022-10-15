@@ -5,10 +5,20 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using UserService.DAL.Entities;
+using UserService.DAL.Models.Enums;
 
 namespace UserService.Helpers
 {
-    public class TokenHelper
+    public interface ITokenHelper
+    {
+        bool IsValidToken(string token);
+        string GenerateTokenString(User user);
+        Claim GetClaim(string token, string claimType);
+        RoleEnum? GetRole(string token);
+        string TakeUserIdFromToken(string token);
+    }
+    
+    public class TokenHelper : ITokenHelper
     {
         public bool IsValidToken(string token)
         {
@@ -59,6 +69,21 @@ namespace UserService.Helpers
                 .ReadJwtToken(token)
                 .Claims
                 .FirstOrDefault(c => c.Type == claimType);
+
+        public RoleEnum? GetRole(string token)
+        {
+            if (!IsValidToken(token))
+                return null;
+            
+            var roleClaim = GetClaim(token, "role");
+            if (roleClaim == null)
+                return null;
+
+            if (!Enum.TryParse(roleClaim.Value, true, out RoleEnum role))
+                return null;
+
+            return role;
+        }
 
         public string TakeUserIdFromToken(string token) => 
             IsValidToken(token) ? GetClaim(token, JwtRegisteredClaimNames.Sub)?.Value : null;

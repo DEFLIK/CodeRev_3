@@ -47,6 +47,8 @@ namespace Core
             services.AddScoped<IInvitationValidator, InvitationValidator>();
             services.AddScoped<IInvitationCreator, InvitationCreator>();
             services.AddScoped<IUserCreator, UserCreator>();
+            services.AddScoped<IUserHelper, UserHelper>();
+            services.AddScoped<ITokenHelper, TokenHelper>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

@@ -1,12 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using UserService.DAL.Entities;
-using UserService.DAL.Models.Enums;
-using UserService.DAL.Models.Interfaces;
 using UserService.Helpers;
 using UserService.Models.Auth;
 
@@ -15,19 +9,21 @@ namespace UserService.Controllers
     [Route("api/[controller]")]
     [EnableCors]
     [ApiController]
-    public class AuthController : ParentController
+    public class AuthController : Controller
     {
-        private readonly TokenHelper tokenHelper;
+        private readonly ITokenHelper tokenHelper;
+        private readonly IUserHelper userHelper;
         
-        public AuthController(IDbRepository dbRepository) : base(dbRepository)
+        public AuthController(ITokenHelper tokenHelper, IUserHelper userHelper)
         {
-            tokenHelper = new TokenHelper();
+            this.tokenHelper = tokenHelper;
+            this.userHelper = userHelper;
         }
         
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync(LoginRequest request)
+        public IActionResult Login(LoginRequest request)
         {
-            var user = await AuthenticateUserAsync(request);
+            var user = userHelper.Get(request);
             
             if (user == null) 
                 return Unauthorized();
@@ -39,33 +35,20 @@ namespace UserService.Controllers
         }
         
         [HttpGet("validate-role")]
-        public IActionResult ValidateRoleFromToken([Required][FromQuery(Name = "token")] string token)
+        public IActionResult ValidateRole([Required][FromQuery(Name = "token")] string token)
         {
-            if (!tokenHelper.IsValidToken(token))
+            var role = tokenHelper.GetRole(token);
+            if (role == null)
                 return Unauthorized();
-            var roleClaim = tokenHelper.GetClaim(token, "role");
-            if (roleClaim == null)
-                return Unauthorized();
-            var role = roleClaim.Value;
-            if (!Enum.TryParse(role, true, out RoleEnum _))
-                return Unauthorized();
+            
             return Ok(new
             {
-                role = role.ToLower()
+                role = role.ToString()?.ToLower()
             });
         }
         
-        [HttpGet("validate-token")]
+        [HttpGet("validate")]
         public IActionResult ValidateToken([Required][FromQuery(Name = "token")] string token)
-        {
-            if (!tokenHelper.IsValidToken(token))
-                return Unauthorized();
-            return Ok();
-        }
-
-        private async Task<User> AuthenticateUserAsync(LoginRequest request) =>
-            await DbRepository
-                .Get<User>(user => user.Email == request.Email && user.PasswordHash == request.PasswordHash)
-                .FirstOrDefaultAsync();
+            => tokenHelper.IsValidToken(token) ? Ok() : Unauthorized();
     }
 }

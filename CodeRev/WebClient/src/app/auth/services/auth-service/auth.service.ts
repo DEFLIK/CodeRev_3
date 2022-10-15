@@ -30,13 +30,13 @@ export class AuthService {
     public register(inviteToken: string, userName: string, email: string, phone: string, pass: string): Observable<HttpResponse<unknown>> {
         this.isProcessing = true;
         const encryptedPass: string = this._encr.encryptString(pass);
-        
+
         const ans = this._req.request<unknown, IRegister>({
             url: `${UrlRoutes.user}/api/users/register?invite=${inviteToken}`,
             method: RequestMethodType.post,
-            body: { 
-                fullname: userName, 
-                email: email, 
+            body: {
+                fullname: userName,
+                email: email,
                 passwordHash: encryptedPass,
                 phonenumber: phone
             }
@@ -53,7 +53,7 @@ export class AuthService {
     public login(email: string, pass: string): Observable<HttpResponse<unknown>> {
         this.isProcessing = true;
         const encryptedPass: string = this._encr.encryptString(pass);
-        
+
         const ans = this._req.request<IJWTSession, ILogin>({
             url: `${UrlRoutes.user}/api/auth/login`,
             method: RequestMethodType.post,
@@ -68,7 +68,7 @@ export class AuthService {
                     this._router
                         .navigateByUrl(
                             RolesController.getDefaultRoot(
-                                this._cacher.getJWTInfo().role 
+                                this._cacher.getJWTInfo().role
                                 ?? UserRole.candidate));
                 }
                 this.isProcessing = false;
@@ -86,14 +86,14 @@ export class AuthService {
 
     public isSessionValid(session: IJWTSession): Observable<HttpResponse<unknown>> {
         return this._req.request({
-            url: `${UrlRoutes.user}/api/auth/validate-token?token=${this._cacher.getJWTSession().accessToken}`,
+            url: `${UrlRoutes.user}/api/auth/validate?token=${this._cacher.getJWTSession().accessToken}`,
             method: RequestMethodType.get
         });
     }
 
     public checkCurrentSessionValid(): Observable<HttpResponse<unknown>> {
         const session = this._cacher.getJWTSession();
-        
+
         if (session && session.accessToken) {
             return this.isSessionValid(session);
         }
