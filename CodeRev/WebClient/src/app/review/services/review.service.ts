@@ -27,7 +27,7 @@ export class ReviewService {
 
     public getCards(): Observable<CandidateCardInfo[]> {
         return this._http.request<CandidateCardInfoResponse[]>({
-            url: `${UrlRoutes.user}/api/review/cards`,
+            url: `${UrlRoutes.user}/api/cards`,
             method: RequestMethodType.get,
             withCredentials: true,
             auth: true
@@ -39,7 +39,7 @@ export class ReviewService {
 
     public getSolutionReview(slnId: string): Observable<HttpResponse<InterviewSolutionReviewResponse>> {
         return this._http.request<InterviewSolutionReviewResponse>({
-            url: `${UrlRoutes.user}/api/review/i-sln-info?id=${slnId}`,
+            url: `${UrlRoutes.user}/api/interviews/solution?id=${slnId}`,
             method: RequestMethodType.get,
             auth: true
         });
@@ -47,7 +47,7 @@ export class ReviewService {
 
     public setTaskGrade(taskId: string, grade: number): Observable<HttpResponse<void>> {
         return this._http.request<void>({
-            url: `${UrlRoutes.user}/api/review/put-task-sln-grade?id=${taskId}&grade=${grade}`,
+            url: `${UrlRoutes.user}/api/tasks/solution/grade?id=${taskId}&grade=${grade}`,
             method: RequestMethodType.put,
             auth: true
         });
@@ -55,7 +55,7 @@ export class ReviewService {
 
     public setInterviewGrade(slnId: string, grade: number): Observable<HttpResponse<void>> {
         return this._http.request<void>({
-            url: `${UrlRoutes.user}/api/review/put-i-sln-grade?id=${slnId}&grade=${grade}`,
+            url: `${UrlRoutes.user}/api/interviews/solution/grade?id=${slnId}&grade=${grade}`,
             method: RequestMethodType.put,
             auth: true
         });
@@ -63,7 +63,7 @@ export class ReviewService {
 
     public getInterviews(): Observable<HttpResponse<InterviewInfoResponse[]>> {
         return this._http.request<InterviewInfoResponse[]>({
-            url: `${UrlRoutes.user}/api/review/interviews`,
+            url: `${UrlRoutes.user}/api/interviews`,
             method: RequestMethodType.get,
             auth: true
         });
@@ -80,7 +80,7 @@ export class ReviewService {
 
     public setInterviewComment(slnId: string, comment: string): Observable<HttpResponse<void>> {
         return this._http.request<void, ReviewCommentRequest>({
-            url: `${UrlRoutes.user}/api/review/put-i-sln-comment?id=${slnId}`,
+            url: `${UrlRoutes.user}/api/interviews/solution/comment?id=${slnId}`,
             method: RequestMethodType.put,
             auth: true,
             body: new ReviewCommentRequest(comment)
@@ -89,7 +89,7 @@ export class ReviewService {
 
     public getVacancies(): Observable<HttpResponse<string[]>> {
         return this._http.request<string[]>({
-            url: `${UrlRoutes.user}/api/review/vacancies`,
+            url: `${UrlRoutes.user}/api/interviews/vacancies`,
             method: RequestMethodType.get,
             auth: true,
         });
@@ -108,7 +108,7 @@ export class ReviewService {
     // 2 - prinyat
     public setInterviewResult(taskSlnId: string, result: number): Observable<HttpResponse<void>> {
         return this._http.request<void>({
-            url: `${UrlRoutes.user}/api/review/put-i-sln-result?id=${taskSlnId}&result=${result}`,
+            url: `${UrlRoutes.user}/api/interviews/solution/result?id=${taskSlnId}&result=${result}`,
             method: RequestMethodType.put,
             auth: true,
         });

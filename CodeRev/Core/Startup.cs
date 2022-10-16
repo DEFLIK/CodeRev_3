@@ -49,6 +49,9 @@ namespace Core
             services.AddScoped<IUserCreator, UserCreator>();
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<ITokenHelper, TokenHelper>();
+            services.AddScoped<IInterviewHelper, InterviewHelper>();
+            services.AddScoped<ITaskHelper, TaskHelper>();
+            services.AddScoped<ICardHelper, CardHelper>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
