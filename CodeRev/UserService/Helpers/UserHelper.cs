@@ -10,6 +10,7 @@ namespace UserService.Helpers
     {
         User Get(LoginRequest request);
         User Get(Guid userId);
+        User Get(string userId, out string errorString);
         string GetFullName(Guid userId);
         string GetFullNameByInterviewSolutionId(Guid interviewSolutionId);
     }
@@ -34,6 +35,12 @@ namespace UserService.Helpers
             => dbRepository
                 .Get<User>(u => u.Id == userId)
                 .FirstOrDefault();
+
+        public User Get(string userId, out string errorString)
+        {
+            (var userGuid, errorString) = GuidParser.TryParse(userId, nameof(userId));
+            return errorString == null ? Get(userGuid) : null;
+        }
 
         public string GetFullName(Guid userId)
             => Get(userId)?.FullName;

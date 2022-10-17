@@ -18,12 +18,18 @@ namespace UserService.Helpers
         bool TryPutInterviewSolutionComment(string interviewSolutionId, string reviewerComment, out string errorString);
         bool TryPutInterviewSolutionReview(InterviewSolutionReview interviewSolutionReview, out string errorString);
         Interview GetInterview(Guid interviewId);
+        InterviewSolution GetInterviewSolutionByUserId(Guid userId);
         InterviewSolution GetInterviewSolution(Guid interviewSolutionId);
+        InterviewSolution GetInterviewSolution(string interviewSolutionId, out string errorString);
         InterviewSolutionInfo GetInterviewSolutionInfo(string interviewSolutionId, out string errorString);
+        bool StartInterviewSolution(string interviewSolutionId, out string errorString);
+        bool EndInterviewSolution(string interviewSolutionId, out string errorString);
     }
     
     public class InterviewHelper : IInterviewHelper
     {
+        private const long TimeToCheckInterviewSolutionMs = 604800000; // == 1 week //todo make config setting
+        
         private readonly IDbRepository dbRepository;
         private readonly IUserHelper userHelper;
         private readonly ITaskHelper taskHelper;
@@ -136,10 +142,21 @@ namespace UserService.Helpers
                 .Get<Interview>(i => i.Id == interviewId)
                 .FirstOrDefault();
 
+        public InterviewSolution GetInterviewSolutionByUserId(Guid userId)
+            => dbRepository
+                .Get<InterviewSolution>(i => i.UserId == userId)
+                .FirstOrDefault();
+
         public InterviewSolution GetInterviewSolution(Guid interviewSolutionId)
             => dbRepository
                 .Get<InterviewSolution>(i => i.Id == interviewSolutionId)
                 .FirstOrDefault();
+
+        public InterviewSolution GetInterviewSolution(string interviewSolutionId, out string errorString)
+        {
+            (var interviewSolutionGuid, errorString) = GuidParser.TryParse(interviewSolutionId, nameof(interviewSolutionId));
+            return errorString == null ? GetInterviewSolution(interviewSolutionGuid) : null;
+        }
 
         public InterviewSolutionInfo GetInterviewSolutionInfo(string interviewSolutionId, out string errorString)
         {
@@ -189,6 +206,67 @@ namespace UserService.Helpers
                 .ToList();
             
             return interviewSolutionInfo;
+        }
+
+        public bool StartInterviewSolution(string interviewSolutionId, out string errorString)
+        {
+            var interviewSolution = GetInterviewSolution(interviewSolutionId, out errorString);
+            if (errorString != null)
+                return false;
+            if (interviewSolution == null)
+            {
+                errorString = $"no {nameof(interviewSolution)} with such id";
+                return false;
+            }
+
+            if (interviewSolution.StartTimeMs >= 0)
+            {
+                errorString = $"{nameof(interviewSolution)} is already started";
+                return false;
+            }
+            
+            var interview = GetInterview(interviewSolution.InterviewId);
+            if (interview == null)
+            {
+                errorString = $"no {nameof(interview)} with such id";
+                return false;
+            }
+            
+            var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            interviewSolution.StartTimeMs = nowTime;
+            interviewSolution.EndTimeMs = nowTime + interview.InterviewDurationMs;
+            interviewSolution.TimeToCheckMs = nowTime + TimeToCheckInterviewSolutionMs;
+            dbRepository.SaveChangesAsync().Wait();
+            return true;
+        }
+
+        public bool EndInterviewSolution(string interviewSolutionId, out string errorString)
+        {
+            var interviewSolution = GetInterviewSolution(interviewSolutionId, out errorString);
+            if (interviewSolution == null)
+            {
+                errorString = $"no {nameof(interviewSolution)} with such id";
+                return false;
+            }
+            
+            var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            if (nowTime > interviewSolution.EndTimeMs)
+            {
+                errorString = $"{nameof(interviewSolution)} is already end (end time is less than now time) or wasn't started";
+                return false;
+            }
+
+            var interview = GetInterview(interviewSolution.InterviewId);
+            if (interview == null)
+            {
+                errorString = $"no {nameof(interview)} with such id";
+                return false;
+            }
+            
+            interviewSolution.EndTimeMs = nowTime;
+            interviewSolution.TimeToCheckMs = nowTime + TimeToCheckInterviewSolutionMs;
+            dbRepository.SaveChangesAsync().Wait();
+            return true;
         }
     }
 }
