@@ -22,6 +22,7 @@ export class ContestComponent implements AfterViewInit {
     @Input()
     public startTaskId?: string;
     public isStarted = false;
+    public isDraftOpen = false;
     public editType = EditorMode;
     public get taskSelected$(): Observable<TaskSolutionInfo> {
         return this._contest.taskSelected$;
@@ -72,6 +73,10 @@ export class ContestComponent implements AfterViewInit {
 
     public applyTaskError(task: TaskSolutionInfo): void {
         
+    }
+
+    public swapDraft(): void {
+        this.isDraftOpen = !this.isDraftOpen;
     }
 
     // private createList(interviewSolutionId: string): void {

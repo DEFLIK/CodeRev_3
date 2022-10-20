@@ -1,6 +1,6 @@
 <div class="wrapper" *ngFor="let task of tasks">
     <div 
-        (click)="change(task)"
+        (click)="openTask(task)"
         *ngIf="tasksStates.get(task.id)"
         class="task"
         [ngClass]="{
@@ -14,4 +14,8 @@
     <div *ngIf="!tasksStates.get(task.id)" class="task-sk">
         ?
     </div>
+</div>
+
+<div class="draft-btn" [ngClass]="{'selected': isDraftOpen}">
+    <img src="../../../../assets/svg/pencil.svg" alt="E" (click)="openDraft()">
 </div>

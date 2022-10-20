@@ -12,17 +12,26 @@ import { ContestService } from '../../services/contest-service/contest.service';
 export class TasksListComponent {
     public tasks: TaskSolutionInfo[] = [];
     public currentTask?: TaskSolutionInfo;
+    public isDraftOpen = false;
     public tasksStates = new Map<string, boolean>();
     @Output()
     public taskLoadingError = new EventEmitter<TaskSolutionInfo>();
+    @Output()
+    public draftButtonClick = new EventEmitter();
     constructor(
         private _contest: ContestService,
         private _saving: SavingService
     ) { }
 
-    public change(task: TaskSolutionInfo): void {
+    public openTask(task: TaskSolutionInfo): void {
+        this.isDraftOpen = false;
         this.currentTask = task;
         this._contest.selectTask(task);
+    }
+
+    public openDraft(): void {
+        this.isDraftOpen = true;
+        this.draftButtonClick.emit();
     }
 
     public loadInterviewTasks(slnId: string, startTaskId: string = ''): void {

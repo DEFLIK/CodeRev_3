@@ -10,13 +10,15 @@ import { CodeEditorComponent } from '../code-editor/code-editor.component';
 import { EditorMode } from '../code-editor/models/editorMode';
 import { ContestRoutingModule } from './contest-routing.module';
 import { SavingService } from '../code-editor/services/saving-service/saving.service';
+import { DraftComponent } from './components/draft/draft.component';
 
 @NgModule({
     declarations: [
         TaskComponent,
         TasksListComponent,
         NotificationComponent,
-        ContestComponent
+        ContestComponent,
+        DraftComponent
     ],
     imports: [
         CodeEditorModule,

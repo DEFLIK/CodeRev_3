@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { NgxVideoTimelineComponent, VideoCellType } from 'ngx-video-timeline';
 import { interval, Subject, takeUntil } from 'rxjs';
 import { EventEmitter } from '@angular/core';
@@ -10,7 +10,7 @@ import { TimelinePatcherService } from '../../services/timeline-patcher-service/
     templateUrl: './patched-timeline.component.html',
     styleUrls: ['./patched-timeline.component.less']
 })
-export class PatchedTimelineComponent implements OnDestroy {
+export class PatchedTimelineComponent implements OnDestroy, OnInit {
     @Output()
     public valueChanges: EventEmitter<number> = new EventEmitter<number>();
     @ViewChild('container', { read: ViewContainerRef })
@@ -25,6 +25,27 @@ export class PatchedTimelineComponent implements OnDestroy {
         private _componentFactory: ComponentFactoryResolver,
 
     ) { }
+    public ngOnInit(): void {
+        const observer = new ResizeObserver(() => {
+            console.log('resize');
+            
+            if (!this.timeLineComp) {
+                return;
+            }
+
+            this.timeLineComp.onResize();
+        });
+          
+
+        var el = document.querySelector('.editor');
+        if (el) {
+            observer.observe(el);
+        } else {
+            throw new Error('Unable to find time line element');
+        }
+        
+    }
+
     public ngOnDestroy(): void {
         this._unsubscriber.next();
     }
