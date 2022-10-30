@@ -1,8 +1,8 @@
 ﻿namespace UserService.DAL.Models.Draft
 {
-    public class CheckboxWithPosition
+    public class TextGroup
     {
         public int Position { get; set; }
-        public CheckboxRow[] Rows { get; set; }
+        public string Text { get; set; }
     }
 }
