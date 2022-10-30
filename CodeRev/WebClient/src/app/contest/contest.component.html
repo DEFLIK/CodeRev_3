@@ -8,11 +8,12 @@
         (continueInterview)="continue($event)"
     ></app-notification>
 
-    <app-tasks-list #list (taskLoadingError)="applyTaskError($event)" (draftButtonClick)="swapDraft()"></app-tasks-list>
+    <app-tasks-list #list (taskLoadingError)="applyTaskError($event)" (draftButtonClick)="swapDraft($event)"></app-tasks-list>
     <ng-container *ngIf="isStarted || review">
         <!-- <button *ngFor="let task of tasks" (click)="change(task)">{{task}}</button> -->
         <div class="right">
             <app-task [ngStyle]="{'display': isDraftOpen ? 'none' : ''}" class="task" [editorMode]="editorMode"></app-task>
+            <app-draft [ngStyle]="{'display': !isDraftOpen ? 'none' : ''}" class="draft"></app-draft>
             <app-code-editor 
                 [editorMode]="editorMode" 
                 class="editor"

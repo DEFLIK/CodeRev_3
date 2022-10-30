@@ -1,1 +1,9 @@
-<p>draft works!</p>
+<span class="draft-title">Заметки</span>
+
+<div class="draft-workspace">
+    <div *ngFor="let obj of draftObjects">{{obj.value}}</div>
+</div>
+
+<div class="draft-controls">
+    <button class="add-checkbox" (click)="addCheckBox()">+</button>
+</div>

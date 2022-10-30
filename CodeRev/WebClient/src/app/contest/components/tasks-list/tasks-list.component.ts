@@ -17,21 +17,20 @@ export class TasksListComponent {
     @Output()
     public taskLoadingError = new EventEmitter<TaskSolutionInfo>();
     @Output()
-    public draftButtonClick = new EventEmitter();
+    public draftButtonClick = new EventEmitter<boolean>();
     constructor(
         private _contest: ContestService,
         private _saving: SavingService
     ) { }
 
     public openTask(task: TaskSolutionInfo): void {
-        this.isDraftOpen = false;
         this.currentTask = task;
         this._contest.selectTask(task);
     }
 
-    public openDraft(): void {
-        this.isDraftOpen = true;
-        this.draftButtonClick.emit();
+    public clickDraft(): void {
+        this.isDraftOpen = !this.isDraftOpen;
+        this.draftButtonClick.emit(this.isDraftOpen);
     }
 
     public loadInterviewTasks(slnId: string, startTaskId: string = ''): void {

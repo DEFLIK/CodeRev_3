@@ -1,0 +1,24 @@
+@import (reference) "/src/styles.less";
+
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    gap: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 5px;
+
+    .draft-title {
+        font-size: 20px;
+    }
+
+    .draft-workspace {
+        flex: 1 1 auto;
+        width: 90%;
+        border-radius: 5px;
+        border: solid 1px gray;
+        outline: @color-gray 1px;
+    }
+}

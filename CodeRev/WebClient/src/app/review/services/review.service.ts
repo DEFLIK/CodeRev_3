@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { SaveChunkResponse } from 'src/app/code-editor/models/response/saveChunk-response';
 import { SaveChunk } from 'src/app/code-editor/models/saveChunk';
+import { Draft } from 'src/app/contest/models/draft';
+import { SetDraftRequest } from 'src/app/contest/models/request/setDraftRequest';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
@@ -106,11 +108,28 @@ export class ReviewService {
     // 0 - ne prinyat
     // 1 - podumat
     // 2 - prinyat
-    public setInterviewResult(taskSlnId: string, result: number): Observable<HttpResponse<void>> {
+    public setInterviewResult(interviewSlnId: string, result: number): Observable<HttpResponse<void>> {
         return this._http.request<void>({
-            url: `${UrlRoutes.user}/api/interviews/solution/result?id=${taskSlnId}&result=${result}`,
+            url: `${UrlRoutes.user}/api/interviews/solution/result?id=${interviewSlnId}&result=${result}`,
             method: RequestMethodType.put,
             auth: true,
+        });
+    }
+
+    public setInterviewDraft(draft: SetDraftRequest): Observable<HttpResponse<void>> {
+        return this._http.request<void, SetDraftRequest>({
+            url: `${UrlRoutes.user}/api/interviews/solution/draft?id=${interviewSlnId}`,
+            method: RequestMethodType.post,
+            auth: true,
+            body: draft
+        });
+    }
+
+    public getInterviewDraft(): Observable<HttpResponse<Draft>> {
+        return this._http.request<Draft>({
+            url: `${UrlRoutes.user}/api/interviews/solution/draft`,
+            method: RequestMethodType.post,
+            auth: true
         });
     }
 }

@@ -75,8 +75,8 @@ export class ContestComponent implements AfterViewInit {
         
     }
 
-    public swapDraft(): void {
-        this.isDraftOpen = !this.isDraftOpen;
+    public swapDraft(isNeedToOpen: boolean): void {
+        this.isDraftOpen = isNeedToOpen;
     }
 
     // private createList(interviewSolutionId: string): void {
