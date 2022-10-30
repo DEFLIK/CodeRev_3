@@ -1,8 +1,8 @@
 ﻿namespace UserService.DAL.Models.Draft
 {
-    public class TextGroup
+    public class ValueWithPosition
     {
         public int Position { get; set; }
-        public string Text { get; set; }
+        public string Value { get; set; }
     }
 }

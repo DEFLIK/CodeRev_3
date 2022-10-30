@@ -1,8 +1,7 @@
 ﻿namespace UserService.DAL.Models.Draft
 {
-    public class Checkbox
+    public class Checkbox : ValueWithPosition
     {
-        public string Value { get; set; }
         public bool IsChecked { get; set; }
     }
 }
