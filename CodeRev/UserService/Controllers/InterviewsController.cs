@@ -120,14 +120,13 @@ namespace UserService.Controllers
         [HttpPost($"{Solution}/draft")]
         public IActionResult PostDraft([Required] [FromBody] ReviewerDraftDto reviewerDraft)
         {
-            var draft = JsonConvert.DeserializeObject<Draft>(reviewerDraft.Draft);
             var interviewSolution = interviewHelper.GetInterviewSolution(reviewerDraft.InterviewSolutionId, out var errorString);
             if (errorString != null)
                 return BadRequest(errorString);
             if (interviewSolution == null)
                 return Conflict("no interview solution with such id, interview or user doesn't exist");
 
-            draftHelper.PutDraft(interviewSolution.ReviewerDraftId, draft);
+            draftHelper.PutDraft(interviewSolution.ReviewerDraftId, reviewerDraft.Draft);
             return Ok();
         }
     }

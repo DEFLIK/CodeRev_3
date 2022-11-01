@@ -8,6 +8,6 @@ namespace UserService.Models.Interviews
         [Required]
         public string InterviewSolutionId { get; set; }
         [Required]
-        public string Draft { get; set; }
+        public Draft Draft { get; set; }
     }
 }
