@@ -4,6 +4,6 @@
     {
         public int MaxPosition { get; set; }
         public ValueWithPosition[] Texts { get; set; }
-        public Checkbox[] CheckboxGroups { get; set; }
+        public Checkbox[] Checkboxes { get; set; }
     }
 }
