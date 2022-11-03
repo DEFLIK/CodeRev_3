@@ -1,7 +1,4 @@
-import { IDraftObject } from './draft';
-
-export class DraftCheckBox implements IDraftObject {
-    public position!: number;
+export class DraftCheckBox {
     public value!: string;
     public isChecked!: boolean;
 }

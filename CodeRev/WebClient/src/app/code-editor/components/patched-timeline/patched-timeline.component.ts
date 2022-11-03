@@ -62,8 +62,8 @@ export class PatchedTimelineComponent implements OnDestroy, OnInit {
         this.timeLineComp.videoCells = this._videoCells;
         this.timeLineComp.playBarColor = '#DA2323';
 
-        this.subscribeToValueChange(this.timeLineComp.keyUp);
-        this.subscribeToValueChange(this.timeLineComp.mouseDown);
+        // this.subscribeToValueChange(this.timeLineComp.keyUp);
+        // this.subscribeToValueChange(this.timeLineComp.mouseDown);
         
         setTimeout(() => {
             if (!this.timeLineComp) {

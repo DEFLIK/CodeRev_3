@@ -117,18 +117,20 @@ export class ReviewService {
     }
 
     public setInterviewDraft(draft: SetDraftRequest): Observable<HttpResponse<void>> {
+        console.log(draft);
+        
         return this._http.request<void, SetDraftRequest>({
-            url: `${UrlRoutes.user}/api/interviews/solution/draft?id=${interviewSlnId}`,
+            url: `${UrlRoutes.user}/api/interviews/solution/draft`,
             method: RequestMethodType.post,
             auth: true,
             body: draft
         });
     }
 
-    public getInterviewDraft(): Observable<HttpResponse<Draft>> {
+    public getInterviewDraft(intSlnId: string): Observable<HttpResponse<Draft>> {
         return this._http.request<Draft>({
-            url: `${UrlRoutes.user}/api/interviews/solution/draft`,
-            method: RequestMethodType.post,
+            url: `${UrlRoutes.user}/api/interviews/solution/draft?id=${intSlnId}`,
+            method: RequestMethodType.get,
             auth: true
         });
     }

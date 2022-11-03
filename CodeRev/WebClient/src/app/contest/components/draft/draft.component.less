@@ -9,16 +9,60 @@
     padding-top: 20px;
     padding-bottom: 20px;
     border-radius: 5px;
+    padding: 20px;
 
     .draft-title {
         font-size: 20px;
     }
 
-    .draft-workspace {
+    .draft {
+        display: flex;
+        flex-direction: column;
         flex: 1 1 auto;
-        width: 90%;
+        width: 100%;
         border-radius: 5px;
         border: solid 1px gray;
         outline: @color-gray 1px;
+
+        &-text {
+            padding: 10px;
+            flex: 1 1 auto;
+            display: flex;
+
+            &-area {
+                border: none; 
+                outline: none; 
+                resize: none;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                flex: 1 1 auto;
+            }
+        }
+
+        .draft-checkbox-list {
+            padding: 10px;
+        }
+
+        &-checkbox {
+            display: flex;
+            gap: 5px;
+
+            &-text {
+                display: flex;
+                flex: 1 1 auto;
+                border: none; 
+                outline: none; 
+                resize: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            &-close {
+                color: gray;
+                text-align: center;
+                cursor: pointer;
+            }
+        }
     }
 }

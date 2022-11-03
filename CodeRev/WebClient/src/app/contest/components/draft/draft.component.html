@@ -1,9 +1,30 @@
 <span class="draft-title">Заметки</span>
 
-<div class="draft-workspace">
-    <div *ngFor="let obj of draftObjects">{{obj.value}}</div>
+<div class="draft">
+    <div class="draft-text">
+        <ng-container *ngIf="draft && draft.text !== undefined else textNotLoaded">
+            <textarea class="draft-text-area" [(ngModel)]="draft.text"></textarea>
+        </ng-container>
+        <ng-template #textNotLoaded>
+            DRAFT TEXT NOT LOADED
+        </ng-template>
+    </div>
+
+    <div class="draft-checkbox-list">
+        <ng-container *ngIf="draft && draft.checkboxes else checkBoxesNotLoaded">
+            <div class="draft-checkbox" *ngFor="let checkbox of draft.checkboxes; let i = index">
+                <span class="draft-checkbox-close" (click)="removeCheckBox(i)">x</span>
+                <mat-checkbox [(ngModel)]="checkbox.isChecked"></mat-checkbox>
+                <textarea rows="1" oninput="this.style.height = ''; this.style.height = this.scrollHeight +'px'" class="draft-checkbox-text" [(ngModel)]="checkbox.value">{{checkbox.value}}</textarea>
+            </div>
+        </ng-container>
+        <ng-template #checkBoxesNotLoaded>
+            DRAFT CHECKBOXES NOT LOADED
+        </ng-template>
+    </div>
 </div>
 
 <div class="draft-controls">
     <button class="add-checkbox" (click)="addCheckBox()">+</button>
+    <button class="save-checkbox" (click)="saveDraft()">save</button>
 </div>

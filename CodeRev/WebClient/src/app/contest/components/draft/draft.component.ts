@@ -1,8 +1,9 @@
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ReviewService } from 'src/app/review/services/review.service';
-import { Draft, IDraftObject } from '../../models/draft';
+import { Draft } from '../../models/draft';
 import { DraftCheckBox } from '../../models/draftCheckBox';
-import { DraftText } from '../../models/draftText';
 import { SetDraftRequest } from '../../models/request/setDraftRequest';
 
 @Component({
@@ -12,27 +13,26 @@ import { SetDraftRequest } from '../../models/request/setDraftRequest';
 })
 export class DraftComponent {
 
-    public draftObjects?: IDraftObject[];
+    public draft?: Draft;
 
-    constructor(private _reviewService: ReviewService) { 
+    constructor(private _reviewService: ReviewService, private _activatedRoute: ActivatedRoute) { 
+        const id = this._activatedRoute.snapshot.paramMap.get('solutionId') ?? '';
+
         _reviewService
-            .getInterviewDraft()
+            .getInterviewDraft(id)
             .subscribe(draftResponse => {
                 if (!draftResponse.ok) {
                     console.error('Failed getting draft');
                 }
 
-                let draftObjects = draftResponse.body?.texts as IDraftObject[];
-                draftObjects.concat(draftResponse.body?.checkBoxes as IDraftObject[]);
-                draftObjects = draftObjects.sort((a, b) => a.position - b.position);
-
-                this.draftObjects = draftObjects;
+                this.draft = draftResponse.body ?? new Draft();
+                this.draft.text ??= '';
             });
     }
 
     public addCheckBox(): void {
-        if (!this.draftObjects) {
-            console.error('Draft is not initialized');
+        if (!this.draft?.checkboxes) {
+            console.error('Draft checkboxes is not initialized');
 
             return;
         }
@@ -42,43 +42,28 @@ export class DraftComponent {
         newCheckBox.isChecked = true;
         newCheckBox.value = 'текст';
 
-        this.draftObjects.push(newCheckBox);
+        this.draft.checkboxes.push(newCheckBox);
+    }
+
+    public removeCheckBox(i: number): void {
+        if (!this.draft?.checkboxes) {
+            console.error('Draft checkboxes is not initialized');
+
+            return;
+        }
+
+        this.draft.checkboxes.splice(i, 1);
     }
 
     public saveDraft(): void {
+        const id = this._activatedRoute.snapshot.paramMap.get('solutionId') ?? '';
+
         this._reviewService
-            .setInterviewDraft(new SetDraftRequest('id', this.toDraft(this.draftObjects ?? [])))
+            .setInterviewDraft(new SetDraftRequest(id, this.draft ?? new Draft()))
             .subscribe(saveResponse => {
                 if (!saveResponse.ok) {
                     console.error('Failed saving draft');
                 }
             });
-    }
-
-    private toDraft(draftObjects: IDraftObject[]): Draft {
-        const resultDraft = new Draft();
-        resultDraft.texts = [];
-        resultDraft.checkBoxes = [];
-        let counter = 0;
-
-        for (const obj of draftObjects) {
-            switch (typeof(obj)) {
-                case (DraftText.toString()):
-                    const text = obj as DraftText;
-                    text.position = counter;
-                    resultDraft.texts.push(text);
-                    break;
-                case (DraftCheckBox.toString()):
-                    const checkBox = obj as DraftCheckBox;
-                    checkBox.position = counter;
-                    resultDraft.checkBoxes.push(checkBox);
-                    break;
-            }
-            counter++;
-        }
-
-        resultDraft.maxPosition = draftObjects.length;
-
-        return resultDraft;
     }
 }

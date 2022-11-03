@@ -11,6 +11,9 @@ import { EditorMode } from '../code-editor/models/editorMode';
 import { ContestRoutingModule } from './contest-routing.module';
 import { SavingService } from '../code-editor/services/saving-service/saving.service';
 import { DraftComponent } from './components/draft/draft.component';
+import { MatCheckboxModule } from '@angular/material/checkbox'; 
+import { FormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
     declarations: [
@@ -23,7 +26,10 @@ import { DraftComponent } from './components/draft/draft.component';
     imports: [
         CodeEditorModule,
         CommonModule,
-        ContestRoutingModule
+        ContestRoutingModule,
+        MatCheckboxModule,
+        FormsModule,
+        DragDropModule
     ],
     exports: [
         ContestComponent
