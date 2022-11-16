@@ -232,6 +232,13 @@ namespace UserService.Helpers
                 return false;
             }
             
+            //todo возможно, надо сделать как в комменте, иначе время не так считаем
+            // var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            // var endTime = nowTime + interview.InterviewDurationMs;
+            // interviewSolution.StartTimeMs = nowTime;
+            // interviewSolution.EndTimeMs = endTime;
+            // interviewSolution.TimeToCheckMs = endTime + TimeToCheckInterviewSolutionMs;
+            
             var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             interviewSolution.StartTimeMs = nowTime;
             interviewSolution.EndTimeMs = nowTime + interview.InterviewDurationMs;
