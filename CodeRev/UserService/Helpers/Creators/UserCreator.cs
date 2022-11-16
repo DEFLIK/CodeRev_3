@@ -37,13 +37,15 @@ namespace UserService.Helpers.Creators
                 return null;
             }
 
+            var fullName = userRegistration.FirstName + ' ' + userRegistration.Surname;
+
             var user = new User
             {
                 Id = Guid.NewGuid(),
                 Role = invitation.Role,
                 Email = userRegistration.Email,
                 PasswordHash = userRegistration.PasswordHash,
-                FullName = userRegistration.FullName,
+                FullName = fullName,
                 PhoneNumber = userRegistration.PhoneNumber
             };
             

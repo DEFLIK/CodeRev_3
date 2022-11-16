@@ -5,7 +5,9 @@ namespace UserService.Models.Auth
     public class UserRegistration
     {
         [Required]
-        public string FullName { get; set; }
+        public string FirstName { get; set; }
+        [Required]
+        public string Surname { get; set; }
         
         [Required]
         [Phone]

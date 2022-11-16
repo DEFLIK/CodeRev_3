@@ -7,7 +7,6 @@ namespace UserService.Models.Review
     {
         public Guid UserId { get; set; }
         public Guid InterviewSolutionId { get; set; }
-        public string FullName { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string Vacancy { get; set; }
