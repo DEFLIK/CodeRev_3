@@ -15,8 +15,8 @@ namespace UserService.Models.Review
         public long EndTimeMs { get; set; }
         public long TimeToCheckMs { get; set; } // fixed time until which solution must be checked
         public string ReviewerComment { get; set; }
-        public GradeEnum AverageGrade { get; set; }
-        public InterviewResultEnum InterviewResult { get; set; }
+        public Grade AverageGrade { get; set; }
+        public InterviewResult InterviewResult { get; set; }
         public IList<TaskSolutionInfo> TaskSolutionsInfos { get; set; }
     }
 }

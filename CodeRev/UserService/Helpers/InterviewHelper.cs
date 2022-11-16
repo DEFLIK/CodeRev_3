@@ -13,8 +13,8 @@ namespace UserService.Helpers
         IEnumerable<Interview> GetAllInterviews();
         IEnumerable<string> GetAllVacancies();
         string GetVacancy(Guid interviewId);
-        bool TryPutInterviewSolutionGrade(string interviewSolutionId, GradeEnum grade, out string errorString);
-        bool TryPutInterviewSolutionResult(string interviewSolutionId, InterviewResultEnum interviewResult, out string errorString);
+        bool TryPutInterviewSolutionGrade(string interviewSolutionId, Grade grade, out string errorString);
+        bool TryPutInterviewSolutionResult(string interviewSolutionId, InterviewResult interviewResult, out string errorString);
         bool TryPutInterviewSolutionComment(string interviewSolutionId, string reviewerComment, out string errorString);
         bool TryPutInterviewSolutionReview(InterviewSolutionReview interviewSolutionReview, out string errorString);
         Interview GetInterview(Guid interviewId);
@@ -50,7 +50,7 @@ namespace UserService.Helpers
         public string GetVacancy(Guid interviewId)
             => GetInterview(interviewId)?.Vacancy;
 
-        public bool TryPutInterviewSolutionGrade(string interviewSolutionId, GradeEnum grade, out string errorString)
+        public bool TryPutInterviewSolutionGrade(string interviewSolutionId, Grade grade, out string errorString)
         {
             (var interviewSolutionGuid, errorString) = GuidParser.TryParse(interviewSolutionId, nameof(interviewSolutionId));
             if (errorString != null)
@@ -67,7 +67,7 @@ namespace UserService.Helpers
             return true;
         }
 
-        public bool TryPutInterviewSolutionResult(string interviewSolutionId, InterviewResultEnum interviewResult, out string errorString)
+        public bool TryPutInterviewSolutionResult(string interviewSolutionId, InterviewResult interviewResult, out string errorString)
         {
             (var interviewSolutionGuid, errorString) = GuidParser.TryParse(interviewSolutionId, nameof(interviewSolutionId));
             if (errorString != null)

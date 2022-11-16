@@ -14,7 +14,7 @@ namespace UserService.Helpers
         bool IsValidToken(string token);
         string GenerateTokenString(User user);
         Claim GetClaim(string token, string claimType);
-        RoleEnum? GetRole(string token);
+        Role? GetRole(string token);
         string TakeUserIdFromToken(string token);
     }
     
@@ -70,7 +70,7 @@ namespace UserService.Helpers
                 .Claims
                 .FirstOrDefault(c => c.Type == claimType);
 
-        public RoleEnum? GetRole(string token)
+        public Role? GetRole(string token)
         {
             if (!IsValidToken(token))
                 return null;
@@ -79,7 +79,7 @@ namespace UserService.Helpers
             if (roleClaim == null)
                 return null;
 
-            if (!Enum.TryParse(roleClaim.Value, true, out RoleEnum role))
+            if (!Enum.TryParse(roleClaim.Value, true, out Role role))
                 return null;
 
             return role;

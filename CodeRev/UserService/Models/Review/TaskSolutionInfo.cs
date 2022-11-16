@@ -11,6 +11,6 @@ namespace UserService.Models.Review
         public string FullName { get; set; }
         public char TaskOrder { get; set; }
         public bool IsDone { get; set; }
-        public GradeEnum Grade { get; set; }
+        public Grade Grade { get; set; }
     }
 }

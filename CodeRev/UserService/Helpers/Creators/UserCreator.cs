@@ -49,7 +49,7 @@ namespace UserService.Helpers.Creators
             
             dbRepository.Add(user).Wait();
 
-            if (invitation.Role != RoleEnum.Candidate)
+            if (invitation.Role != Role.Candidate)
                 dbRepository.Remove(invitation).Wait();
 
             if (!invitation.InterviewId.Equals(Guid.Empty))

@@ -11,10 +11,10 @@ namespace UserService.Models.Review
         public string Vacancy { get; set; }
         public long StartTimeMs { get; set; }
         public long TimeToCheckMs { get; set; }
-        public GradeEnum AverageGrade { get; set; }
+        public Grade AverageGrade { get; set; }
         public string ReviewerComment { get; set; }
         public int DoneTasksCount { get; set; }
         public int TasksCount { get; set; }
-        public InterviewResultEnum InterviewResult { get; set; }
+        public InterviewResult InterviewResult { get; set; }
     }
 }

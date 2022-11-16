@@ -24,13 +24,13 @@ namespace UserService.Helpers.Creators
 
         public Invitation Create(InvitationParams invitationParams, out string errorString)
         {
-            if (!Enum.TryParse(invitationParams.Role, true, out RoleEnum roleEnum))
+            if (!Enum.TryParse(invitationParams.Role, true, out Role roleEnum))
             {
                 errorString = "role is invalid";
                 return null;
             }
             
-            var mustBeInterviewId = invitationParams.InterviewId != null || roleEnum == RoleEnum.Candidate;
+            var mustBeInterviewId = invitationParams.InterviewId != null || roleEnum == Role.Candidate;
             var interviewGuid = Guid.Empty;
             if (mustBeInterviewId)
             {

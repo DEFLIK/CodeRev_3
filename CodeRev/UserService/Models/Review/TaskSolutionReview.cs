@@ -8,6 +8,6 @@ namespace UserService.Models.Review
         [Required]
         public string TaskSolutionId { get; set; }
         [Required]
-        public GradeEnum Grade { get; set; }
+        public Grade Grade { get; set; }
     }
 }

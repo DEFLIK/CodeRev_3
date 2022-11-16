@@ -35,7 +35,7 @@ namespace UserService.Helpers.Creators
                 InterviewSolutionId = interviewSolutionGuid,
                 TaskId = taskGuid,
                 IsDone = false,
-                Grade = GradeEnum.Zero,
+                Grade = Grade.Zero,
             }).Wait();
             
             return taskSolutionGuid;
