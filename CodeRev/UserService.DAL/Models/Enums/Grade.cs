@@ -1,6 +1,6 @@
 ﻿namespace UserService.DAL.Models.Enums
 {
-    public enum GradeEnum
+    public enum Grade
     {
         Zero,
         One,

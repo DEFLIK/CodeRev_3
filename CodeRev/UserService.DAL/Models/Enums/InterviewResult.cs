@@ -1,6 +1,6 @@
 ﻿namespace UserService.DAL.Models.Enums
 {
-    public enum InterviewResultEnum
+    public enum InterviewResult
     {
         NotChecked = -1,
         NotPassed = 0,

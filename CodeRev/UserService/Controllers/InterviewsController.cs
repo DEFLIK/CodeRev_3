@@ -58,10 +58,10 @@ namespace UserService.Controllers
         [HttpPut($"{Solution}/grade")]
         public IActionResult PutInterviewSolutionGrade([Required] [FromQuery(Name = "id")] string interviewSolutionId, [Required] [FromQuery(Name = "grade")] int grade)
         {
-            if (!Enum.IsDefined(typeof(GradeEnum), grade))
+            if (!Enum.IsDefined(typeof(Grade), grade))
                 return BadRequest($"{nameof(grade)} is invalid");
             
-            if (!interviewHelper.TryPutInterviewSolutionGrade(interviewSolutionId, (GradeEnum)grade, out var errorString) || errorString != null)
+            if (!interviewHelper.TryPutInterviewSolutionGrade(interviewSolutionId, (Grade)grade, out var errorString) || errorString != null)
                 return BadRequest(errorString);
             return Ok();
         }
@@ -70,10 +70,10 @@ namespace UserService.Controllers
         [HttpPut($"{Solution}/result")]
         public IActionResult PutInterviewSolutionResult([Required] [FromQuery(Name = "id")] string interviewSolutionId, [Required] [FromQuery(Name = "result")] int interviewResult)
         {
-            if (!Enum.IsDefined(typeof(InterviewResultEnum), interviewResult))
+            if (!Enum.IsDefined(typeof(InterviewResult), interviewResult))
                 return BadRequest($"{nameof(interviewResult)} is invalid");
             
-            if (!interviewHelper.TryPutInterviewSolutionResult(interviewSolutionId, (InterviewResultEnum)interviewResult, out var errorString) || errorString != null)
+            if (!interviewHelper.TryPutInterviewSolutionResult(interviewSolutionId, (InterviewResult)interviewResult, out var errorString) || errorString != null)
                 return BadRequest(errorString);
             return Ok();
         }
@@ -91,9 +91,9 @@ namespace UserService.Controllers
         [HttpPut($"{Solution}/review")]
         public IActionResult PutInterviewSolutionReview([Required] [FromBody] InterviewSolutionReview interviewSolutionReview)
         {
-            if (!Enum.IsDefined(typeof(GradeEnum), interviewSolutionReview.AverageGrade))
+            if (!Enum.IsDefined(typeof(Grade), interviewSolutionReview.AverageGrade))
                 return BadRequest($"{nameof(interviewSolutionReview.AverageGrade)} is invalid");
-            if (!Enum.IsDefined(typeof(InterviewResultEnum), interviewSolutionReview.InterviewResult))
+            if (!Enum.IsDefined(typeof(InterviewResult), interviewSolutionReview.InterviewResult))
                 return BadRequest($"{nameof(interviewSolutionReview.InterviewResult)} is invalid");
             
             

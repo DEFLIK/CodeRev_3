@@ -55,6 +55,7 @@ namespace Core
             services.AddScoped<IReviewerDraftCreator, ReviewerDraftCreator>();
             services.AddScoped<IDraftHelper, DraftHelper>();
             
+            services.AddScoped<IStatusChecker, StatusChecker>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

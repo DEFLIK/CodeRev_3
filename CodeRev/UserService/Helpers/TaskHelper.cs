@@ -19,7 +19,7 @@ namespace UserService.Helpers
         Task GetTask(Guid taskId);
         TaskSolution GetTaskSolution(Guid taskSolutionId);
         TaskSolution GetTaskSolution(string taskSolutionId, out string errorString);
-        bool TryPutTaskSolutionGrade(string taskSolutionId, GradeEnum grade, out string errorString);
+        bool TryPutTaskSolutionGrade(string taskSolutionId, Grade grade, out string errorString);
         bool EndTaskSolution(string taskSolutionId, out string errorString);
     }
 
@@ -111,7 +111,7 @@ namespace UserService.Helpers
             return errorString == null ? GetTaskSolution(taskSolutionGuid) : null;
         }
 
-        public bool TryPutTaskSolutionGrade(string taskSolutionId, GradeEnum grade, out string errorString)
+        public bool TryPutTaskSolutionGrade(string taskSolutionId, Grade grade, out string errorString)
         {
             (var taskSolutionGuid, errorString) = GuidParser.TryParse(taskSolutionId, nameof(taskSolutionId));
             if (errorString != null)

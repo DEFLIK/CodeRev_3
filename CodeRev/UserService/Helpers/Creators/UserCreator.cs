@@ -37,19 +37,21 @@ namespace UserService.Helpers.Creators
                 return null;
             }
 
+            var fullName = userRegistration.FirstName + ' ' + userRegistration.Surname;
+
             var user = new User
             {
                 Id = Guid.NewGuid(),
                 Role = invitation.Role,
                 Email = userRegistration.Email,
                 PasswordHash = userRegistration.PasswordHash,
-                FullName = userRegistration.FullName,
+                FullName = fullName,
                 PhoneNumber = userRegistration.PhoneNumber
             };
             
             dbRepository.Add(user).Wait();
 
-            if (invitation.Role != RoleEnum.Candidate)
+            if (invitation.Role != Role.Candidate)
                 dbRepository.Remove(invitation).Wait();
 
             if (!invitation.InterviewId.Equals(Guid.Empty))
