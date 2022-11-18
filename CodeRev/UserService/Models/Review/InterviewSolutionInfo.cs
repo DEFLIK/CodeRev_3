@@ -18,6 +18,7 @@ namespace UserService.Models.Review
         public Grade AverageGrade { get; set; }
         public InterviewResult InterviewResult { get; set; }
         public bool IsSubmittedByCandidate { get; set; }
+        public string ProgrammingLanguage { get; set; }
         public IList<TaskSolutionInfo> TaskSolutionsInfos { get; set; }
     }
 }

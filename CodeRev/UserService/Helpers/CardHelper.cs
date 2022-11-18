@@ -46,6 +46,7 @@ namespace UserService.Helpers
                     IsSolutionTimeExpired = statusChecker.IsSolutionTimeExpired(interviewSolution.EndTimeMs),
                     HasReviewerCheckResult = statusChecker.HasReviewerCheckResult(interviewSolution.AverageGrade),
                     HasHrCheckResult = statusChecker.HasHrCheckResult(interviewSolution.InterviewResult),
+                    ProgrammingLanguage = interview.ProgrammingLanguage,
                 }).ToList();
             cardsInfo = cardsInfo.Join(dbRepository.Get<User>().ToList(), 
                 card => card.UserId, 

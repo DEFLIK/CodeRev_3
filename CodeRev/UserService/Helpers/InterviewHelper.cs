@@ -168,8 +168,8 @@ namespace UserService.Helpers
             if (interviewSolution == null)
                 return null;
 
-            var vacancy = GetVacancy(interviewSolution.InterviewId);
-            if (vacancy == null)
+            var interview = GetInterview(interviewSolution.InterviewId);
+            if (interview == null)
                 return null;
 
             var userFullName = userHelper.GetFullName(interviewSolution.UserId);
@@ -182,7 +182,7 @@ namespace UserService.Helpers
                 InterviewSolutionId = interviewSolution.Id,
                 InterviewId = interviewSolution.InterviewId,
                 FullName = userFullName,
-                Vacancy = vacancy,
+                Vacancy = interview.Vacancy,
                 StartTimeMs = interviewSolution.StartTimeMs,
                 EndTimeMs = interviewSolution.EndTimeMs,
                 TimeToCheckMs = interviewSolution.TimeToCheckMs,
@@ -190,6 +190,7 @@ namespace UserService.Helpers
                 AverageGrade = interviewSolution.AverageGrade,
                 InterviewResult = interviewSolution.InterviewResult,
                 IsSubmittedByCandidate = interviewSolution.IsSubmittedByCandidate,
+                ProgrammingLanguage = interview.ProgrammingLanguage,
             };
             
             var taskSolutionsInfos = new List<TaskSolutionInfo>();
