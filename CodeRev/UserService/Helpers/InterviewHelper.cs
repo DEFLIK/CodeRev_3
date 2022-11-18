@@ -189,6 +189,7 @@ namespace UserService.Helpers
                 ReviewerComment = interviewSolution.ReviewerComment,
                 AverageGrade = interviewSolution.AverageGrade,
                 InterviewResult = interviewSolution.InterviewResult,
+                IsSubmittedByCandidate = interviewSolution.IsSubmittedByCandidate,
             };
             
             var taskSolutionsInfos = new List<TaskSolutionInfo>();
@@ -257,9 +258,9 @@ namespace UserService.Helpers
             }
             
             var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            if (nowTime > interviewSolution.EndTimeMs)
+            if (nowTime > interviewSolution.EndTimeMs || interviewSolution.IsSubmittedByCandidate)
             {
-                errorString = $"{nameof(interviewSolution)} is already end (end time is less than now time) or wasn't started";
+                errorString = $"{nameof(interviewSolution)} is already ended (end time is less than now time) or wasn't started";
                 return false;
             }
 
@@ -272,6 +273,7 @@ namespace UserService.Helpers
             
             interviewSolution.EndTimeMs = nowTime;
             interviewSolution.TimeToCheckMs = nowTime + TimeToCheckInterviewSolutionMs;
+            interviewSolution.IsSubmittedByCandidate = true;
             dbRepository.SaveChangesAsync().Wait();
             return true;
         }

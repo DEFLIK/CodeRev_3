@@ -17,6 +17,7 @@ namespace UserService.Models.Review
         public string ReviewerComment { get; set; }
         public Grade AverageGrade { get; set; }
         public InterviewResult InterviewResult { get; set; }
+        public bool IsSubmittedByCandidate { get; set; }
         public IList<TaskSolutionInfo> TaskSolutionsInfos { get; set; }
     }
 }

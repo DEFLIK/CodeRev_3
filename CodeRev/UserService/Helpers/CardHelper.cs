@@ -42,9 +42,10 @@ namespace UserService.Helpers
                     ReviewerComment = interviewSolution.ReviewerComment,
                     AverageGrade = interviewSolution.AverageGrade,
                     InterviewResult = interviewSolution.InterviewResult,
-                    IsInterviewSolutionEnded = statusChecker.IsInterviewSolutionEnded(interviewSolution.EndTimeMs),
+                    IsSubmittedByCandidate = interviewSolution.IsSubmittedByCandidate,
+                    IsSolutionTimeExpired = statusChecker.IsSolutionTimeExpired(interviewSolution.EndTimeMs),
                     HasReviewerCheckResult = statusChecker.HasReviewerCheckResult(interviewSolution.AverageGrade),
-                    HasHrCheckResult = statusChecker.HasHrCheckResult(interviewSolution.InterviewResult)
+                    HasHrCheckResult = statusChecker.HasHrCheckResult(interviewSolution.InterviewResult),
                 }).ToList();
             cardsInfo = cardsInfo.Join(dbRepository.Get<User>().ToList(), 
                 card => card.UserId, 
