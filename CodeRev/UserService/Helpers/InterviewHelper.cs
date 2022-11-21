@@ -168,12 +168,12 @@ namespace UserService.Helpers
             if (interviewSolution == null)
                 return null;
 
-            var vacancy = GetVacancy(interviewSolution.InterviewId);
-            if (vacancy == null)
+            var interview = GetInterview(interviewSolution.InterviewId);
+            if (interview == null)
                 return null;
 
-            var userFullName = userHelper.GetFullName(interviewSolution.UserId);
-            if (userFullName == null)
+            var user = userHelper.Get(interviewSolution.UserId);
+            if (user == null)
                 return null;
 
             var interviewSolutionInfo = new InterviewSolutionInfo
@@ -181,20 +181,24 @@ namespace UserService.Helpers
                 UserId = interviewSolution.UserId,
                 InterviewSolutionId = interviewSolution.Id,
                 InterviewId = interviewSolution.InterviewId,
-                FullName = userFullName,
-                Vacancy = vacancy,
+                FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                Vacancy = interview.Vacancy,
                 StartTimeMs = interviewSolution.StartTimeMs,
                 EndTimeMs = interviewSolution.EndTimeMs,
                 TimeToCheckMs = interviewSolution.TimeToCheckMs,
                 ReviewerComment = interviewSolution.ReviewerComment,
                 AverageGrade = interviewSolution.AverageGrade,
                 InterviewResult = interviewSolution.InterviewResult,
+                IsSubmittedByCandidate = interviewSolution.IsSubmittedByCandidate,
+                ProgrammingLanguage = interview.ProgrammingLanguage,
             };
             
-            var taskSolutionsInfos = new List<TaskSolutionInfo>();
-            foreach (var taskSolution in taskHelper.GetTaskSolutions(interviewSolution.Id))
-                taskSolutionsInfos.Add(taskHelper.GetTaskSolutionInfo(taskSolution.Id));
-            
+            var taskSolutionsInfos = taskHelper.GetTaskSolutions(interviewSolution.Id)
+                .Select(taskSolution => taskHelper.GetTaskSolutionInfo(taskSolution.Id))
+                .ToList();
+
             var letterOrder = (int)'A';
             interviewSolutionInfo.TaskSolutionsInfos = taskSolutionsInfos
                 .OrderBy(t => t.TaskId)
@@ -257,9 +261,9 @@ namespace UserService.Helpers
             }
             
             var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            if (nowTime > interviewSolution.EndTimeMs)
+            if (nowTime > interviewSolution.EndTimeMs || interviewSolution.IsSubmittedByCandidate)
             {
-                errorString = $"{nameof(interviewSolution)} is already end (end time is less than now time) or wasn't started";
+                errorString = $"{nameof(interviewSolution)} is already ended (end time is less than now time) or wasn't started";
                 return false;
             }
 
@@ -272,6 +276,7 @@ namespace UserService.Helpers
             
             interviewSolution.EndTimeMs = nowTime;
             interviewSolution.TimeToCheckMs = nowTime + TimeToCheckInterviewSolutionMs;
+            interviewSolution.IsSubmittedByCandidate = true;
             dbRepository.SaveChangesAsync().Wait();
             return true;
         }

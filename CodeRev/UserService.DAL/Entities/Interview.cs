@@ -5,5 +5,6 @@
         public string Vacancy { get; set; }
         public string InterviewText { get; set; }
         public long InterviewDurationMs { get; set; }
+        public string ProgrammingLanguage { get; set; }
     }
 }

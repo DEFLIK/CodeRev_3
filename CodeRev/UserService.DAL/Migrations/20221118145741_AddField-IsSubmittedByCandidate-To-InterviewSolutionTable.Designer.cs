@@ -2,17 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UserService.DAL;
-using UserService.DAL.Models.Draft;
 
 namespace UserService.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221118145741_AddField-IsSubmittedByCandidate-To-InterviewSolutionTable")]
+    partial class AddFieldIsSubmittedByCandidateToInterviewSolutionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,9 +31,6 @@ namespace UserService.DAL.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("InterviewText")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProgrammingLanguage")
                         .HasColumnType("text");
 
                     b.Property<string>("Vacancy")
@@ -66,9 +64,6 @@ namespace UserService.DAL.Migrations
 
                     b.Property<string>("ReviewerComment")
                         .HasColumnType("text");
-
-                    b.Property<Guid>("ReviewerDraftId")
-                        .HasColumnType("uuid");
 
                     b.Property<long>("StartTimeMs")
                         .HasColumnType("bigint");
@@ -119,23 +114,6 @@ namespace UserService.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Invitations");
-                });
-
-            modelBuilder.Entity("UserService.DAL.Entities.ReviewerDraft", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Draft>("Draft")
-                        .HasColumnType("jsonb");
-
-                    b.Property<Guid>("InterviewSolutionId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ReviewerDrafts");
                 });
 
             modelBuilder.Entity("UserService.DAL.Entities.Task", b =>

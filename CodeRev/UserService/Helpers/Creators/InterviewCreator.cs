@@ -45,7 +45,8 @@ namespace UserService.Helpers.Creators
                 EndTimeMs = -1,
                 TimeToCheckMs = -1,
                 ReviewerComment = "",
-                InterviewResult = InterviewResult.NotChecked
+                InterviewResult = InterviewResult.NotChecked,
+                IsSubmittedByCandidate = false,
             }).Wait();
 
             foreach (var taskId in dbRepository.Get<InterviewTask>(it => it.InterviewId == interviewGuid).Select(it => it.TaskId))

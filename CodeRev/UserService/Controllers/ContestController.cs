@@ -62,7 +62,9 @@ namespace UserService.Controllers
                 InterviewDurationMs = interview.InterviewDurationMs,
                 StartTimeMs = interviewSolution.StartTimeMs,
                 EndTimeMs = interviewSolution.EndTimeMs,
-                IsStarted = (interviewSolution.StartTimeMs >= 0)
+                IsStarted = (interviewSolution.StartTimeMs >= 0),
+                IsSubmittedByCandidate = interviewSolution.IsSubmittedByCandidate,
+                ProgrammingLanguage = interview.ProgrammingLanguage,
             });
         }
         

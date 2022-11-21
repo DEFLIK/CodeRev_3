@@ -18,8 +18,10 @@ namespace UserService.Models.Review
         public int DoneTasksCount { get; set; }
         public int TasksCount { get; set; }
         public InterviewResult InterviewResult { get; set; }
-        public bool IsInterviewSolutionEnded { get; set; }
+        public bool IsSubmittedByCandidate { get; set; }
+        public bool IsSolutionTimeExpired { get; set; }
         public bool HasReviewerCheckResult { get; set; }
         public bool HasHrCheckResult { get; set; }
+        public string ProgrammingLanguage { get; set; }
     }
 }

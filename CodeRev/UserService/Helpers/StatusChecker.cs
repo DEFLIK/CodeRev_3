@@ -5,14 +5,14 @@ namespace UserService.Helpers
 {
     public interface IStatusChecker
     {
-        bool IsInterviewSolutionEnded(long endTimeMs);
+        bool IsSolutionTimeExpired(long endTimeMs);
         bool HasReviewerCheckResult(Grade grade);
         bool HasHrCheckResult(InterviewResult interviewResult);
     }
     
     public class StatusChecker : IStatusChecker
     {
-        public bool IsInterviewSolutionEnded(long endTimeMs)
+        public bool IsSolutionTimeExpired(long endTimeMs)
         {
             var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             return endTimeMs < nowTime;

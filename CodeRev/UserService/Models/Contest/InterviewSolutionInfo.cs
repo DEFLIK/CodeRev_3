@@ -11,5 +11,7 @@ namespace UserService.Models.Contest
         public long StartTimeMs { get; set; }
         public long EndTimeMs { get; set; }
         public bool IsStarted { get; set; }
+        public bool IsSubmittedByCandidate { get; set; }
+        public string ProgrammingLanguage { get; set; }
     }
 }
