@@ -172,8 +172,8 @@ namespace UserService.Helpers
             if (interview == null)
                 return null;
 
-            var userFullName = userHelper.GetFullName(interviewSolution.UserId);
-            if (userFullName == null)
+            var user = userHelper.Get(interviewSolution.UserId);
+            if (user == null)
                 return null;
 
             var interviewSolutionInfo = new InterviewSolutionInfo
@@ -181,7 +181,9 @@ namespace UserService.Helpers
                 UserId = interviewSolution.UserId,
                 InterviewSolutionId = interviewSolution.Id,
                 InterviewId = interviewSolution.InterviewId,
-                FullName = userFullName,
+                FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
                 Vacancy = interview.Vacancy,
                 StartTimeMs = interviewSolution.StartTimeMs,
                 EndTimeMs = interviewSolution.EndTimeMs,
@@ -193,10 +195,10 @@ namespace UserService.Helpers
                 ProgrammingLanguage = interview.ProgrammingLanguage,
             };
             
-            var taskSolutionsInfos = new List<TaskSolutionInfo>();
-            foreach (var taskSolution in taskHelper.GetTaskSolutions(interviewSolution.Id))
-                taskSolutionsInfos.Add(taskHelper.GetTaskSolutionInfo(taskSolution.Id));
-            
+            var taskSolutionsInfos = taskHelper.GetTaskSolutions(interviewSolution.Id)
+                .Select(taskSolution => taskHelper.GetTaskSolutionInfo(taskSolution.Id))
+                .ToList();
+
             var letterOrder = (int)'A';
             interviewSolutionInfo.TaskSolutionsInfos = taskSolutionsInfos
                 .OrderBy(t => t.TaskId)
