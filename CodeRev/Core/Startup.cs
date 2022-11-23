@@ -53,6 +53,7 @@ namespace Core
             services.AddScoped<ITaskHelper, TaskHelper>();
             services.AddScoped<ICardHelper, CardHelper>();
             services.AddScoped<IStatusChecker, StatusChecker>();
+            services.AddScoped<IMeetsHelper, MeetsHelper>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

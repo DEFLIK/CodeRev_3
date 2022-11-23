@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using UserService.DAL.Models.Interfaces;
 using UserService.Helpers;
 using UserService.Models.Contest;
 
@@ -65,6 +64,7 @@ namespace UserService.Controllers
                 IsStarted = (interviewSolution.StartTimeMs >= 0),
                 IsSubmittedByCandidate = interviewSolution.IsSubmittedByCandidate,
                 ProgrammingLanguage = interview.ProgrammingLanguage,
+                IsSynchronous = interview.IsSynchronous,
             });
         }
         
