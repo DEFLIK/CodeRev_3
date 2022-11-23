@@ -25,10 +25,15 @@ namespace UserService.Helpers
         public List<CardInfo> GetCards()
         {
             //todo refactor + optimize
-            var taskSolutionsByInterviewSolutionsGroups = dbRepository.Get<TaskSolution>().ToList()
+            var taskSolutionsByInterviewSolutionsGroups = dbRepository.Get<TaskSolution>()
+                .ToList()
                 .GroupBy(taskSolution => taskSolution.InterviewSolutionId)
                 .ToList();
-            var cardsInfo = dbRepository.Get<InterviewSolution>().ToList().Join(dbRepository.Get<Interview>().ToList(),
+            var cardsInfo = dbRepository.Get<InterviewSolution>()
+                .ToList()
+                .Join(dbRepository.Get<Interview>()
+                    .Where(interview => !interview.IsSynchronous)
+                    .ToList(),
                 interviewSolution => interviewSolution.InterviewId,
                 interview => interview.Id,
                 (interviewSolution, interview) => new CardInfo
@@ -47,8 +52,12 @@ namespace UserService.Helpers
                     HasReviewerCheckResult = statusChecker.HasReviewerCheckResult(interviewSolution.AverageGrade),
                     HasHrCheckResult = statusChecker.HasHrCheckResult(interviewSolution.InterviewResult),
                     ProgrammingLanguage = interview.ProgrammingLanguage,
-                }).ToList();
-            cardsInfo = cardsInfo.Join(dbRepository.Get<User>().ToList(), 
+                })
+                .ToList();
+            
+            cardsInfo = cardsInfo.Join(
+                dbRepository.Get<User>()
+                    .ToList(), 
                 card => card.UserId, 
                 user => user.Id,
                 (card, user) =>
@@ -57,8 +66,11 @@ namespace UserService.Helpers
                     card.FirstName = splitFullName.FirstOrDefault();
                     card.Surname = splitFullName.ElementAtOrDefault(1);
                     return card;
-                }).ToList();
-            cardsInfo = cardsInfo.Join(taskSolutionsByInterviewSolutionsGroups, 
+                })
+                .ToList();
+            
+            cardsInfo = cardsInfo.Join(
+                taskSolutionsByInterviewSolutionsGroups, 
                 card => card.InterviewSolutionId,
                 group => group.Key,
                 (card, group) => 
@@ -66,7 +78,8 @@ namespace UserService.Helpers
                     card.DoneTasksCount = group.Count(t => t.IsDone);
                     card.TasksCount = group.Count();
                     return card;
-                }).ToList();
+                })
+                .ToList();
             
             return cardsInfo;
         }
