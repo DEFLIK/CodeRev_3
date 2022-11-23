@@ -54,8 +54,8 @@ namespace UserService.Helpers
                 (card, user) =>
                 {
                     var splitFullName = user.FullName.Split(' ');
-                    card.FirstName = splitFullName[0];
-                    card.Surname = splitFullName[1];
+                    card.FirstName = splitFullName.FirstOrDefault();
+                    card.Surname = splitFullName.ElementAtOrDefault(1);
                     return card;
                 }).ToList();
             cardsInfo = cardsInfo.Join(taskSolutionsByInterviewSolutionsGroups, 
