@@ -1,4 +1,4 @@
-<div class="wrapper">
+<!-- <div class="wrapper">
     <img class="logo" src="../../../../assets/svg/logo.svg">
     
     <div class="main">
@@ -9,12 +9,37 @@
                 <input type="text" placeholder="Телефон" formControlName="userPhone">
                 <input type="text" placeholder="Почта" formControlName="userEmail">
                 <input class="password" type="password" placeholder="Пароль" formControlName="userPassword">
-                <!-- <input class="password" type="password" placeholder="Повторите пароль" formControlName="userPassword"> -->
-    
+
                 <button (click)="submit()">Продолжить</button>
     
             </form>
         </div>  
     </div>
-    
+</div> -->
+
+<div class='registrationComponent'>
+    <div class='registrationComponentHeader'>
+        <h1>Регистрация</h1>
+    </div>
+    <form [formGroup]="regForm">
+        <div class='inputDiv'>
+            <input type="text" class='input' placeholder="Фамилия" formControlName="userSurname" required/>
+        </div>
+        <div class='inputDiv'>
+            <input type="text" class='input' placeholder="Имя" formControlName="userFirstName" required/>
+        </div>
+        <div class='inputDiv'>
+            <input type="text" class='input' placeholder="Телефон" formControlName="userPhone" required/>
+        </div>
+        <div class='inputDiv'>
+            <input type="text" class='input' placeholder="Почта" formControlName="userEmail" required/>
+        </div>
+        <div class='inputDiv'>
+            <input type="password" class='input' placeholder="Пароль" formControlName="userPassword" required/>
+        </div>
+        <div class='inputDiv'>
+            <input type="password" class='input' placeholder="Повторите пароль" required/>
+        </div>
+        <button type="submit" class='button color-red' (click)="submit()">Продолжить</button>
+    </form>
 </div>

@@ -12,9 +12,9 @@ namespace UserService.Models.Review
         [Required]
         public string ReviewerComment { get; set; }
         [Required]
-        public GradeEnum AverageGrade { get; set; }
+        public Grade AverageGrade { get; set; }
         [Required]
-        public InterviewResultEnum InterviewResult { get; set; }
+        public InterviewResult InterviewResult { get; set; }
         [Required]
         public IList<TaskSolutionReview> TaskSolutionsReviews { get; set; }
     }

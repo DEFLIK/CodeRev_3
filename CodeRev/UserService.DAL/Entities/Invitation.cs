@@ -5,7 +5,7 @@ namespace UserService.DAL.Entities
 {
     public class Invitation : BaseEntity
     {
-        public RoleEnum Role { get; set; }
+        public Role Role { get; set; }
         public Guid InterviewId { get; set; }
         public long ExpiredAt { get; set; }
     }

@@ -1,0 +1,33 @@
+<span class="draft-title">Заметки<img src="../../../../assets/svg/pencil.svg"></span>
+
+<div class="draft">
+    <div class="draft-text">
+        <ng-container for="text" *ngIf="draft && draft.text !== undefined else textNotLoaded">
+            <textarea placeholder="Самое время что-нибудь записать!" id="text" class="draft-text-area" [(ngModel)]="draft.text" oninput="this.style.height = ''; this.style.height = this.scrollHeight +'px'" class="draft-checkbox-text"></textarea>
+        </ng-container>
+        <ng-template #textNotLoaded>
+            DRAFT TEXT NOT LOADED
+        </ng-template>
+    </div>
+
+    <div class="draft-checkbox-list-group" cdkDropListGroup>
+        <div class="draft-checkbox-list" cdkDropList (cdkDropListDropped)="drop($event)" *ngIf="draft && draft.checkboxes else checkBoxesNotLoaded">
+            <div cdkDrag class="draft-checkbox" *ngFor="let checkbox of draft.checkboxes; let i = index">
+                <div class="drag-placeholder" *cdkDragPlaceholder></div>
+                <span class="draft-checkbox-close" (click)="removeCheckBox(i)">x</span>
+                <mat-checkbox [(ngModel)]="checkbox.isChecked"></mat-checkbox>
+                <textarea rows="1" onsuspend="this.style.height = ''; this.style.height = this.scrollHeight +'px'" class="draft-checkbox-text" [(ngModel)]="checkbox.value">{{checkbox.value}}</textarea>
+                <img class="handle" cdkDragHandle src="../../../../assets/svg/handle.svg">
+            </div>
+        </div>
+        <ng-template #checkBoxesNotLoaded>
+            DRAFT CHECKBOXES NOT LOADED
+        </ng-template>
+    </div>
+    <img class="add-checkbox" src="../../../../assets/svg/plus-green.svg" (click)="addCheckBox()">
+</div>
+
+<div class="save-draft" (click)="saveDraft()">
+    <img src="../../../../assets/svg/save.svg">
+    Сохранить
+</div>

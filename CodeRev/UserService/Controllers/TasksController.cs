@@ -38,10 +38,10 @@ namespace UserService.Controllers
         [HttpPut($"{Solution}/grade")]
         public IActionResult PutTaskSolutionGrade([Required] [FromQuery(Name = "id")] string taskSolutionId, [Required] [FromQuery(Name = "grade")] int grade)
         {
-            if (!Enum.IsDefined(typeof(GradeEnum), grade))
+            if (!Enum.IsDefined(typeof(Grade), grade))
                 return BadRequest($"{nameof(grade)} is invalid");
             
-            if (!taskHelper.TryPutTaskSolutionGrade(taskSolutionId, (GradeEnum)grade, out var errorString) || errorString != null)
+            if (!taskHelper.TryPutTaskSolutionGrade(taskSolutionId, (Grade)grade, out var errorString) || errorString != null)
                 return BadRequest(errorString);
             return Ok();
         }

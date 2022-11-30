@@ -14,5 +14,15 @@ namespace UserService.DAL
         public DbSet<InterviewSolution> InterviewSolutions { get; set; }
         public DbSet<TaskSolution> TaskSolutions { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
+        public DbSet<ReviewerDraft> ReviewerDrafts { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ReviewerDraft>()
+                .Property(reviewerDraft => reviewerDraft.Draft)
+                .HasColumnType("jsonb");
+        }
     }
 }

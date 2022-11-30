@@ -4,7 +4,8 @@ import { CandidateCardInfoResponse } from './response/candidateCardInfo-response
 export class CandidateCardInfo {
     public userId: string;
     public interviewSolutionId: string;
-    public fullName: string;
+    public firstName: string;
+    public surname: string;
     public vacancy: string;
     public startTimeMs: number;
     public timeToCheckMs: number;
@@ -13,11 +14,16 @@ export class CandidateCardInfo {
     public doneTasksCount: number;
     public tasksCount: number;
     public interviewResult: number;
+    public hasReviewerCheckResult: boolean;
+    public hasHrCheckResult: boolean;
+    public isSubmittedByCandidate: boolean;
+    public isSolutionTimeExpired: boolean;
 
     constructor(resp: CandidateCardInfoResponse) {
         this.userId = resp.userId ?? '';
         this.interviewSolutionId = resp.interviewSolutionId ?? '';
-        this.fullName = resp.fullName ?? 'Unnamed';
+        this.firstName = resp.firstName ?? 'Unnamed';
+        this.surname = resp.surname ?? 'Unnamed';
         this.vacancy = resp.vacancy ?? 'Без вакансии';
         this.startTimeMs = resp.startTimeMs ?? -1;
         this.timeToCheckMs = resp.timeToCheckMs ?? -1;
@@ -26,23 +32,25 @@ export class CandidateCardInfo {
         this.doneTasksCount = resp.doneTasksCount ?? -1;
         this.tasksCount = resp.tasksCount ?? -1;
         this.interviewResult = resp.interviewResult ?? -1;
+        this.isSubmittedByCandidate = resp.isSubmittedByCandidate ?? false;
+        this.isSolutionTimeExpired = resp.isSolutionTimeExpired ?? false;
+        this.hasReviewerCheckResult = resp.hasReviewerCheckResult ?? false;
+        this.hasHrCheckResult = resp.hasReviewerCheckResult ?? false;
     }
 
     public getState(): CandidateState {
-        const isExpired = (Date.now() > this.timeToCheckMs && this.timeToCheckMs !== -1);
-
-        if (this.tasksCount === this.doneTasksCount && !isExpired) {
-            return CandidateState.done;
+        if (this.hasReviewerCheckResult || this.hasHrCheckResult) {
+            return CandidateState.checked;
         }
 
-        if (this.startTimeMs !== -1 && !isExpired) {
+        if (this.isSubmittedByCandidate) {
+            return CandidateState.toCheck;
+        }
+
+        if (!this.isSolutionTimeExpired) {
             return CandidateState.inProcess;
         }
 
-        if (this.startTimeMs === -1 && !isExpired) {
-            return CandidateState.notStarted;
-        }
-
-        return CandidateState.skiped;
+        return CandidateState.expired;
     }
 }

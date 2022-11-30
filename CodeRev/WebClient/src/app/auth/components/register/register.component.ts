@@ -13,7 +13,8 @@ export class RegisterComponent implements OnInit {
         return this._auth.isProcessing;
     }
     public regForm: FormGroup = new FormGroup({
-        userName: new FormControl('', Validators.required),
+        userFirstName: new FormControl('', Validators.required),
+        userSurname: new FormControl('', Validators.required),
         userEmail: new FormControl('', [
             Validators.required,
             Validators.pattern('[a-zA-Z_]+@[a-zA-Z_]+?.[a-zA-Z]{2,3}')
@@ -33,14 +34,19 @@ export class RegisterComponent implements OnInit {
     }
 
     public submit(): void {
-        const name = this.regForm.get('userName')?.value;
+        const firstName = this.regForm.get('userFirstName')?.value;
+        const surname = this.regForm.get('userSurname')?.value;
         const email = this.regForm.get('userEmail')?.value;
         const phone = this.regForm.get('userPhone')?.value;
         const pass = this.regForm.get('userPassword')?.value;
 
+        console.log(firstName);
+        
+
         this._auth.register(
             this.inviteToken,
-            name, 
+            firstName, 
+            surname,
             email,
             phone,
             pass)

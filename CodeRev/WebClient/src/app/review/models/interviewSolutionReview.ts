@@ -13,6 +13,8 @@ export class InterviewSolutionReview {
     public reviewerComment: string;
     public averageGrade: number;
     public interviewResult: number;
+    public phoneNumber: string;
+    public email: string;
     public taskSolutionsInfos: TaskReview[];
 
     constructor(resp: InterviewSolutionReviewResponse) {
@@ -27,6 +29,8 @@ export class InterviewSolutionReview {
         this.reviewerComment = resp.reviewerComment ?? '';
         this.averageGrade = resp.averageGrade ?? -1;
         this.interviewResult = resp.interviewResult ?? -1;
+        this.phoneNumber = resp.phoneNumber ?? 'Отсутствует';
+        this.email = resp.email ?? 'Отсутствует';
         this.taskSolutionsInfos = resp.taskSolutionsInfos?.map(task => new TaskReview(task)) ?? [];
     }
 }

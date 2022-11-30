@@ -1,10 +1,11 @@
 import { HttpClient, HttpErrorResponse, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable, isDevMode } from '@angular/core';
-import { catchError, first, map, merge, Observable, of, share, skipWhile, Subject, takeUntil, timeout } from 'rxjs';
+import { catchError, first, map, merge, Observable, of, share, skipWhile, Subject, takeUntil, throwError, timeout } from 'rxjs';
 import { SessionStorageService } from 'src/app/auth/services/sessionStorage-service/session-storage.service';
 import { ContentType } from './models/content-type';
 import { IRequestOptions } from './models/request-options';
 import { RequestResponseType } from './models/request-response-type';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class HttpService {
@@ -12,7 +13,8 @@ export class HttpService {
 
     constructor(
         protected http: HttpClient,
-        private _session: SessionStorageService
+        private _session: SessionStorageService,
+        private _snackBar: MatSnackBar
     ) { }
 
     public unsubscribeAll(): void {
@@ -60,6 +62,7 @@ export class HttpService {
         
         const request: HttpRequest<F> = new HttpRequest<F>(requestParams.method, requestParams.url, requestParams.body, httpOptions);
         console.log('request:', request);
+        
 
         return (this.http.request<T>(request) as Observable<HttpResponse<T>>)
             .pipe(
@@ -83,6 +86,17 @@ export class HttpService {
                     }
 
                     return value;
+                }),
+                catchError(err => {
+                    if (err.status === 400) {
+                        this._snackBar.open('Отправлены неверные данные', 'Ок');
+                    }
+
+                    if (err.status === 401 || err.status === 403) {
+                        this._snackBar.open('Ошибка авторизации', 'Ок');
+                    }
+
+                    return throwError(err);
                 }),
                 takeUntil(requestParams.unsubscriber ? merge(this._takeUntil, requestParams.unsubscriber) : this._takeUntil),
                 timeout(10000),

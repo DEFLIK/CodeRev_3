@@ -1,0 +1,72 @@
+:host {
+    width: 100%;
+    justify-content: space-between;
+    display: flex;
+    gap: 10px;
+
+    .info, .timespan {
+        flex: 1 1 40%;
+        padding: 10px;
+        background-color: white;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .info {
+        .top {
+            display: flex;
+            flex-direction: column;
+
+            .name {
+                font-family: Raleway-Bold;
+                font-size: 18px;
+            }
+
+            .vacancy {
+                color: gray;
+            }
+        }
+
+        .bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            .phone, .email {
+                display: flex;
+                gap: 5px;
+                align-items: center;
+                img {
+                    height: 25px;
+                }
+            }
+        }
+    }
+
+    .timespan {
+        font-size: 18px;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        .start, .end {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            .time, .label {
+                font-family: Raleway-Bold;
+            }
+
+            .inner {
+                display: flex;
+                justify-content: space-between;
+
+                .date {
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+}

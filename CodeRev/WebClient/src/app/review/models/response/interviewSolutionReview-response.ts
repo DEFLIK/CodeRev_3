@@ -13,5 +13,7 @@ export class InterviewSolutionReviewResponse {
     public reviewerComment?: string;
     public averageGrade?: number;
     public interviewResult?: number;
+    public phoneNumber?: string;
+    public email?: string;
     public taskSolutionsInfos?: TaskReviewResponse[];
 };

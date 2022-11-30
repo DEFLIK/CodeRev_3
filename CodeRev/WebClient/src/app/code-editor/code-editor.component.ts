@@ -43,7 +43,8 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
         lineNumbers: true,
         theme: 'neat', // 'material',
         mode: 'text/x-csharp',
-        indentUnit: 4
+        indentUnit: 4,
+        autofocus: false
     };
     private _unsubscriber = new Subject<void>();
 

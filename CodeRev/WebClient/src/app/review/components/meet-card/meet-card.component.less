@@ -1,0 +1,62 @@
+@import (reference) "/src/styles.less";
+
+:host {
+    width: 400px;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    gap: 20px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    border-left: solid 10px @color-green;
+
+    .info {
+        align-items: center;
+        gap: 15px;
+        display: flex;
+        align-items: center;
+        background-color: white;
+
+        .left {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            .name {
+                font-family: Raleway-Bold;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .vacancy {
+                color: @color-black50;
+            }
+        }
+
+        .language {
+            height: 20px;
+            padding-left: 7px;
+            padding-right: 7px;
+            font-size: 15px;
+            text-align: center;
+            border-radius: 50px;
+            color: @color-black75;
+            border: solid 1px @color-black75;
+        }
+    }
+
+    button {
+        border-color: @color-green;
+        color: @color-green;
+
+        &:hover {
+            background-color: @color-green;
+            color: white;
+        }
+
+        &:active {
+            background-color: green;
+        }
+    }
+}

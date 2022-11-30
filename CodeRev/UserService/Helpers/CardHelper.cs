@@ -14,49 +14,72 @@ namespace UserService.Helpers
     public class CardHelper : ICardHelper
     {
         private readonly IDbRepository dbRepository;
+        private readonly IStatusChecker statusChecker;
 
-        public CardHelper(IDbRepository dbRepository)
+        public CardHelper(IDbRepository dbRepository, IStatusChecker statusChecker)
         {
             this.dbRepository = dbRepository;
+            this.statusChecker = statusChecker;
         }
 
         public List<CardInfo> GetCards()
         {
             //todo refactor + optimize
-            var groups = dbRepository.Get<TaskSolution>().ToList()
-                .GroupBy(t => t.InterviewSolutionId)
+            var taskSolutionsByInterviewSolutionsGroups = dbRepository.Get<TaskSolution>()
+                .ToList()
+                .GroupBy(taskSolution => taskSolution.InterviewSolutionId)
                 .ToList();
-            var cardsInfo = dbRepository.Get<InterviewSolution>().ToList().Join(dbRepository.Get<Interview>().ToList(),
-                s => s.InterviewId,
-                i => i.Id,
-                (s, i) => new CardInfo
+            var cardsInfo = dbRepository.Get<InterviewSolution>()
+                .ToList()
+                .Join(dbRepository.Get<Interview>()
+                    .Where(interview => !interview.IsSynchronous)
+                    .ToList(),
+                interviewSolution => interviewSolution.InterviewId,
+                interview => interview.Id,
+                (interviewSolution, interview) => new CardInfo
                 {
-                    UserId = s.UserId,
-                    InterviewSolutionId = s.Id,
-                    Vacancy = i.Vacancy,
-                    StartTimeMs = s.StartTimeMs,
-                    TimeToCheckMs = s.TimeToCheckMs,
-                    ReviewerComment = s.ReviewerComment,
-                    AverageGrade = s.AverageGrade,
-                    InterviewResult = s.InterviewResult
-                }).ToList();
-            cardsInfo = cardsInfo.Join(dbRepository.Get<User>().ToList(), 
-                c => c.UserId, 
-                u => u.Id,
-                (c, u) =>
+                    UserId = interviewSolution.UserId,
+                    InterviewSolutionId = interviewSolution.Id,
+                    Vacancy = interview.Vacancy,
+                    StartTimeMs = interviewSolution.StartTimeMs,
+                    EndTimeMs = interviewSolution.EndTimeMs,
+                    TimeToCheckMs = interviewSolution.TimeToCheckMs,
+                    ReviewerComment = interviewSolution.ReviewerComment,
+                    AverageGrade = interviewSolution.AverageGrade,
+                    InterviewResult = interviewSolution.InterviewResult,
+                    IsSubmittedByCandidate = interviewSolution.IsSubmittedByCandidate,
+                    IsSolutionTimeExpired = statusChecker.IsSolutionTimeExpired(interviewSolution.EndTimeMs),
+                    HasReviewerCheckResult = statusChecker.HasReviewerCheckResult(interviewSolution.AverageGrade),
+                    HasHrCheckResult = statusChecker.HasHrCheckResult(interviewSolution.InterviewResult),
+                    ProgrammingLanguage = interview.ProgrammingLanguage,
+                })
+                .ToList();
+            
+            cardsInfo = cardsInfo.Join(
+                dbRepository.Get<User>()
+                    .ToList(), 
+                card => card.UserId, 
+                user => user.Id,
+                (card, user) =>
                 {
-                    c.FullName = u.FullName;
-                    return c;
-                }).ToList();
-            cardsInfo = cardsInfo.Join(groups, 
-                c => c.InterviewSolutionId,
-                g => g.Key,
-                (c, g) => 
+                    var splitFullName = user.FullName.Split(' ');
+                    card.FirstName = splitFullName.FirstOrDefault();
+                    card.Surname = splitFullName.ElementAtOrDefault(1);
+                    return card;
+                })
+                .ToList();
+            
+            cardsInfo = cardsInfo.Join(
+                taskSolutionsByInterviewSolutionsGroups, 
+                card => card.InterviewSolutionId,
+                group => group.Key,
+                (card, group) => 
                 {
-                    c.DoneTasksCount = g.Count(t => t.IsDone);
-                    c.TasksCount = g.Count();
-                    return c;
-                }).ToList();
+                    card.DoneTasksCount = group.Count(t => t.IsDone);
+                    card.TasksCount = group.Count();
+                    return card;
+                })
+                .ToList();
             
             return cardsInfo;
         }
