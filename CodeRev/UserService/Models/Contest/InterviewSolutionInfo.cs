@@ -13,5 +13,6 @@ namespace UserService.Models.Contest
         public bool IsStarted { get; set; }
         public bool IsSubmittedByCandidate { get; set; }
         public string ProgrammingLanguage { get; set; }
+        public bool IsSynchronous { get; set; }
     }
 }

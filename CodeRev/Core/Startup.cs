@@ -56,6 +56,7 @@ namespace Core
             services.AddScoped<IDraftHelper, DraftHelper>();
             
             services.AddScoped<IStatusChecker, StatusChecker>();
+            services.AddScoped<IMeetsHelper, MeetsHelper>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
