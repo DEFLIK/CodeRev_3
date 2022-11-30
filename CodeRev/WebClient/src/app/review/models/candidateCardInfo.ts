@@ -51,6 +51,6 @@ export class CandidateCardInfo {
             return CandidateState.inProcess;
         }
 
-        return CandidateState.toCheck;
+        return CandidateState.expired;
     }
 }

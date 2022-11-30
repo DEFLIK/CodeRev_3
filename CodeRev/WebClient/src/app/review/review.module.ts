@@ -13,7 +13,9 @@ import { ReviewRoutingModule } from './review-routing.module';
 import { CandidateInviteComponent } from './components/candidate-invite/candidate-invite.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio'; 
-import { MatProgressBarModule } from '@angular/material/progress-bar'; 
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MeetCardComponent } from './components/meet-card/meet-card.component'; 
+import { MeetsFilterPipe } from './pipes/meets-filter.pipe';
 
 @NgModule({
     declarations: [
@@ -21,8 +23,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
         CandidatesListComponent,
         ReviewComponent,
         CandidateFilterPipe,
+        MeetsFilterPipe,
         CandidateGradeComponent,
-        CandidateInviteComponent
+        CandidateInviteComponent,
+        MeetCardComponent
     ],
     imports: [
         ReviewRoutingModule,

@@ -9,12 +9,14 @@ import { RequestMethodType } from 'src/app/global-services/request/models/reques
 import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
 import { CandidateCardInfo } from '../models/candidateCardInfo';
 import { Invitation } from '../models/invitation';
+import { MeetInfo } from '../models/meetInfo';
 import { ReviewCommentRequest } from '../models/request/comment-request';
 import { InvitationRequest } from '../models/request/invitation-request';
 import { CandidateCardInfoResponse } from '../models/response/candidateCardInfo-response';
 import { InterviewInfoResponse } from '../models/response/interviewInfo-response';
 import { InterviewSolutionReviewResponse } from '../models/response/interviewSolutionReview-response';
 import { InvitationResponse } from '../models/response/invitation-response';
+import { MeetInfoResponse } from '../models/response/meetInfo-response';
 
 @Injectable({
     providedIn: 'root'
@@ -35,6 +37,18 @@ export class ReviewService {
             map(resp =>
                 resp.body
                     ?.map(res => new CandidateCardInfo(res)) ?? []));
+    }
+
+    public getMeets(): Observable<MeetInfo[]> {
+        return this._http.request<MeetInfoResponse[]>({
+            url: `${UrlRoutes.user}/api/meets`,
+            method: RequestMethodType.get,
+            withCredentials: true,
+            auth: true
+        }).pipe(
+            map(resp =>
+                resp.body
+                    ?.map(res => new MeetInfo(res)) ?? []));
     }
 
     public getSolutionReview(slnId: string): Observable<HttpResponse<InterviewSolutionReviewResponse>> {

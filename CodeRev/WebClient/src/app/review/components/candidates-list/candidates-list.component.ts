@@ -5,6 +5,7 @@ import { CandidateCardInfo } from '../../models/candidateCardInfo';
 import { CandidateFitlerCriteria } from '../../models/candidateFilterCriteria';
 import { CandidateState } from '../../models/candidateState';
 import { CandidateVacancy } from '../../models/candidateVacancy';
+import { MeetInfo } from '../../models/meetInfo';
 import { ReviewService } from '../../services/review.service';
 import { CandidateCardComponent } from '../candidate-card/candidate-card.component';
 
@@ -19,6 +20,9 @@ export class CandidatesListComponent implements OnInit {
     @Output()
     public inviteEvent = new EventEmitter<void>();
     public candidates?: CandidateCardInfo[];
+    public meets?: MeetInfo[];
+
+    public isShowingMeets: boolean = false;
     public searchForm: FormGroup = new FormGroup({
         serachInput: new FormControl('')
     });
@@ -81,6 +85,9 @@ export class CandidatesListComponent implements OnInit {
                     }
                 }
             });
+        this._review
+            .getMeets()
+            .subscribe(resp => this.meets = resp);
     }
 
     public selectCard(candidate: CandidateCardInfo): void {
@@ -109,6 +116,10 @@ export class CandidatesListComponent implements OnInit {
                 i++;
             });
         }
+    }
+
+    public showMeets(open: boolean): void {
+        this.isShowingMeets = open;
     }
 
     // public generateRandomCardsInfo(count: number): CandidateCardInfo[] {

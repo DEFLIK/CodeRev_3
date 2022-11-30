@@ -78,23 +78,60 @@
                 overflow: auto;
                 width: 100%;
             }
+
+            .meets {
+                align-items: center;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                overflow: auto;
+            }
         }
 
         .filter-bar {
-            gap: 15px;
             align-items: flex-start;
             justify-content: center;
             width: 23%;
             min-width: 200px;
             overflow-y: auto;
 
+            .int-type-selection {
+                height: 36px;
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: space-evenly;
+
+                button {
+                    font-family: Raleway-Bold;
+                    background-color: transparent;
+                    border: none;
+                    color: @color-black50;
+                    border-radius: 0;
+                    border-bottom: solid 2px transparent;
+
+                    &:hover {
+                        border-bottom: solid 2px @color-black50;
+                    }
+                }
+
+                .btn-selected {
+                    color: @color-red;
+                    border-bottom: solid 2px @color-red;
+
+                    &:hover {
+                        border-bottom: solid 2px @color-red;
+                    }
+                }
+            }
+
             .filters {
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
-                gap: 20px;
-                padding: 20px;
                 align-items: center;
+                padding: 20px;
+                padding-bottom: 10px;
+                padding-top: 10px;
                 background-color: white;
                 border-radius: 10px;
                 font-size: 19px;
@@ -117,8 +154,28 @@
                     font-size: 20px;
                 }
 
+                .segments {
+                    margin-top: 10px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: center;
+                    gap: 20px;
+                    max-height: 500px;
+                    transition-property: margin, max-height;
+                    transition: 0.2s ease;
+                    margin-bottom: 20px;
+                    overflow: hidden;
+                }
+
                 .segment {
                     width: 100%;
+                }
+
+                .sgm-hidden {
+                    max-height: 0;
+                    margin: 0;
+                    padding: 0;
                 }
             }
 
