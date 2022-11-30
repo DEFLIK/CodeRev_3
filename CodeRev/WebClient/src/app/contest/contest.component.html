@@ -8,12 +8,29 @@
         (continueInterview)="continue($event)"
     ></app-notification>
 
-    <app-tasks-list #list (taskLoadingError)="applyTaskError($event)" (draftButtonClick)="swapDraft($event)"></app-tasks-list>
+    <div class="left-bar">
+        <app-tasks-list #list (taskLoadingError)="applyTaskError($event)"></app-tasks-list>
+        <div class="controls">
+            <div *ngIf="!isInfoHidden && isReview" class="draft-btn" (click)="clickDraft()">
+                <img *ngIf="!isDraftOpen && isReview" src="../../assets/svg/pencil.svg" alt="E">
+                <img *ngIf="isDraftOpen" src="../../assets/svg/blanks.svg" alt="E">
+            </div>
+            <div class="hide-btn" (click)="hideInfo()" [ngClass]="{'open': !isInfoHidden}">
+                <img *ngIf="isInfoHidden" src="../../assets/svg/info.svg" alt="E">
+                <img *ngIf="!isInfoHidden" src="../../assets/svg/info.svg" alt="E">
+            </div>
+        </div>
+    </div>
     <ng-container *ngIf="isStarted || review">
         <!-- <button *ngFor="let task of tasks" (click)="change(task)">{{task}}</button> -->
         <div class="right">
-            <app-task [ngStyle]="{'display': isDraftOpen ? 'none' : ''}" class="task" [editorMode]="editorMode"></app-task>
-            <app-draft [ngStyle]="{'display': !isDraftOpen ? 'none' : ''}" class="draft"></app-draft>
+            <div class="wrapper" [ngStyle]="{'width': !isInfoHidden ? '' : '0'}">
+                <div class="about" [ngStyle]="{'display': isDraftOpen ? 'none' : ''}">
+                    <app-info *ngIf="review" [review]="review"></app-info>
+                    <app-task class="task" [editorMode]="editorMode"></app-task>
+                </div>
+                <app-draft [ngStyle]="{'display': !isDraftOpen ? 'none' : ''}" class="draft"></app-draft>
+            </div>
             <app-code-editor 
                 [editorMode]="editorMode" 
                 class="editor"

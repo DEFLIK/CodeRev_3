@@ -54,7 +54,11 @@ export class CandidatesListComponent implements OnInit {
     public ngOnInit(): void {    
         this._review
             .getCards()
-            .subscribe(resp => this.candidates = resp);
+            .subscribe(resp => {
+                console.log(resp);
+                
+                return this.candidates = resp;
+            });
         this._review
             .getVacancies()
             .subscribe(resp => {
@@ -92,12 +96,12 @@ export class CandidatesListComponent implements OnInit {
 
     public onCheckboxChange(e: any, groupName: string): void {
         const group: FormArray = this.filtersForm.get(groupName) as FormArray;
-        if (e.target.checked) {
-            group.push(new FormControl(e.target.value));
+        if (e.checked) {
+            group.push(new FormControl(e.source.value));
         } else {
             let i: number = 0;
             group.controls.forEach((item: AbstractControl) => {
-                if (item.value === e.target.value) {
+                if (item.value === e.source.value) {
                     group.removeAt(i);
 
                     return;

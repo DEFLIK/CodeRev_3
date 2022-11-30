@@ -14,6 +14,7 @@ import { DraftComponent } from './components/draft/draft.component';
 import { MatCheckboxModule } from '@angular/material/checkbox'; 
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { InfoComponent } from './components/info/info.component';
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         TasksListComponent,
         NotificationComponent,
         ContestComponent,
-        DraftComponent
+        DraftComponent,
+        InfoComponent
     ],
     imports: [
         CodeEditorModule,

@@ -1,10 +1,10 @@
 
 @import (reference) "/src/styles.less";
 
-@color-done: #009460;
-@color-in-process: #FDD116;
-@color-not-started: #ED1B33;
-@color-skiped: gray;
+@color-done: @color-green;
+@color-in-process: @color-yellow;
+@color-not-started: @color-black50;
+@color-skiped: @color-red;
 
 
 :host {
@@ -14,79 +14,90 @@
     align-items: center;
     overflow: auto;
 
-
-    .search {
-        margin: 10px;
-        display: flex;
-        padding-left: 10px;
-        padding-right: 10px;
-        justify-content: center;
-        background-color: #FFFFFF;
-        border: solid 1px #ADADAD;
-        border-radius: 5px;
-        align-items: center;
-        gap: 10px;
-        width: 35%;
-        
-
-        input {
-            width: 100%;
-            background-color: inherit;
-            border: none;
-
-            &:focus {
-                outline: none;
-            }
-        }
-
-        img {
-            height: 70%;
-        }
-    }
-
     .wrapper {
         width: 100%;
         height: 100%;
+        padding-top: 20px;
         padding-bottom: 20px;
+        gap: 20px;
         display: flex;
         justify-content: space-between;
         overflow: auto;
 
-        .list {
+        .candidates {
+            display: flex;
+            flex-direction: column;
             flex: 1 1 auto;
-            display: grid;
-            justify-content: center;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 420px));
-            grid-auto-rows: 130px;
-            column-gap: 15px;
-            row-gap: 20px;
-            padding: 15px;
-            overflow: auto;
+            gap: 20px;
+            justify-content: space-between;
+
+            .search {
+                display: flex;
+                justify-content: center;
+                background-color: #FFFFFF;
+                padding: 5px;
+                padding-left: 15px;
+                padding-right: 15px;
+                border-radius: 10px;
+                align-items: center;
+                gap: 10px;
+                flex: 0 0 25px;
+                
+        
+                input {
+                    width: 100%;
+                    font-size: 15px;
+                    background-color: inherit;
+                    border: none;
+        
+                    &:focus {
+                        outline: none;
+                    }
+                }
+        
+                img {
+                    height: 70%;
+                }
+            }
+
+            .list {
+                // :first-child {
+                //     grid-column-start: 1;
+                //     grid-column-end: auto-fit;
+                //     position: sticky;
+                //     top: 0;
+                // }
+
+                flex: 1 1 auto;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, 270px);
+                grid-auto-rows: 230px;
+                row-gap: 20px;
+                column-gap: 20px;
+                justify-content: center;
+                overflow: auto;
+                width: 100%;
+            }
         }
 
-        .left {
-            // display: flex;
-            // flex-direction: column;
+        .filter-bar {
             gap: 15px;
             align-items: flex-start;
             justify-content: center;
             width: 23%;
             min-width: 200px;
-            padding: 10px;
             overflow-y: auto;
 
             .filters {
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
-                gap: 10px;
-                // margin: 10px;
+                gap: 20px;
                 padding: 20px;
                 align-items: center;
-                background-color: #FCFCFC;
+                background-color: white;
                 border-radius: 10px;
                 font-size: 19px;
-                box-shadow: 0 3px 5px 0 #7e7e7e;
                 overflow-y: auto;
 
                 .option {
@@ -97,83 +108,113 @@
                         cursor: pointer;
                         display: flex;
                         padding: 2px;
-                        gap: 3px;
+                        gap: 10px;
                     }
                 }
                 
                 .title {
-                    color: #5E5E5E;
-                    font-size: 17px;
+                    color: @color-black75;
+                    font-size: 20px;
                 }
 
                 .segment {
                     width: 100%;
                 }
             }
+
+            .invite {
+                border: none;
+            }
         }
 
-        .done {
+        .mat-checkbox-checked.mat-accent {
+            /deep/ .mat-checkbox-background {
+                background-color: transparent;
+            }
+            
+        }
+
+        .checked {
             border-color: @color-done;
+
+            /deep/.mat-progress-bar-primary::after {
+                background-color: @color-green !important;
+            }
+
+            .mat-checkbox-checked.mat-accent {
+                /deep/ .mat-checkbox-background {
+                    background-color: @color-done;
+                }
+
+                /deep/ .mat-checkbox-checkmark-path {
+                    stroke: white !important;
+                }
+            }
+
+            .mat-checkbox-checked /deep/ .mat-checkbox-frame {
+                border-color: @color-done !important;
+            }
+        }
+
+        .toCheck {
+            border-color: @color-in-process;
+            .mat-checkbox-checked.mat-accent {
+                /deep/ .mat-checkbox-background {
+                    background-color: @color-in-process;
+                }
+
+                /deep/ .mat-checkbox-checkmark-path {
+                    stroke: white !important;
+                }
+            }
+
+            .mat-checkbox-checked /deep/ .mat-checkbox-frame {
+                border-color: @color-in-process !important;
+            }
         }
 
         .inProcess {
-            border-color: @color-in-process;
-        }
-
-        .notStarted {
             border-color: @color-not-started;
+            .mat-checkbox-checked.mat-accent {
+                /deep/ .mat-checkbox-background {
+                    background-color: @color-not-started;
+                }
+
+                /deep/ .mat-checkbox-checkmark-path {
+                    stroke: white !important;
+                }
+            }
+
+            .mat-checkbox-checked /deep/ .mat-checkbox-frame {
+                border-color: #f0f0f0 !important;
+            }
+
+            /deep/ .mat-progress-bar-background {
+                background-color: @color-gray;
+                fill: @color-black25;
+            }
         }
 
-        .skiped {
+        .expired {
             border-color: @color-skiped;
-        }
-     
-        .input-color(@color) {
-            background-color: @color;
-            border: 1px solid @color;
-        }
 
-        input[type='checkbox']:checked {
-            .input-color(@color-main);
-        }
+            /deep/ .mat-progress-bar-background {
+                fill: transparent;
+            }
 
-        .done input[type='checkbox']:checked {
-            .input-color(@color-done);
-        }
+            .mat-checkbox-checked.mat-accent {
+                /deep/ .mat-checkbox-background {
+                    background-color: @color-skiped;
+                }
 
-        .inProcess input[type='checkbox']:checked {
-            .input-color(@color-in-process);
-        }
+                /deep/ .mat-checkbox-checkmark-path {
+                    stroke: white !important;
+                }
+            }
 
-        .notStarted input[type='checkbox']:checked {
-            .input-color(@color-not-started);
-        }
-
-        .skiped input[type='checkbox']:checked {
-            .input-color(@color-skiped);
-        }
-
-        input[type='checkbox']:checked:after {
-            position: relative;
-            top: -4px;
-            content: '\2713';
-            font-size: 17px;
-            display: table-cell;
-            width: 17px;
-            height: 17px;
-            text-align: center;
-            color:white;
-        }
-
-        input[type='checkbox'] {
-            // display: table-cell;
-            vertical-align: middle;
-            width: 17px;
-            height: 17px;
-            appearance: none;
-            border-radius: 2px;
-            border: 1px solid #5E5E5E;
-            box-shadow: none;
+            .mat-checkbox-checked /deep/ .mat-checkbox-frame {
+                border-color: #e0e0e0ca !important;
+            }
         }
     }
 }

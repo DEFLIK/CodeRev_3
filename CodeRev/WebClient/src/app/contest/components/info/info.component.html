@@ -1,0 +1,31 @@
+<div class="info">
+    <div class="top">
+        <span class="name">
+            {{review.fullName}}
+        </span>
+        <span class="vacancy">{{review.vacancy}}</span>
+    </div>
+
+    <div class="bottom">
+        <span class="phone"><img src="../../../../assets/svg/phone.svg"> {{review.phoneNumber}}</span>
+        <span class="email"><img src="../../../../assets/svg/mail.svg"> {{review.email}}</span>
+    </div>
+</div>
+
+<div class="timespan">
+    <div class="start">
+        <span class="label">Начало</span>
+        <div class="inner">
+            <span class="time">{{review.startTimeMs | date:'shortTime'}}</span>
+            <span class="date">{{review.startTimeMs | date:'longDate'}}</span>
+        </div>
+    </div>
+
+    <div class="end">
+        <span class="label">Конец</span>
+        <div class="inner">
+            <span class="time">{{review.endTimeMs | date:'shortTime'}}</span>
+            <span class="date">{{review.endTimeMs | date:'longDate'}}</span>
+        </div>
+    </div>
+</div>

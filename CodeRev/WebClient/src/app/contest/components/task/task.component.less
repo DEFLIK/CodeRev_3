@@ -1,7 +1,10 @@
+@import (reference) "/src/styles.less";
+
 :host {
     background-color: white;
     padding: 20px;
     border-radius: 5px;
+    flex: 1 1 auto;
 
     .task {
         height: 100%;
@@ -33,7 +36,7 @@
 
     .done {
         // width: 100%;
-        background-color: #009460;
+        background-color: @color-green;
         text-align: center;
         color: white;
         font-size: 18px;
@@ -42,10 +45,17 @@
     }
 
     .review {
-        color: #009460;
         font-size: 20px;
         display: flex;
         align-items: center;
         gap: 10px;
+
+        span {
+            color: @color-green;
+        }
+
+        img {
+            height: 40px;
+        }
     }
 }

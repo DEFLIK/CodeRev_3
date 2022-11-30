@@ -27,7 +27,7 @@ export class AuthService {
         private _router: Router
     ) {}
 
-    public register(inviteToken: string, userName: string, email: string, phone: string, pass: string): Observable<HttpResponse<unknown>> {
+    public register(inviteToken: string, firstName: string, surname: string, email: string, phone: string, pass: string): Observable<HttpResponse<unknown>> {
         this.isProcessing = true;
         const encryptedPass: string = this._encr.encryptString(pass);
 
@@ -35,7 +35,8 @@ export class AuthService {
             url: `${UrlRoutes.user}/api/users/register?invite=${inviteToken}`,
             method: RequestMethodType.post,
             body: {
-                fullname: userName,
+                firstName: firstName,
+                surname: surname,
                 email: email,
                 passwordHash: encryptedPass,
                 phonenumber: phone

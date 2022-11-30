@@ -1,16 +1,10 @@
-
-<label class="search" for="card-search" [formGroup]="searchForm">
-    <input id="card-search" type="text" placeholder="Поиск..." formControlName="serachInput">
-    <img src="../../../../assets/svg/loupe.svg">
-</label>
-
 <div class="wrapper">
-    <div class="left">
+    <div class="filter-bar">
         <form class="filters" [formGroup]="filtersForm">
             <div class="segment">
                 <div class="option">
-                    <label value="true">
-                        <input type="checkbox" formControlName="ending"> 
+                    <label>
+                        <mat-checkbox type="checkbox" formControlName="ending"></mat-checkbox> 
                         Истекает срок проверки
                     </label>
                 </div>
@@ -18,20 +12,20 @@
         
             <div class="segment">
                 <span class="title">По добавлению:</span>
-                <div class="option">
-                    <label>
-                        <input type="radio" formControlName="date" value="new" id="new"> 
-                        <label for="new"></label>
-                        Сначала новые
-                    </label>
-                </div>
-                <div class="option">
-                    <label>
-                        <input type="radio" formControlName="date" value="old" id="old"> 
-                        <label for="old"></label>
-                        Сначала старые
-                    </label>
-                </div>
+                <mat-radio-group formControlName="date">
+                    <div class="option">
+                        <label>
+                            <mat-radio-button type="radio" value="new" id="new"></mat-radio-button>
+                            Сначала новые
+                        </label>
+                    </div>
+                    <div class="option">
+                        <label>
+                            <mat-radio-button  type="radio" value="old" id="old"></mat-radio-button>
+                            Сначала старые
+                        </label>
+                    </div>
+                </mat-radio-group>
             </div>
         
             <div class="segment">
@@ -41,7 +35,7 @@
                 </div> -->
                 <div *ngFor="let state of states; let i = index" class="option">
                     <label [class]="state.value">
-                      <input formArrayName="state" type="checkbox" [value]="state.value" (change)="onCheckboxChange($event, 'state')">
+                      <mat-checkbox formArrayName="state" type="checkbox" [value]="state.value" (change)="onCheckboxChange($event, 'state')"></mat-checkbox>
                       {{state.name}}
                     </label>
                   </div>
@@ -51,19 +45,24 @@
                 <span class="title">Вакансия:</span>
                 <div *ngFor="let vacancy of vacancies; let i = index" class="option">
                     <label>
-                      <input formArrayName="state" type="checkbox" [value]="vacancy.value" (change)="onCheckboxChange($event, 'vacancy')">
+                      <mat-checkbox formArrayName="state" type="checkbox" [value]="vacancy.value" (change)="onCheckboxChange($event, 'vacancy')"></mat-checkbox>
                       {{vacancy.name}}
                     </label>
                   </div>
             </div>
             
-            <button (click)="invite()">
-                <img src="../../../../assets/svg/mail.svg">
+            <button class="invite" (click)="invite()">
+                <img src="../../../../assets/svg/plus.svg">
                 Пригласить участника</button>
         </form>
     </div>
     
-    <div class="list" *ngIf="candidates">
+    <div class="candidates">
+        <label class="search" for="card-search" [formGroup]="searchForm">
+            <input id="card-search" type="text" placeholder="Поиск..." formControlName="serachInput">
+            <img src="../../../../assets/svg/loupe.svg">
+        </label>
+            <div class="list" *ngIf="candidates">
         <app-candidate-card 
             *ngFor="let candidate of candidates | candidateFilter : filterCriteria : searchCriteria" 
             #candidateCard
@@ -71,12 +70,13 @@
             (clickEvent)="selectCard($event)"
             [candidate]="candidate"
             [ngClass]="{
-                'done': candidate.getState() === state.done,
+                'checked': candidate.getState() === state.checked,
                 'inProcess': candidate.getState() === state.inProcess,
-                'notStarted': candidate.getState() === state.notStarted,
-                'skiped': candidate.getState() === state.skiped 
+                'toCheck': candidate.getState() === state.toCheck,
+                'expired': candidate.getState() === state.expired 
             }" >
         </app-candidate-card >
+    </div>
     </div>
 </div>
 

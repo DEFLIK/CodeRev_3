@@ -6,6 +6,7 @@ import { Draft } from '../../models/draft';
 import { DraftCheckBox } from '../../models/draftCheckBox';
 import { SetDraftRequest } from '../../models/request/setDraftRequest';
 
+
 @Component({
     selector: 'app-draft',
     templateUrl: './draft.component.html',
@@ -17,6 +18,10 @@ export class DraftComponent {
 
     constructor(private _reviewService: ReviewService, private _activatedRoute: ActivatedRoute) { 
         const id = this._activatedRoute.snapshot.paramMap.get('solutionId') ?? '';
+
+        if (!id) {
+            return;
+        }
 
         _reviewService
             .getInterviewDraft(id)
@@ -39,7 +44,7 @@ export class DraftComponent {
 
         const newCheckBox = new DraftCheckBox;
 
-        newCheckBox.isChecked = true;
+        newCheckBox.isChecked = false;
         newCheckBox.value = 'текст';
 
         this.draft.checkboxes.push(newCheckBox);
@@ -65,5 +70,15 @@ export class DraftComponent {
                     console.error('Failed saving draft');
                 }
             });
+    }
+
+    public drop(event: CdkDragDrop<string[]>): void {
+        if (!this.draft?.checkboxes) {
+            console.error('Draft checkboxes is not initialized');
+
+            return;
+        }
+
+        moveItemInArray(this.draft?.checkboxes, event.previousIndex, event.currentIndex);
     }
 }

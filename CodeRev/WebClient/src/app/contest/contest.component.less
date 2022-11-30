@@ -13,9 +13,75 @@
     .expired {
         color: white;
         text-align: center;
-        background-color: #009460;
+        background-color: @color-green;
         padding: 10px;
         border-radius: 5px;
+    }
+
+    .about {
+        width: 100%;
+        flex: 1 1 auto;
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+        transition: width .2s;
+    }
+
+    .draft {
+        border-radius: 10px;
+        width: 100%;
+    }
+
+    .wrapper {
+        overflow: hidden;
+        display: flex;
+        width: 40%;
+        transition: width .2s;
+    }
+
+    .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        .draft-btn, .hide-btn {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: white;
+    
+            img {
+                height: 27px;
+            }
+        }
+
+        .hide-btn {
+            img {
+                height: 35px;
+            }
+        }
+
+        .open::after {
+            content: "";
+            position: absolute;
+            background-color: white;
+            width: 20px;
+            height: 40px;
+            transform: translateX(25px);
+        }
+    }
+
+    .left-bar {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .sln {
@@ -32,12 +98,9 @@
             gap: 5px;
     
             .editor {
-                flex: 1 1 auto
+                flex: 1 1 60%;
             }
-    
-            .task, .draft {
-                width: 40%;
-            }
+
         }
     }
 }

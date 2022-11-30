@@ -1,8 +1,8 @@
 export enum CandidateState {
-    'done' = 'Выполнено',
+    'checked' = 'Проверено',
+    'toCheck' = 'Нужно проверить',
     'inProcess' = 'В процессе',
-    'notStarted' = 'Не начато',
-    'skiped' = 'Истёк срок'
+    'expired' = 'Не сдано'
 }
 
 export type CandidateStateKeys = keyof typeof CandidateState

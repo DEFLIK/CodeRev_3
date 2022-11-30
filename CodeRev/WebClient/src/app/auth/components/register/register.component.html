@@ -23,7 +23,10 @@
     </div>
     <form [formGroup]="regForm">
         <div class='inputDiv'>
-            <input type="text" class='input' placeholder="ФИО" formControlName="userName" required/>
+            <input type="text" class='input' placeholder="Фамилия" formControlName="userSurname" required/>
+        </div>
+        <div class='inputDiv'>
+            <input type="text" class='input' placeholder="Имя" formControlName="userFirstName" required/>
         </div>
         <div class='inputDiv'>
             <input type="text" class='input' placeholder="Телефон" formControlName="userPhone" required/>
