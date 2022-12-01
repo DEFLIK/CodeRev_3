@@ -16,4 +16,6 @@ export class CandidateCardInfoResponse {
     public hasHrCheckResult?: boolean;
     public isSubmittedByCandidate?: boolean;
     public isSolutionTimeExpired?: boolean;
+    public programmingLanguage?: string;
+    public isSynchronous?: boolean;
 }

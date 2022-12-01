@@ -18,6 +18,8 @@ export class CandidateCardInfo {
     public hasHrCheckResult: boolean;
     public isSubmittedByCandidate: boolean;
     public isSolutionTimeExpired: boolean;
+    public programmingLanguage: string;
+    public isSynchronous: boolean;
 
     constructor(resp: CandidateCardInfoResponse) {
         this.userId = resp.userId ?? '';
@@ -35,7 +37,9 @@ export class CandidateCardInfo {
         this.isSubmittedByCandidate = resp.isSubmittedByCandidate ?? false;
         this.isSolutionTimeExpired = resp.isSolutionTimeExpired ?? false;
         this.hasReviewerCheckResult = resp.hasReviewerCheckResult ?? false;
-        this.hasHrCheckResult = resp.hasReviewerCheckResult ?? false;
+        this.hasHrCheckResult = resp.hasHrCheckResult ?? false;
+        this.programmingLanguage = resp.programmingLanguage ?? '?';
+        this.isSynchronous = resp.isSynchronous ?? false;
     }
 
     public getState(): CandidateState {
