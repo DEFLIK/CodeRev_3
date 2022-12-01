@@ -28,6 +28,7 @@ namespace UserService.Helpers
                 .Select(group => (group.Key, group.Count()));
             
             var meets = dbRepository.Get<InterviewSolution>()
+                .Where(interviewSolution => !interviewSolution.IsSubmittedByCandidate)
                 .ToList()
                 .Join(dbRepository.Get<Interview>()
                     .Where(interview => interview.IsSynchronous)
