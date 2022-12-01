@@ -46,7 +46,7 @@ namespace Core
             services.AddScoped<ITaskCreator, TaskCreator>();
             services.AddScoped<IInvitationValidator, InvitationValidator>();
             services.AddScoped<IInvitationCreator, InvitationCreator>();
-            services.AddScoped<IUserCreator, UserCreator>();
+            services.AddScoped<IUserCreator, UserCreatorWithoutUniqueValidations>();
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<ITokenHelper, TokenHelper>();
             services.AddScoped<IInterviewHelper, InterviewHelper>();
