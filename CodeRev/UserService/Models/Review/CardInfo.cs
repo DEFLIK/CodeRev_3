@@ -23,5 +23,6 @@ namespace UserService.Models.Review
         public bool HasReviewerCheckResult { get; set; }
         public bool HasHrCheckResult { get; set; }
         public string ProgrammingLanguage { get; set; }
+        public bool IsSynchronous { get; set; }
     }
 }

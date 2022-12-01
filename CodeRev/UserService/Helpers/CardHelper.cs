@@ -32,7 +32,6 @@ namespace UserService.Helpers
             var cardsInfo = dbRepository.Get<InterviewSolution>()
                 .ToList()
                 .Join(dbRepository.Get<Interview>()
-                    .Where(interview => !interview.IsSynchronous)
                     .ToList(),
                 interviewSolution => interviewSolution.InterviewId,
                 interview => interview.Id,
@@ -52,7 +51,9 @@ namespace UserService.Helpers
                     HasReviewerCheckResult = statusChecker.HasReviewerCheckResult(interviewSolution.AverageGrade),
                     HasHrCheckResult = statusChecker.HasHrCheckResult(interviewSolution.InterviewResult),
                     ProgrammingLanguage = interview.ProgrammingLanguage,
+                    IsSynchronous = interview.IsSynchronous,
                 })
+                .Where(card => !card.IsSynchronous || card.IsSubmittedByCandidate)
                 .ToList();
             
             cardsInfo = cardsInfo.Join(
