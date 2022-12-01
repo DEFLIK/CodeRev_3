@@ -43,7 +43,7 @@ export class CandidateCardInfo {
             return CandidateState.checked;
         }
 
-        if (this.isSubmittedByCandidate) {
+        if (this.isSubmittedByCandidate || this.doneTasksCount === this.tasksCount) {
             return CandidateState.toCheck;
         }
 
