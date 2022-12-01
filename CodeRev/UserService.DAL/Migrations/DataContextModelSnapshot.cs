@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UserService.DAL;
+using UserService.DAL.Models.Draft;
 
 namespace UserService.DAL.Migrations
 {
@@ -69,6 +70,9 @@ namespace UserService.DAL.Migrations
                     b.Property<string>("ReviewerComment")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("ReviewerDraftId")
+                        .HasColumnType("uuid");
+
                     b.Property<long>("StartTimeMs")
                         .HasColumnType("bigint");
 
@@ -118,6 +122,23 @@ namespace UserService.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Invitations");
+                });
+
+            modelBuilder.Entity("UserService.DAL.Entities.ReviewerDraft", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Draft>("Draft")
+                        .HasColumnType("jsonb");
+
+                    b.Property<Guid>("InterviewSolutionId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReviewerDrafts");
                 });
 
             modelBuilder.Entity("UserService.DAL.Entities.Task", b =>

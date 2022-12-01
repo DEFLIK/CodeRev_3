@@ -1,6 +1,6 @@
 <div class="wrapper" *ngFor="let task of tasks">
     <div 
-        (click)="change(task)"
+        (click)="openTask(task)"
         *ngIf="tasksStates.get(task.id)"
         class="task"
         [ngClass]="{

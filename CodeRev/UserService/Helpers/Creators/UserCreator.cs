@@ -57,7 +57,7 @@ namespace UserService.Helpers.Creators
             if (!invitation.InterviewId.Equals(Guid.Empty))
                 interviewCreator.CreateSolution(user.Id, invitation.InterviewId);
 
-            dbRepository.SaveChangesAsync();
+            dbRepository.SaveChangesAsync().Wait();
 
             errorString = null;
             return user;

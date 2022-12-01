@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { catchError, first, forkJoin, Observable, of, Subject, Subscription, take, zip } from 'rxjs';
+import { EditorMode } from 'src/app/code-editor/models/editorMode';
 import { SavingService } from 'src/app/code-editor/services/saving-service/saving.service';
 import { TaskSolutionInfo } from '../../models/taskSolutionInfo';
 import { ContestService } from '../../services/contest-service/contest.service';
@@ -10,17 +11,21 @@ import { ContestService } from '../../services/contest-service/contest.service';
     styleUrls: ['./tasks-list.component.less']
 })
 export class TasksListComponent {
+    @Input()
+    public editorMode: EditorMode = EditorMode.write;
     public tasks: TaskSolutionInfo[] = [];
     public currentTask?: TaskSolutionInfo;
     public tasksStates = new Map<string, boolean>();
     @Output()
     public taskLoadingError = new EventEmitter<TaskSolutionInfo>();
+    @Output()
+    public draftButtonClick = new EventEmitter<boolean>();
     constructor(
         private _contest: ContestService,
         private _saving: SavingService
     ) { }
 
-    public change(task: TaskSolutionInfo): void {
+    public openTask(task: TaskSolutionInfo): void {
         this.currentTask = task;
         this._contest.selectTask(task);
     }
@@ -63,11 +68,13 @@ export class TasksListComponent {
                                     const startTask = this.tasks.find(task => task.id === startTaskId && this.tasksStates.get(task.id));
                                     const anyLoaded = this.tasks.find(task => this.tasksStates.get(task.id));
 
-                                    if (!startTask && anyLoaded) {
-                                        this.selectStartTask(anyLoaded);
-                                    } else if (startTask) {
-                                        this.selectStartTask(startTask);
-                                    }
+                                    setTimeout(() => { // Необходимо закинуть в конец очереди для пропуска загрузки редактора кода
+                                        if (!startTask && anyLoaded) {
+                                            this.selectStartTask(anyLoaded);
+                                        } else if (startTask) {
+                                            this.selectStartTask(startTask);
+                                        }
+                                    });
                                 }
                             });
                     }

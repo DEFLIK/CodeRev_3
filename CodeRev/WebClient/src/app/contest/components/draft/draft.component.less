@@ -1,0 +1,163 @@
+@import (reference) "/src/styles.less";
+
+.cdk-drag-preview {
+    &:extend(.draft);
+    display: flex !important;
+    flex-direction: row !important;
+    background-color: @color-black10 !important;
+    outline: none !important;
+    border: none !important;
+    height: 25px !important;
+    overflow: visible !important;
+
+    .draft-checkbox-text {
+        background-color: transparent !important;
+    }
+}
+
+.draft {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 95%;
+    border-radius: 5px;
+    border: solid 1px gray;
+    outline: @color-gray 1px;
+    overflow: auto;
+
+    &-text {
+        padding: 10px;
+        display: flex;
+        border-bottom: dashed 2px @color-black25;
+
+        &-area {
+            overflow: visible;
+            border: none; 
+            outline: none; 
+            resize: none;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    .draft-checkbox-list {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .drag-placeholder {
+        width: 100%;
+        height: 20px;
+        background-color: @color-black10;
+    }
+
+    &-checkbox {
+        display: flex;
+        text-align: center;
+        gap: 5px;
+
+        &-text {
+            display: flex;
+            flex: 1 1 auto;
+            border: none; 
+            outline: none; 
+            resize: none;
+            margin: 0;
+            padding: 0;
+            height: 20px;
+        }
+
+        .handle {
+            height: 20px;
+            align-self: center;
+        }
+
+        &-close {
+            color: gray;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        /deep/ .mat-checkbox-frame {
+            border: solid @color-black75 1px !important;
+            border-radius: 5px !important;
+        }
+        
+        /deep/ .mat-checkbox-background {
+            border-radius: 5px !important;
+            background-color: transparent;
+        }
+    }
+}
+
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    gap: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 5px;
+
+    .draft-title {
+        display: flex;
+        gap: 10px;
+        font-size: 20px;
+        img {
+            height: 20px;
+        }
+    }
+    
+    .save-draft {
+        cursor: pointer;
+        margin-right: 10px;
+        align-self: flex-end;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        border: solid 1px #64a6ff;
+        color: #64a6ff;
+        padding: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-radius: 5px;
+        user-select: none;
+
+        &:hover {
+            background-color: #4d98fa;
+            color: white;
+
+            img {
+                filter: invert(93%) sepia(0%) saturate(0%) hue-rotate(193deg) contrast(0%) brightness(1000%);
+            }
+        }
+
+        &:active {
+            background-color: #348cff;
+        }
+
+        img {
+            height: 20px;
+        }
+    }
+
+    .add-checkbox {
+        padding: 5px;
+        height: 20px;
+        width: 90%;
+        border-radius: 10px;
+        align-self: center;
+        cursor: pointer;
+        border: dashed 2px white;
+    }
+
+    .add-checkbox:hover {
+        border-color: @color-black25;
+    }
+}

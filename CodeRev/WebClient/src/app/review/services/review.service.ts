@@ -2,19 +2,21 @@ import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { SaveChunkResponse } from 'src/app/code-editor/models/response/saveChunk-response';
-import { SaveChunk } from 'src/app/code-editor/models/saveChunk';
+import { Draft } from 'src/app/contest/models/draft';
+import { SetDraftRequest } from 'src/app/contest/models/request/setDraftRequest';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
 import { CandidateCardInfo } from '../models/candidateCardInfo';
-import { InterviewInfo } from '../models/interviewInfo';
 import { Invitation } from '../models/invitation';
+import { MeetInfo } from '../models/meetInfo';
 import { ReviewCommentRequest } from '../models/request/comment-request';
 import { InvitationRequest } from '../models/request/invitation-request';
 import { CandidateCardInfoResponse } from '../models/response/candidateCardInfo-response';
 import { InterviewInfoResponse } from '../models/response/interviewInfo-response';
 import { InterviewSolutionReviewResponse } from '../models/response/interviewSolutionReview-response';
 import { InvitationResponse } from '../models/response/invitation-response';
+import { MeetInfoResponse } from '../models/response/meetInfo-response';
 
 @Injectable({
     providedIn: 'root'
@@ -35,6 +37,18 @@ export class ReviewService {
             map(resp =>
                 resp.body
                     ?.map(res => new CandidateCardInfo(res)) ?? []));
+    }
+
+    public getMeets(): Observable<MeetInfo[]> {
+        return this._http.request<MeetInfoResponse[]>({
+            url: `${UrlRoutes.user}/api/meets`,
+            method: RequestMethodType.get,
+            withCredentials: true,
+            auth: true
+        }).pipe(
+            map(resp =>
+                resp.body
+                    ?.map(res => new MeetInfo(res)) ?? []));
     }
 
     public getSolutionReview(slnId: string): Observable<HttpResponse<InterviewSolutionReviewResponse>> {
@@ -106,11 +120,30 @@ export class ReviewService {
     // 0 - ne prinyat
     // 1 - podumat
     // 2 - prinyat
-    public setInterviewResult(taskSlnId: string, result: number): Observable<HttpResponse<void>> {
+    public setInterviewResult(interviewSlnId: string, result: number): Observable<HttpResponse<void>> {
         return this._http.request<void>({
-            url: `${UrlRoutes.user}/api/interviews/solution/result?id=${taskSlnId}&result=${result}`,
+            url: `${UrlRoutes.user}/api/interviews/solution/result?id=${interviewSlnId}&result=${result}`,
             method: RequestMethodType.put,
             auth: true,
+        });
+    }
+
+    public setInterviewDraft(draft: SetDraftRequest): Observable<HttpResponse<void>> {
+        console.log(draft);
+        
+        return this._http.request<void, SetDraftRequest>({
+            url: `${UrlRoutes.user}/api/interviews/solution/draft`,
+            method: RequestMethodType.post,
+            auth: true,
+            body: draft
+        });
+    }
+
+    public getInterviewDraft(intSlnId: string): Observable<HttpResponse<Draft>> {
+        return this._http.request<Draft>({
+            url: `${UrlRoutes.user}/api/interviews/solution/draft?id=${intSlnId}`,
+            method: RequestMethodType.get,
+            auth: true
         });
     }
 }

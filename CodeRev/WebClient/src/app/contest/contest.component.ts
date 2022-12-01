@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { flatMap, forkJoin, Observable, Subject, zip } from 'rxjs';
 import { EditorMode } from '../code-editor/models/editorMode'; 
 import { SavingService } from '../code-editor/services/saving-service/saving.service';
+import { CandidateCardInfo } from '../review/models/candidateCardInfo';
 import { InterviewSolutionReview } from '../review/models/interviewSolutionReview';
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
 import { InterviewSolutionInfo } from './models/interviewSolutionInfo';
@@ -21,7 +22,13 @@ export class ContestComponent implements AfterViewInit {
     public review?: InterviewSolutionReview;
     @Input()
     public startTaskId?: string;
+    public get isReview(): boolean {
+        return this.editorMode === EditorMode.review;
+    }
+
     public isStarted = false;
+    public isDraftOpen = false;
+    public isInfoHidden = false;
     public editType = EditorMode;
     public get taskSelected$(): Observable<TaskSolutionInfo> {
         return this._contest.taskSelected$;
@@ -72,6 +79,14 @@ export class ContestComponent implements AfterViewInit {
 
     public applyTaskError(task: TaskSolutionInfo): void {
         
+    }
+
+    public clickDraft(): void {
+        this.isDraftOpen = !this.isDraftOpen;
+    }
+
+    public hideInfo(): void {
+        this.isInfoHidden = !this.isInfoHidden;
     }
 
     // private createList(interviewSolutionId: string): void {
