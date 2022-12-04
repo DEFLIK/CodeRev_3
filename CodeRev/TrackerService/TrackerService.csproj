@@ -7,16 +7,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\TrackerService.Contracts\TrackerService.Contracts.csproj"/>
-        <ProjectReference Include="..\TrackerService.DataAccess\TrackerService.DataAccess.csproj"/>
+        <ProjectReference Include="..\TrackerService.Contracts\TrackerService.Contracts.csproj" />
+        <ProjectReference Include="..\TrackerService.DataAccess\TrackerService.DataAccess.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="11.0.1"/>
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0"/>
-        <PackageReference Include="MongoDB.Driver" Version="2.15.1"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+        <PackageReference Include="AutoMapper" Version="11.0.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+        <PackageReference Include="MongoDB.Driver" Version="2.15.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="microsoft.aspnetcore.signalr.core" Version="1.1.0" />
     </ItemGroup>
 
 </Project>
