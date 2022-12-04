@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { LoadChildren, LoadChildrenCallback, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/guards/auth.guard';
+import {WebcamModule} from "./webcam/webcam.module";
 
 const routes: Routes = [
     {
@@ -22,10 +23,14 @@ const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
+        path: 'web',
+        loadChildren: () => import('./webcam/webcam.module').then((m: any)=> m.WebcamModule)
+    },
+    {
         path: '**',
         redirectTo: 'auth',
         pathMatch: 'full'
-    },
+    }
 ];
 
 @NgModule({

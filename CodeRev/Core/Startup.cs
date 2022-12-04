@@ -15,6 +15,7 @@ using TrackerService.DataAccess.Repositories;
 using TrackerService.DomainCore.Deserialize;
 using TrackerService.DomainCore.Serialize;
 using TrackerService.EventHandling;
+using TrackerService.Hubs;
 using TrackerService.Services;
 using UserService;
 using UserService.DAL;
@@ -92,6 +93,7 @@ namespace Core
             services.AddTransient<ICompilerService, CompilerService.Services.CompilerService>();
 
             services.AddCors();
+            services.AddSignalR();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -128,6 +130,7 @@ namespace Core
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<SignalRtcHub>("/signalrtc");
                 endpoints.MapControllers();
             });
 
