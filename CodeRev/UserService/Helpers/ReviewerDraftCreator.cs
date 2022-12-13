@@ -28,6 +28,8 @@ namespace UserService.Helpers
                 Draft = null
             }).Wait();
 
+            dbRepository.SaveChangesAsync().Wait();
+            
             return reviewerDraftId;
         }
     }

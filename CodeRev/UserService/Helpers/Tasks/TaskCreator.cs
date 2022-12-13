@@ -38,6 +38,8 @@ namespace UserService.Helpers.Tasks
                 Grade = Grade.Zero,
             }).Wait();
             
+            dbRepository.SaveChangesAsync().Wait();
+            
             return taskSolutionGuid;
         }
     }
