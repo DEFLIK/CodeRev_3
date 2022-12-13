@@ -20,11 +20,13 @@ namespace UserService.Controllers
         
         private readonly IInterviewHelper interviewHelper;
         private readonly IDraftHelper draftHelper;
+        private readonly IInterviewCreator interviewCreator;
         
-        public InterviewsController(IInterviewHelper interviewHelper, IDraftHelper draftHelper)
+        public InterviewsController(IInterviewHelper interviewHelper, IDraftHelper draftHelper, IInterviewCreator interviewCreator)
         {
             this.interviewHelper = interviewHelper;
             this.draftHelper = draftHelper;
+            this.interviewCreator = interviewCreator;
         }
 
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
@@ -32,6 +34,16 @@ namespace UserService.Controllers
         public IActionResult GetInterviews()
         {
             return Ok(interviewHelper.GetAllInterviews());
+        }
+
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpPost]
+        public IActionResult PostInterview([Required] [FromBody] InterviewCreationDto interviewCreation)
+        {
+            return Ok(new
+            {
+                interviewId = interviewCreator.Create(interviewCreation)
+            });
         }
 
         [Authorize(Roles = "Interviewer,HrManager,Admin")]

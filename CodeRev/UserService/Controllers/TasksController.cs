@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using UserService.DAL.Models.Enums;
 using UserService.Helpers.Tasks;
+using UserService.Models.Tasks;
 
 namespace UserService.Controllers
 {
@@ -16,10 +17,22 @@ namespace UserService.Controllers
         private const string Solution = "solution";
 
         private readonly ITaskHelper taskHelper;
+        private readonly ITaskCreator taskCreator;
 
-        public TasksController(ITaskHelper taskHelper)
+        public TasksController(ITaskHelper taskHelper, ITaskCreator taskCreator)
         {
             this.taskHelper = taskHelper;
+            this.taskCreator = taskCreator;
+        }
+
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpPost]
+        public IActionResult PostTask([Required] [FromBody] TaskCreationDto taskCreation)
+        {
+            return Ok(new
+            {
+                taskId = taskCreator.Create(taskCreation)
+            });
         }
 
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
