@@ -2,12 +2,13 @@
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 using UserService.DAL.Models.Interfaces;
+using UserService.Models.Tasks;
 
 namespace UserService.Helpers.Tasks
 {
     public interface ITaskCreator
     {
-        Guid Create();
+        Guid Create(TaskCreationDto taskCreation);
         Guid CreateSolution(Guid interviewSolutionGuid, Guid taskGuid);
     }
     
@@ -20,9 +21,16 @@ namespace UserService.Helpers.Tasks
             this.dbRepository = dbRepository;
         }
 
-        public Guid Create()
+        public Guid Create(TaskCreationDto taskCreation)
         {
-            throw new NotImplementedException();
+            var task = MapTaskCreationToTaskEntity(taskCreation);
+            task.Id = Guid.NewGuid();
+
+            dbRepository.Add(task).Wait();
+            
+            dbRepository.SaveChangesAsync().Wait();
+
+            return task.Id;
         }
 
         public Guid CreateSolution(Guid interviewSolutionGuid, Guid taskGuid)
@@ -42,5 +50,12 @@ namespace UserService.Helpers.Tasks
             
             return taskSolutionGuid;
         }
+
+        private static Task MapTaskCreationToTaskEntity(TaskCreationDto taskCreation)
+            => new()
+            {
+                TaskText = taskCreation.TaskText,
+                StartCode = taskCreation.StartCode,
+            };
     }
 }
