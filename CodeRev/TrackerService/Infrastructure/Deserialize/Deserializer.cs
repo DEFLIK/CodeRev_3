@@ -4,7 +4,7 @@ using TrackerService.Contracts.Actions;
 using TrackerService.Contracts.Primitives;
 using TrackerService.Contracts.Record;
 
-namespace TrackerService.DomainCore.Deserialize;
+namespace TrackerService.Infrastructure.Deserialize;
 
 public class Deserializer : IDeserializer
 {

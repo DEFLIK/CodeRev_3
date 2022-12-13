@@ -4,7 +4,7 @@ using UserService.DAL.Entities;
 using UserService.DAL.Models.Interfaces;
 using UserService.Models.Review;
 
-namespace UserService.Helpers
+namespace UserService.Helpers.Interviews
 {
     public interface ICardHelper
     {

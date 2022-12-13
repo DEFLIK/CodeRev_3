@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using UserService.Helpers;
+using UserService.Helpers.Auth;
+using UserService.Helpers.Interviews;
+using UserService.Helpers.Tasks;
 using UserService.Models.Contest;
 
 namespace UserService.Controllers

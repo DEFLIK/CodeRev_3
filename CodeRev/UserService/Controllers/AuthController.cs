@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using UserService.Helpers;
+using UserService.Helpers.Auth;
 using UserService.Models.Auth;
 
 namespace UserService.Controllers

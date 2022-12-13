@@ -12,17 +12,20 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TrackerService.DataAccess.Infrastructure;
 using TrackerService.DataAccess.Repositories;
-using TrackerService.DomainCore.Deserialize;
-using TrackerService.DomainCore.Serialize;
 using TrackerService.EventHandling;
 using TrackerService.Hubs;
+using TrackerService.Infrastructure.Deserialize;
+using TrackerService.Infrastructure.Serialize;
 using TrackerService.Services;
 using UserService;
 using UserService.DAL;
 using UserService.DAL.Models.Interfaces;
 using UserService.DAL.Repositories;
 using UserService.Helpers;
-using UserService.Helpers.Creators;
+using UserService.Helpers.Auth;
+using UserService.Helpers.Auth.Invitations;
+using UserService.Helpers.Interviews;
+using UserService.Helpers.Tasks;
 
 namespace Core
 {

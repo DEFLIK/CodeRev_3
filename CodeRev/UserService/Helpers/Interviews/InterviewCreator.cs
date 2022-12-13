@@ -3,8 +3,9 @@ using System.Linq;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 using UserService.DAL.Models.Interfaces;
+using UserService.Helpers.Tasks;
 
-namespace UserService.Helpers.Creators
+namespace UserService.Helpers.Interviews
 {
     public interface IInterviewCreator
     {

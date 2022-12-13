@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TrackerService.Contracts;
 using TrackerService.Contracts.Record;
-using TrackerService.DomainCore.Deserialize;
-using TrackerService.DomainCore.Serialize;
+using TrackerService.Infrastructure.Deserialize;
+using TrackerService.Infrastructure.Serialize;
 using TrackerService.Services;
 using TrackerService.Validation;
 

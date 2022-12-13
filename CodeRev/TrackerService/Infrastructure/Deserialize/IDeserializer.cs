@@ -1,6 +1,6 @@
 ﻿using TrackerService.Contracts.Record;
 
-namespace TrackerService.DomainCore.Deserialize;
+namespace TrackerService.Infrastructure.Deserialize;
 
 public interface IDeserializer
 {

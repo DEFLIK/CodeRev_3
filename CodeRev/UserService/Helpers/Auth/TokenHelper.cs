@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 
-namespace UserService.Helpers
+namespace UserService.Helpers.Auth
 {
     public interface ITokenHelper
     {

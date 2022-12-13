@@ -1,7 +1,7 @@
 ﻿using System;
 using UserService.DAL.Models.Enums;
 
-namespace UserService.Helpers
+namespace UserService.Helpers.Interviews
 {
     public interface IStatusChecker
     {

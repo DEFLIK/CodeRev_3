@@ -1,9 +1,8 @@
 ﻿using System;
 using UserService.DAL.Entities;
-using UserService.DAL.Models.Draft;
 using UserService.DAL.Models.Interfaces;
 
-namespace UserService.Helpers.Creators
+namespace UserService.Helpers
 {
     public interface IReviewerDraftCreator
     {

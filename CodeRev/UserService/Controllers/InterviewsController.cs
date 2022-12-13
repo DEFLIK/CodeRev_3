@@ -3,10 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using UserService.DAL.Models.Draft;
 using UserService.DAL.Models.Enums;
 using UserService.Helpers;
+using UserService.Helpers.Interviews;
 using UserService.Models.Interviews;
 using UserService.Models.Review;
 

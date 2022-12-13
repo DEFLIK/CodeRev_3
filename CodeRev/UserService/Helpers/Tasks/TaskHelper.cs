@@ -4,11 +4,12 @@ using System.Linq;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 using UserService.DAL.Models.Interfaces;
+using UserService.Helpers.Auth;
 using UserService.Models.Contest;
 using UserService.Models.Review;
 using Task = UserService.DAL.Entities.Task;
 
-namespace UserService.Helpers
+namespace UserService.Helpers.Tasks
 {
     public interface ITaskHelper
     {

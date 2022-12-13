@@ -3,7 +3,7 @@ using System.Linq;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Interfaces;
 
-namespace UserService.Helpers
+namespace UserService.Helpers.Auth.Invitations
 {
     public interface IInvitationValidator
     {

@@ -4,7 +4,7 @@ using UserService.DAL.Entities;
 using UserService.DAL.Models.Interfaces;
 using UserService.Models.Auth;
 
-namespace UserService.Helpers
+namespace UserService.Helpers.Auth
 {
     public interface IUserHelper
     {

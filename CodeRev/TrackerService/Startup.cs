@@ -1,11 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.Extensions.Options;
-using TrackerService.DataAccess.Infrastructure;
-using TrackerService.DataAccess.Repositories;
-using TrackerService.DomainCore.Deserialize;
-using TrackerService.DomainCore.Serialize;
-using TrackerService.EventHandling;
-using TrackerService.Services;
+﻿using TrackerService.EventHandling;
 
 namespace TrackerService;
 

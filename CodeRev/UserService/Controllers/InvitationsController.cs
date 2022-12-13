@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using UserService.Helpers;
-using UserService.Helpers.Creators;
+using UserService.Helpers.Auth.Invitations;
 using UserService.Models.Users;
 
 namespace UserService.Controllers

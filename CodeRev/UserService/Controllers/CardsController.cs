@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using UserService.Helpers;
+using UserService.Helpers.Interviews;
 
 namespace UserService.Controllers
 {

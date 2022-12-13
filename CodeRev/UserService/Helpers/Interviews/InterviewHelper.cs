@@ -4,9 +4,11 @@ using System.Linq;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 using UserService.DAL.Models.Interfaces;
+using UserService.Helpers.Auth;
+using UserService.Helpers.Tasks;
 using UserService.Models.Review;
 
-namespace UserService.Helpers
+namespace UserService.Helpers.Interviews
 {
     public interface IInterviewHelper
     {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using UserService.DAL.Models.Enums;
-using UserService.Helpers;
+using UserService.Helpers.Tasks;
 
 namespace UserService.Controllers
 {

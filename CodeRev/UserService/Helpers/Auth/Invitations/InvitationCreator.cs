@@ -5,7 +5,7 @@ using UserService.DAL.Models.Enums;
 using UserService.DAL.Models.Interfaces;
 using UserService.Models.Users;
 
-namespace UserService.Helpers.Creators
+namespace UserService.Helpers.Auth.Invitations
 {
     public interface IInvitationCreator
     {

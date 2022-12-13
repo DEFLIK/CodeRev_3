@@ -3,7 +3,7 @@ using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 using UserService.DAL.Models.Interfaces;
 
-namespace UserService.Helpers.Creators
+namespace UserService.Helpers.Tasks
 {
     public interface ITaskCreator
     {
