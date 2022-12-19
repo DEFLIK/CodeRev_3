@@ -2,6 +2,7 @@
 using System.Linq;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Interfaces;
+using UserService.Helpers.Auth;
 using UserService.Models.Review;
 
 namespace UserService.Helpers.Interviews
@@ -15,11 +16,13 @@ namespace UserService.Helpers.Interviews
     {
         private readonly IDbRepository dbRepository;
         private readonly IStatusChecker statusChecker;
+        private readonly IUserHelper userHelper;
 
-        public CardHelper(IDbRepository dbRepository, IStatusChecker statusChecker)
+        public CardHelper(IDbRepository dbRepository, IStatusChecker statusChecker, IUserHelper userHelper)
         {
             this.dbRepository = dbRepository;
             this.statusChecker = statusChecker;
+            this.userHelper = userHelper;
         }
 
         public List<CardInfo> GetCards()
@@ -63,9 +66,9 @@ namespace UserService.Helpers.Interviews
                 user => user.Id,
                 (card, user) =>
                 {
-                    var splitFullName = user.FullName.Split(' ');
-                    card.FirstName = splitFullName.FirstOrDefault();
-                    card.Surname = splitFullName.ElementAtOrDefault(1);
+                    userHelper.GetFirstNameAndSurname(user, out var firstName, out var surname);
+                    card.FirstName = firstName;
+                    card.Surname = surname;
                     return card;
                 })
                 .ToList();
