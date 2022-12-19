@@ -5,6 +5,7 @@ using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 using UserService.DAL.Models.Interfaces;
 using UserService.Helpers.Auth;
+using UserService.Helpers.Notifications;
 using UserService.Helpers.Tasks;
 using UserService.Models.Review;
 
@@ -35,12 +36,14 @@ namespace UserService.Helpers.Interviews
         private readonly IDbRepository dbRepository;
         private readonly IUserHelper userHelper;
         private readonly ITaskHelper taskHelper;
+        private readonly INotificationsCreator notificationsCreator;
 
-        public InterviewHelper(IDbRepository dbRepository, IUserHelper userHelper, ITaskHelper taskHelper)
+        public InterviewHelper(IDbRepository dbRepository, IUserHelper userHelper, ITaskHelper taskHelper, INotificationsCreator notificationsCreator)
         {
             this.dbRepository = dbRepository;
             this.userHelper = userHelper;
             this.taskHelper = taskHelper;
+            this.notificationsCreator = notificationsCreator;
         }
 
         public IEnumerable<Interview> GetAllInterviews()
@@ -66,6 +69,9 @@ namespace UserService.Helpers.Interviews
 
             interviewSolution.AverageGrade = grade;
             dbRepository.SaveChangesAsync().Wait();
+
+            notificationsCreator.Create(interviewSolution.UserId, interviewSolution.Id, NotificationType.InterviewSolutionChecked);
+            
             return true;
         }
 
@@ -250,6 +256,9 @@ namespace UserService.Helpers.Interviews
             interviewSolution.EndTimeMs = nowTime + interview.InterviewDurationMs;
             interviewSolution.TimeToCheckMs = nowTime + TimeToCheckInterviewSolutionMs;
             dbRepository.SaveChangesAsync().Wait();
+
+            notificationsCreator.Create(interviewSolution.UserId, interviewSolution.Id, NotificationType.InterviewSolutionStarted);
+            
             return true;
         }
 
@@ -280,6 +289,9 @@ namespace UserService.Helpers.Interviews
             interviewSolution.TimeToCheckMs = nowTime + TimeToCheckInterviewSolutionMs;
             interviewSolution.IsSubmittedByCandidate = true;
             dbRepository.SaveChangesAsync().Wait();
+
+            notificationsCreator.Create(interviewSolution.UserId, interviewSolution.Id, NotificationType.InterviewSolutionSubmitted);
+            
             return true;
         }
     }

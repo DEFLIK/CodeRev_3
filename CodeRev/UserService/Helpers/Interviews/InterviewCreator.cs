@@ -3,6 +3,7 @@ using System.Linq;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 using UserService.DAL.Models.Interfaces;
+using UserService.Helpers.Notifications;
 using UserService.Helpers.Tasks;
 using UserService.Models.Interviews;
 
@@ -19,12 +20,14 @@ namespace UserService.Helpers.Interviews
         private readonly IDbRepository dbRepository;
         private readonly ITaskCreator taskCreator;
         private readonly IReviewerDraftCreator reviewerDraftCreator;
+        private readonly INotificationsCreator notificationsCreator;
 
-        public InterviewCreator(IDbRepository dbRepository, ITaskCreator taskCreator, IReviewerDraftCreator reviewerDraftCreator)
+        public InterviewCreator(IDbRepository dbRepository, ITaskCreator taskCreator, IReviewerDraftCreator reviewerDraftCreator, INotificationsCreator notificationsCreator)
         {
             this.dbRepository = dbRepository;
             this.taskCreator = taskCreator;
             this.reviewerDraftCreator = reviewerDraftCreator;
+            this.notificationsCreator = notificationsCreator;
         }
 
         public Guid Create(InterviewCreationDto interviewCreation)
@@ -67,6 +70,8 @@ namespace UserService.Helpers.Interviews
                 taskCreator.CreateSolution(interviewSolutionGuid, taskId);
 
             dbRepository.SaveChangesAsync().Wait();
+
+            notificationsCreator.Create(userGuid, interviewSolutionGuid, NotificationType.UserCreated); // правильнее перенести в UserCreator
             
             return interviewSolutionGuid;
         }
