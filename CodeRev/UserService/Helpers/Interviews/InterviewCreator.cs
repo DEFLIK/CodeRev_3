@@ -59,7 +59,11 @@ namespace UserService.Helpers.Interviews
                 IsSubmittedByCandidate = false,
             }).Wait();
 
-            foreach (var taskId in dbRepository.Get<InterviewTask>(it => it.InterviewId == interviewGuid).Select(it => it.TaskId))
+            var interviewTasks = dbRepository
+                .Get<InterviewTask>(it => it.InterviewId == interviewGuid)
+                .Select(it => it.TaskId)
+                .ToList();
+            foreach (var taskId in interviewTasks)
                 taskCreator.CreateSolution(interviewSolutionGuid, taskId);
 
             dbRepository.SaveChangesAsync().Wait();
