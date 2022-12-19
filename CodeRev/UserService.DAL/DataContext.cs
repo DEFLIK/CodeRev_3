@@ -15,6 +15,7 @@ namespace UserService.DAL
         public DbSet<TaskSolution> TaskSolutions { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
         public DbSet<ReviewerDraft> ReviewerDrafts { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
