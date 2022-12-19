@@ -2,6 +2,7 @@
 using System.Linq;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Interfaces;
+using UserService.Helpers.Auth;
 using UserService.Models.SyncInterviews;
 
 namespace UserService.Helpers
@@ -14,10 +15,12 @@ namespace UserService.Helpers
     public class MeetsHelper : IMeetsHelper
     {
         private readonly IDbRepository dbRepository;
+        private readonly IUserHelper userHelper;
 
-        public MeetsHelper(IDbRepository dbRepository)
+        public MeetsHelper(IDbRepository dbRepository, IUserHelper userHelper)
         {
             this.dbRepository = dbRepository;
+            this.userHelper = userHelper;
         }
 
         public IEnumerable<MeetInfoDto> GetMeets()
@@ -51,9 +54,9 @@ namespace UserService.Helpers
                 user => user.Id,
                 (meet, user) =>
                 {
-                    var splitFullName = user.FullName.Split(' ');
-                    meet.FirstName = splitFullName.FirstOrDefault();
-                    meet.Surname = splitFullName.ElementAtOrDefault(1);
+                    userHelper.GetFirstNameAndSurname(user, out var firstName, out var surname);
+                    meet.FirstName = firstName;
+                    meet.Surname = surname;
                     return meet;
                 });
 

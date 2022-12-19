@@ -13,6 +13,7 @@ namespace UserService.Helpers.Auth
         User Get(string userId, out string errorString);
         string GetFullName(Guid userId);
         string GetFullNameByInterviewSolutionId(Guid interviewSolutionId);
+        bool GetFirstNameAndSurname(User user, out string firstName, out string surname);
     }
     
     public class UserHelper : IUserHelper
@@ -51,6 +52,15 @@ namespace UserService.Helpers.Auth
                 .Get<InterviewSolution>(i => i.Id == interviewSolutionId)
                 .FirstOrDefault(); // чтобы не было циклической зависимости при создании interviewHelper, пришлось так доставать interviewSolution
             return interviewSolution == null ? null : GetFullName(interviewSolution.UserId);
+        }
+
+        public bool GetFirstNameAndSurname(User user, out string firstName, out string surname)
+        {
+            var splitFullName = GetFullName(user.Id).Split(' ');
+            firstName = splitFullName.FirstOrDefault();
+            surname = splitFullName.ElementAtOrDefault(1);
+            
+            return true;
         }
     }
 }

@@ -25,6 +25,7 @@ using UserService.Helpers;
 using UserService.Helpers.Auth;
 using UserService.Helpers.Auth.Invitations;
 using UserService.Helpers.Interviews;
+using UserService.Helpers.Notifications;
 using UserService.Helpers.Tasks;
 
 namespace Core
@@ -41,59 +42,9 @@ namespace Core
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // UserService
-            // todo сделать нормальную настройку конфигурации
-            services.AddDbContext<DataContext>(options => options.UseNpgsql(Configuration.GetConnectionString("default"),
-                assembly => assembly.MigrationsAssembly("UserService.DAL")));
-            services.AddScoped<IDbRepository, DbRepository>();
-            services.AddScoped<IInterviewCreator, InterviewCreator>();
-            services.AddScoped<ITaskCreator, TaskCreator>();
-            services.AddScoped<IInvitationValidator, InvitationValidator>();
-            services.AddScoped<IInvitationCreator, InvitationCreator>();
-            services.AddScoped<IUserCreator, UserCreatorWithoutUniqueValidations>();
-            services.AddScoped<IUserHelper, UserHelper>();
-            services.AddScoped<ITokenHelper, TokenHelper>();
-            services.AddScoped<IInterviewHelper, InterviewHelper>();
-            services.AddScoped<ITaskHelper, TaskHelper>();
-            services.AddScoped<ICardHelper, CardHelper>();
-            services.AddScoped<IReviewerDraftCreator, ReviewerDraftCreator>();
-            services.AddScoped<IDraftHelper, DraftHelper>();
-            
-            services.AddScoped<IStatusChecker, StatusChecker>();
-            services.AddScoped<IMeetsHelper, MeetsHelper>();
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = false; //todo change to true after dev for using ssl
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = AuthOptions.Issuer,
-                        
-                        ValidateAudience = true,
-                        ValidAudience = AuthOptions.Audience,
-                        
-                        ValidateLifetime = true,
-                        
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
-                    };
-                });
-            
-            // TrackerService
-            services.AddTransient<ValidationMiddleware>();
-            services.Configure<TaskRecordsTrackerDataBaseSettings>(
-                Configuration.GetSection(nameof(TaskRecordsTrackerDataBaseSettings)));
-            services.AddSingleton<ITaskRecordsTrackerDataBaseSettings>(sp =>
-                sp.GetRequiredService<IOptions<TaskRecordsTrackerDataBaseSettings>>().Value);
-            services.AddTransient<ITrackerManager, TrackerManager>();
-            services.AddTransient<IRepository, Repository>();
-            services.AddTransient<ISerializer, Serializer>();
-            services.AddTransient<IDeserializer, Deserializer>();
-            // services.AddApiVersioning(config => { config.ApiVersionReader = new HeaderApiVersionReader("api-version"); });
-            
-            // CompilerService
-            services.AddTransient<ICompilerService, CompilerService.Services.CompilerService>();
+            ConfigureUserService(services);
+            ConfigureTrackerService(services);
+            ConfigureCompilerService(services);
 
             services.AddCors();
             services.AddSignalR();
@@ -149,6 +100,67 @@ namespace Core
                     spa.UseAngularCliServer("start");
             });
 
+        }
+
+        private void ConfigureCompilerService(IServiceCollection services)
+        {
+            services.AddTransient<ICompilerService, CompilerService.Services.CompilerService>();
+        }
+
+        private void ConfigureTrackerService(IServiceCollection services)
+        {
+            services.AddTransient<ValidationMiddleware>();
+            services.Configure<TaskRecordsTrackerDataBaseSettings>(Configuration.GetSection(nameof(TaskRecordsTrackerDataBaseSettings)));
+            services.AddSingleton<ITaskRecordsTrackerDataBaseSettings>(sp => sp.GetRequiredService<IOptions<TaskRecordsTrackerDataBaseSettings>>().Value);
+            services.AddTransient<ITrackerManager, TrackerManager>();
+            services.AddTransient<IRepository, Repository>();
+            services.AddTransient<ISerializer, Serializer>();
+            services.AddTransient<IDeserializer, Deserializer>();
+            // services.AddApiVersioning(config => { config.ApiVersionReader = new HeaderApiVersionReader("api-version"); });
+        }
+
+        private void ConfigureUserService(IServiceCollection services)
+        {
+            // todo сделать нормальную настройку конфигурации базы
+            services.AddDbContext<DataContext>(options => options.UseNpgsql(Configuration.GetConnectionString("default"),
+                assembly => assembly.MigrationsAssembly("UserService.DAL")));
+            
+            services.AddScoped<IDbRepository, DbRepository>();
+            services.AddScoped<IInterviewCreator, InterviewCreator>();
+            services.AddScoped<ITaskCreator, TaskCreator>();
+            services.AddScoped<IInvitationValidator, InvitationValidator>();
+            services.AddScoped<IInvitationCreator, InvitationCreator>();
+            services.AddScoped<IUserCreator, UserCreatorWithoutUniqueValidations>();
+            services.AddScoped<IUserHelper, UserHelper>();
+            services.AddScoped<ITokenHelper, TokenHelper>();
+            services.AddScoped<IInterviewHelper, InterviewHelper>();
+            services.AddScoped<ITaskHelper, TaskHelper>();
+            services.AddScoped<ICardHelper, CardHelper>();
+            services.AddScoped<IReviewerDraftCreator, ReviewerDraftCreator>();
+            services.AddScoped<IDraftHelper, DraftHelper>();
+            services.AddScoped<IStatusChecker, StatusChecker>();
+            services.AddScoped<IMeetsHelper, MeetsHelper>();
+            services.AddScoped<INotificationsHelper, NotificationsHelper>();
+            services.AddScoped<INotificationsCreator, NotificationsCreator>();
+            
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false; //todo change to true after dev for using ssl
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = AuthOptions.Issuer,
+
+                        ValidateAudience = true,
+                        ValidAudience = AuthOptions.Audience,
+
+                        ValidateLifetime = true,
+
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
+                    };
+                });
         }
     }
 }
