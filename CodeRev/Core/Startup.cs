@@ -25,6 +25,7 @@ using UserService.Helpers;
 using UserService.Helpers.Auth;
 using UserService.Helpers.Auth.Invitations;
 using UserService.Helpers.Interviews;
+using UserService.Helpers.Notifications;
 using UserService.Helpers.Tasks;
 
 namespace Core
@@ -139,6 +140,8 @@ namespace Core
             services.AddScoped<IDraftHelper, DraftHelper>();
             services.AddScoped<IStatusChecker, StatusChecker>();
             services.AddScoped<IMeetsHelper, MeetsHelper>();
+            services.AddScoped<INotificationsHelper, NotificationsHelper>();
+            services.AddScoped<INotificationsCreator, NotificationsCreator>();
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
