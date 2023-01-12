@@ -26,6 +26,13 @@ namespace UserService.Controllers
         }
 
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpGet]
+        public IActionResult GetTasks()
+        {
+            return Ok(taskHelper.GetAllTasks());
+        }
+
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPost]
         public IActionResult PostTask([Required] [FromBody] TaskCreationDto taskCreation)
         {
