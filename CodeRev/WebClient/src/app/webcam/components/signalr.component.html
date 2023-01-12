@@ -1,16 +1,15 @@
 ﻿<div>
   <div class="col">
-
     <input [(ngModel)]="currentUser" required placeholder="UserName" type="text">
+  </div>
+  <div class="col">
+    <input [(ngModel)]="roomName" required placeholder="Room name" type="text">
   </div>
   <div>
     <button (click)="saveUsername()" type="button">Save</button>
   </div>
   <div>
-    <button (click)="saveUsernameOnMobile()" type="button">Save on mobile</button>
-  </div>
-  <div>
-    <button (click)="onUserSelected(otherUser)" type="button">Create</button>
+    <button (click)="stopRecorder()" type="button">Stop record</button>
   </div>
   <div>
     <div>You Video</div>

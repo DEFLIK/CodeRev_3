@@ -35,18 +35,26 @@ export class SignalrService{
 
     this.hubConnection.on('NewUserArrived', (data) =>{
       this.newPeer.next(JSON.parse(data));
+      console.log('New User Arrived', data);
     })
 
     this.hubConnection.on('UserSaidHello', (data) => {
       this.helloAnswer.next(JSON.parse(data));
+      console.log('User Said Hello', data);
     });
 
     this.hubConnection.on('UserDisconnect', (data) => {
-      this.disconnectedPeer.next(JSON.parse(data));
+      try {
+        this.disconnectedPeer.next(JSON.parse(data));
+      }catch (e) {
+      }
+
+      console.log('User Disconnect', data);
     });
 
     this.hubConnection.on('SendSignal', (user, signal) => {
       this.signal.next({ user, signal });
+      console.log('Send Signal', user);
     });
 
     this.hubConnection.invoke('NewUser', currentUser);

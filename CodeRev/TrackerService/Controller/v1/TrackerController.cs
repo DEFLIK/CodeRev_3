@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using TrackerService.Contracts;
 using TrackerService.Contracts.Record;
@@ -50,5 +51,11 @@ public class TrackerController : ControllerBase
         var request = deserializer.ParseRequestDto(requestDto);
         TaskRecordRequestValidator.Validate(request);
         await manager.Save(request);
+    }
+
+    [HttpPost("save-video")]
+    public async Task SaveVideo([FromBody] JsonValue obj)
+    {
+        Console.WriteLine(obj);
     }
 }

@@ -25,7 +25,7 @@ export class RtcService{
   private onData = new Subject<PeerData>();
   public onData$ = this.onData.asObservable();
 
-  public currentPeer!: Instance;
+  public currentPeer!: Instance | null;
 
   constructor() {
     this.users = new BehaviorSubject<Array<UserInfo>>([]);
@@ -39,6 +39,7 @@ export class RtcService{
   public disconnectedUser(user: UserInfo): void {
     const filteredUsers = this.users.getValue().filter(x => x.connectionId === user.connectionId);
     this.users.next(filteredUsers);
+    this.currentPeer = null;
   }
 
   public createPeer(stream:MediaStream, userId: string, initiator: boolean): Instance {
@@ -62,7 +63,7 @@ export class RtcService{
     });
 
     peer.on('data', (data: any) => {
-      console.log('on connect', data);
+      console.log('on data', data);
       this.onData.next({ id: userId, data });
     });
 
@@ -78,8 +79,8 @@ export class RtcService{
       this.currentPeer.signal(signalObject);
     }
   }
-
-  public sendMessage(message: string) {
-    this.currentPeer.send(message);
-  }
+  //
+  // public sendMessage(message: string) {
+  //   this.currentPeer.send(message);
+  // }
 }
