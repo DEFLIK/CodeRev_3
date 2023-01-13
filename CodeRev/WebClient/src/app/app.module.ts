@@ -23,7 +23,7 @@ import { MatSnackBar, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@
     providers: [
         HttpService,
         // { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
-        { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } }
+        { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2000500 } }
     ],
     bootstrap: [AppComponent]
 })

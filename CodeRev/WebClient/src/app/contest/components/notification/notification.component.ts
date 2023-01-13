@@ -1,48 +1,32 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { InterviewSolutionInfo } from '../../models/interviewSolutionInfo';
-import { ContestService } from '../../services/contest-service/contest.service';
 
 @Component({
     selector: 'app-notification',
     templateUrl: './notification.component.html',
     styleUrls: ['./notification.component.less']
 })
-export class NotificationComponent implements OnInit {
+export class NotificationComponent<T> {
     @Output()
-    public startInterview = new EventEmitter<InterviewSolutionInfo>();
+    public confirmed = new EventEmitter();
     @Output()
-    public continueInterview = new EventEmitter<InterviewSolutionInfo>();
+    public declined = new EventEmitter();
     @Input()
-    public loadedSlnId?: string;
+    public topText?: string;
+    @Input()
+    public text?: string;
+    @Input()
+    public acceptText?: string;
+    @Input()
+    public declineText?: string;
 
-    public sln?: InterviewSolutionInfo;
+    constructor() { }
 
-    constructor(private _contest: ContestService) { }
-    public ngOnInit(): void {
-        if (this.loadedSlnId) {
-
-        } else {
-            this._contest
-                .getInterviewSolutionInfo()
-                .subscribe({
-                    next: (resp) => {
-                        if (resp.ok && resp.body) {
-                            this.sln = new InterviewSolutionInfo(resp.body);
-
-                            if (this.sln.isStarted) {
-                                this.continueInterview.emit(this.sln);
-                            }
-                        }
-                    }
-                });
-        }
+    public confirm(): void {
+        this.confirmed.emit();
     }
 
-    public start(): void {
-        if (!this.sln) {
-            return;
-        }
-
-        this.startInterview.emit(this.sln);
+    public decline(): void {
+        this.declined.emit();
     }
+
 }

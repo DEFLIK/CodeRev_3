@@ -31,32 +31,41 @@
             gap: 20px;
             justify-content: space-between;
 
-            .search {
+            .top {
                 display: flex;
-                justify-content: center;
-                background-color: #FFFFFF;
-                padding: 5px;
-                padding-left: 15px;
-                padding-right: 15px;
-                border-radius: 10px;
-                align-items: center;
                 gap: 10px;
-                flex: 0 0 25px;
-                
-        
-                input {
-                    width: 100%;
-                    font-size: 15px;
-                    background-color: inherit;
+
+                .invite {
                     border: none;
-        
-                    &:focus {
-                        outline: none;
-                    }
                 }
-        
-                img {
-                    height: 70%;
+
+                .search {
+                    display: flex;
+                    justify-content: center;
+                    background-color: #FFFFFF;
+                    padding: 5px;
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    border-radius: 10px;
+                    align-items: center;
+                    gap: 10px;
+                    flex: 1 0 25px;
+                    
+            
+                    input {
+                        width: 100%;
+                        font-size: 15px;
+                        background-color: inherit;
+                        border: none;
+            
+                        &:focus {
+                            outline: none;
+                        }
+                    }
+            
+                    img {
+                        height: 70%;
+                    }
                 }
             }
 
@@ -177,10 +186,24 @@
                     margin: 0;
                     padding: 0;
                 }
-            }
 
-            .invite {
-                border: none;
+                .create-int {
+                    border: none;
+                    color: @color-purple;
+
+                    &:hover {
+                        background-color: @color-purple;
+                        color: white;
+                    }
+
+                    &:active {
+                        background-color: darken(@color-purple, 5%);
+                    }
+
+                    img {
+                        height: 20px;
+                    }
+                }
             }
         }
 

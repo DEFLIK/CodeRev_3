@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { SaveChunkResponse } from 'src/app/code-editor/models/response/saveChunk-response';
 import { Draft } from 'src/app/contest/models/draft';
 import { SetDraftRequest } from 'src/app/contest/models/request/setDraftRequest';
+import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
@@ -11,12 +12,15 @@ import { CandidateCardInfo } from '../models/candidateCardInfo';
 import { Invitation } from '../models/invitation';
 import { MeetInfo } from '../models/meetInfo';
 import { ReviewCommentRequest } from '../models/request/comment-request';
+import { InterviewCreateRequest } from '../models/request/interviewCreate-request';
 import { InvitationRequest } from '../models/request/invitation-request';
 import { CandidateCardInfoResponse } from '../models/response/candidateCardInfo-response';
 import { InterviewInfoResponse } from '../models/response/interviewInfo-response';
 import { InterviewSolutionReviewResponse } from '../models/response/interviewSolutionReview-response';
 import { InvitationResponse } from '../models/response/invitation-response';
 import { MeetInfoResponse } from '../models/response/meetInfo-response';
+import { TaskInfoResponse } from '../models/response/taskInfo-response';
+import { TaskInfo } from '../models/taskInfo';
 
 @Injectable({
     providedIn: 'root'
@@ -143,6 +147,23 @@ export class ReviewService {
         return this._http.request<Draft>({
             url: `${UrlRoutes.user}/api/interviews/solution/draft?id=${intSlnId}`,
             method: RequestMethodType.get,
+            auth: true
+        });
+    }
+
+    public getAllTasks(): Observable<HttpResponse<TaskInfoResponse[]>> {
+        return this._http.request<TaskInfoResponse[]>({
+            url: `${UrlRoutes.user}/api/Tasks`,
+            method: RequestMethodType.get,
+            auth: true
+        });
+    }
+
+    public createInterview(req: InterviewCreateRequest): Observable<HttpResponse<void>> {
+        return this._http.request<void, InterviewCreateRequest>({
+            url: `${UrlRoutes.user}/api/Interviews`,
+            method: RequestMethodType.post,
+            body: req,
             auth: true
         });
     }

@@ -1,14 +1,16 @@
-<div class="expired" *ngIf="(isSolutionExpired || isSolutionComplete) && editorMode === editType.write">Интервью было успешно заверешно! Ответы больше не принимаются</div>
+<div class="complete" *ngIf="(isSolutionComplete) && editorMode === editType.write">Интервью было успешно заверешно! Ответы больше не принимаются</div>
+<div class="expired" *ngIf="(!isSolutionComplete && isSolutionExpired) && editorMode === editType.write">Время сдачи истекло. Ответы больше не принимаются</div>
+
 
 <div class="sln">
-    <app-notification 
+    <app-welcome 
         class="notification"
         *ngIf="!isStarted && !review"
         (startInterview)="start($event)"
         (continueInterview)="continue($event)"
-    ></app-notification>
+    ></app-welcome>
 
-    <div class="left-bar">
+    <div class="left-bar" [ngStyle]="{'display' : isStarted || review ? '': 'none'}">
         <app-tasks-list #list (taskLoadingError)="applyTaskError($event)"></app-tasks-list>
         <div class="controls">
             <div *ngIf="!isInfoHidden && isReview" class="draft-btn" (click)="clickDraft()">
@@ -18,6 +20,12 @@
             <div class="hide-btn" (click)="hideInfo()" [ngClass]="{'open': !isInfoHidden}">
                 <img *ngIf="isInfoHidden" src="../../assets/svg/info.svg" alt="E">
                 <img *ngIf="!isInfoHidden" src="../../assets/svg/info.svg" alt="E">
+            </div>
+            <div *ngIf="!isReview && !isSolutionComplete && !isSolutionExpired" class="end-btn" (click)="showEnd(true)">
+                <img src="../../assets/svg/flag.svg">
+            </div>
+            <div *ngIf="isReview" class="grade-btn" (click)="showGrade(true)">
+                <img src="../../assets/svg/star.svg">
             </div>
         </div>
     </div>
@@ -40,3 +48,47 @@
         </div>
     </ng-container>
 </div>
+
+<div *ngIf="isShowingGrade" class="grade">
+    <div class="grade-inner">
+        <span class="header">Оценивание работы</span>
+        <div class="grading">
+            <span class="label">Итоговый уровень знаний</span>
+            <mat-radio-group [(ngModel)]="grade" class="grades">
+                <mat-radio-button [value]="1">
+                    1
+                </mat-radio-button>
+                <mat-radio-button [value]="2">
+                    2
+                </mat-radio-button>
+                <mat-radio-button [value]="3">
+                    3
+                </mat-radio-button>
+                <mat-radio-button [value]="4">
+                    4
+                </mat-radio-button>
+                <mat-radio-button [value]="5">
+                    5
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div class="comment">
+            <span class="label">Комментарий для HR</span>
+            <textarea [(ngModel)]="comment"></textarea>
+        </div>
+        <div class="control-btns">
+            <button class="btn-green" (click)="saveGrade()">Сохранить</button>
+            <button (click)="showGrade(false)">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<app-notification 
+    *ngIf="isShowingEnd"
+    [topText]="'Отправить на проверку?'" 
+    [text]="'Отправляйте задачи, только если уверены, что к выполнению вы уже не вернётесь.'" 
+    [acceptText]="'Отправить'" 
+    [declineText]="'Отмена'"
+    (confirmed)="endSolution()"
+    (declined)="showEnd(false)">
+</app-notification>

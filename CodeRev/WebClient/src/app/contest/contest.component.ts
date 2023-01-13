@@ -1,10 +1,9 @@
-import { AfterContentInit, AfterViewInit, Component, ComponentFactoryResolver, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { flatMap, forkJoin, Observable, Subject, zip } from 'rxjs';
+import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
+import { Observable } from 'rxjs';
 import { EditorMode } from '../code-editor/models/editorMode'; 
 import { SavingService } from '../code-editor/services/saving-service/saving.service';
-import { CandidateCardInfo } from '../review/models/candidateCardInfo';
 import { InterviewSolutionReview } from '../review/models/interviewSolutionReview';
+import { ReviewService } from '../review/services/review.service';
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
 import { InterviewSolutionInfo } from './models/interviewSolutionInfo';
 import { TaskSolutionInfo } from './models/taskSolutionInfo';
@@ -22,6 +21,11 @@ export class ContestComponent implements AfterViewInit {
     public review?: InterviewSolutionReview;
     @Input()
     public startTaskId?: string;
+    public isShowingEnd: boolean = false;
+    public isShowingGrade: boolean = false;
+    public get solutionInfo(): InterviewSolutionInfo | undefined {
+        return this._contest.currentInterview;
+    }
     public get isReview(): boolean {
         return this.editorMode === EditorMode.review;
     }
@@ -30,6 +34,8 @@ export class ContestComponent implements AfterViewInit {
     public isDraftOpen = false;
     public isInfoHidden = false;
     public editType = EditorMode;
+    public grade: number = 3;
+    public comment: string = '';
     public get taskSelected$(): Observable<TaskSolutionInfo> {
         return this._contest.taskSelected$;
     }
@@ -41,6 +47,9 @@ export class ContestComponent implements AfterViewInit {
         return this._contest.isSolutionExpired;
     }
     public get isSolutionComplete(): boolean {
+        return this._contest.isSolutionComplete;
+    }
+    public get isAllTaskCompleted(): boolean {
         if (!this.taskList || this.taskList.tasks.length === 0) {
             return false;
         }
@@ -49,11 +58,14 @@ export class ContestComponent implements AfterViewInit {
     }
     constructor(
         private _contest: ContestService,
-        private _saving: SavingService
+        private _saving: SavingService,
+        private _review: ReviewService
     ) { }
     public ngAfterViewInit(): void {
         if (this.review) {
             this.taskList.loadInterviewTasks(this.review.interviewSolutionId, this.startTaskId);
+            this.grade = this.review.averageGrade;
+            this.comment = this.review.reviewerComment;
         }
     }
 
@@ -89,15 +101,26 @@ export class ContestComponent implements AfterViewInit {
         this.isInfoHidden = !this.isInfoHidden;
     }
 
-    // private createList(interviewSolutionId: string): void {
-    //     this.isStarted = true;
-    //     this.interviewSolutionId = interviewSolutionId;
-    //     this.container.clear();
-    //     const comp = this._componentFactory
-    //         .resolveComponentFactory(
-    //             TasksListComponent
-    //         );
-    //     const compRef = this.container.createComponent(comp);
-    //     compRef.instance.interviewSolutionId = interviewSolutionId;
-    // }
+    public endSolution(): void {
+        this.isShowingEnd = false;
+        this._contest.endSolution()
+            .subscribe(resp => {
+                if (resp.ok && this._contest.currentTask) {
+                    this._contest.selectTask(this._contest.currentTask);
+                }
+            });
+    }
+
+    public showEnd(show: boolean): void {
+        this.isShowingEnd = show;
+    }
+
+    public showGrade(show: boolean): void {
+        this.isShowingGrade = show;
+    }
+
+    public saveGrade(): void {
+        this._review.setInterviewComment(this.review?.interviewSolutionId ?? 'govno', this.comment).subscribe();
+        this._review.setInterviewGrade(this.review?.interviewSolutionId ?? 'govno', this.grade).subscribe();
+    }
 }

@@ -1,0 +1,14 @@
+
+<ng-container *ngIf="this.sln && !this.sln.isStarted">
+    <span class="top">Добро пожаловать на интервью по вакансии: {{this.sln.vacancy}}</span>
+    <span>Дополнительная информация: {{this.sln.interviewText}}</span>
+    <span>Интервью будет закрыто: {{this.sln.endTimeMs | date : 'short'}}</span>
+    
+    
+    <button (click)="start()">Приступить</button>
+</ng-container>
+
+<ng-container *ngIf="!this.sln">
+    Загружаем интервью!
+</ng-container>
+

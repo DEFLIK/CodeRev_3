@@ -13,7 +13,7 @@ import { TaskSolutionInfo } from '../contest/models/taskSolutionInfo';
 import { CompileService } from './services/compile-service/compile-service.service';
 import { PlayerService } from './services/player-service/player.service';
 
-type CodeMirrorOptions = {[key: string]: any};
+export type CodeMirrorOptions = {[key: string]: any};
 
 @Component({
     selector: 'app-code-editor',

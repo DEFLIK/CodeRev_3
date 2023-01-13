@@ -16,6 +16,9 @@ export class TaskComponent implements OnInit {
     public get isSolutionExpired(): boolean {
         return this._contest.isSolutionExpired;
     }
+    public get isSolutionComplete(): boolean {
+        return this._contest.isSolutionComplete;
+    }
     public taskInfo?: TaskSolutionInfo;
   	constructor(private _contest: ContestService) { }
     public ngOnInit(): void {

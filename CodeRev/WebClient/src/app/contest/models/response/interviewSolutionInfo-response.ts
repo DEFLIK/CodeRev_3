@@ -6,4 +6,7 @@ export class InterviewSolutionInfoResposne {
     public isStarted?: boolean;
     public startTimeMs?: number;
     public endTimeMs?: number;
+    public isSubmittedByCandidate?: boolean;
+    public programmingLanguage?: string;
+    public isSynchronous?: boolean;
 }
