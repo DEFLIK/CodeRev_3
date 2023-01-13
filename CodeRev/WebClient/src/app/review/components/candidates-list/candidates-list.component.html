@@ -95,7 +95,8 @@
         <div *ngIf="meets && isShowingMeets" class="meets">
             <app-meet-card class="meet-card"
                 *ngFor="let meetInfo of meets | meetsFilter : searchCriteria"
-                [meetInfo]="meetInfo">
+                [meetInfo]="meetInfo"
+                (click)="selectMeet(meetInfo)">
             </app-meet-card>
         </div>
     </div>

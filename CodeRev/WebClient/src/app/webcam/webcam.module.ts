@@ -12,6 +12,9 @@ import {WebcamRoutingModule} from "./webcam-routing.module";
     imports: [
         WebcamRoutingModule,
         FormsModule
+    ],
+    exports: [
+        SignalrComponent
     ]
 })
 export class WebcamModule { }

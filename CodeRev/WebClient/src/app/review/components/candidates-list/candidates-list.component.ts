@@ -91,7 +91,11 @@ export class CandidatesListComponent implements OnInit {
     }
 
     public selectCard(candidate: CandidateCardInfo): void {
-        this._router.navigateByUrl(`review/grade/${candidate.interviewSolutionId}`);
+        this._router.navigateByUrl(`review/grade/${candidate.interviewSolutionId}/async`);
+    }
+
+    public selectMeet(meet: MeetInfo): void {
+        this._router.navigateByUrl(`review/grade/${meet.interviewSolutionId}/sync`);
     }
 
     public createInterview(): void {

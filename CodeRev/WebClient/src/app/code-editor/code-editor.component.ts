@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import * as CodeMirror from 'codemirror';
 import { interval, Observable, Subject, Subscription, takeUntil } from 'rxjs';
@@ -12,6 +12,9 @@ import { RecordService } from './services/record-service/record.service';
 import { TaskSolutionInfo } from '../contest/models/taskSolutionInfo';
 import { CompileService } from './services/compile-service/compile-service.service';
 import { PlayerService } from './services/player-service/player.service';
+import { ContestService } from '../contest/services/contest-service/contest.service';
+import { ReviewService } from '../review/services/review.service';
+import { ActivatedRoute } from '@angular/router';
 
 export type CodeMirrorOptions = {[key: string]: any};
 
@@ -35,6 +38,8 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
     public editorMode!: EditorMode;
     @Input()
     public taskSelected$!: Observable<TaskSolutionInfo>;
+    public isSync: boolean;
+    public solutionId?: string;
     public isHidden = false;
     public types = EditorMode;
     // @Input()
@@ -51,8 +56,11 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
     constructor(
         private _player: PlayerService,
         private _record: RecordService,
-        private _compiler: CompileService
-    ) { }
+        private _compiler: CompileService,
+        private _route: ActivatedRoute
+    ) { 
+        this.isSync = this._route.snapshot.paramMap.get('state') === 'sync';
+    }
     public ngOnDestroy(): void {
         this._unsubscriber.next();
     }
@@ -68,7 +76,6 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
             .subscribe(execRes => {
                 this.applyExecution(execRes);
             });
-        
 
         this.options['readOnly'] = this.editorMode === EditorMode.review;
         
@@ -106,7 +113,9 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
 
             this.codeMirrorCmpt.codeMirror.setSize('100%', '100%');
             
-            this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
+            if (!this.isSync) {
+                this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
+            }
         });
     }
 

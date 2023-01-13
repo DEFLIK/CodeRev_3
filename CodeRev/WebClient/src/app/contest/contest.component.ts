@@ -1,9 +1,16 @@
 import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
+import * as CodeMirror from 'codemirror';
+import { interval, Observable } from 'rxjs';
+import { CodeEditorComponent } from '../code-editor/code-editor.component';
 import { EditorMode } from '../code-editor/models/editorMode'; 
 import { SavingService } from '../code-editor/services/saving-service/saving.service';
 import { InterviewSolutionReview } from '../review/models/interviewSolutionReview';
 import { ReviewService } from '../review/services/review.service';
+import { SignalrComponent } from '../webcam/components/signalr.component';
+import { RtcService } from '../webcam/services/rtc.service';
+import { SignalrService } from '../webcam/services/signalr.service';
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
 import { InterviewSolutionInfo } from './models/interviewSolutionInfo';
 import { TaskSolutionInfo } from './models/taskSolutionInfo';
@@ -21,6 +28,10 @@ export class ContestComponent implements AfterViewInit {
     public review?: InterviewSolutionReview;
     @Input()
     public startTaskId?: string;
+    @ViewChild('editor')
+    public codeEditor?: CodeEditorComponent;
+    @ViewChild('signalR')
+    public signalR?: SignalrComponent;
     public isShowingEnd: boolean = false;
     public isShowingGrade: boolean = false;
     public get solutionInfo(): InterviewSolutionInfo | undefined {
@@ -29,13 +40,20 @@ export class ContestComponent implements AfterViewInit {
     public get isReview(): boolean {
         return this.editorMode === EditorMode.review;
     }
+    public get solutionId(): string | undefined {
+        if (this.isReview) {
+            return this.review?.interviewSolutionId;
+        }
 
+        return this.solutionInfo?.id;
+    }
     public isStarted = false;
     public isDraftOpen = false;
     public isInfoHidden = false;
     public editType = EditorMode;
     public grade: number = 3;
     public comment: string = '';
+    public isSync: boolean;
     public get taskSelected$(): Observable<TaskSolutionInfo> {
         return this._contest.taskSelected$;
     }
@@ -59,14 +77,36 @@ export class ContestComponent implements AfterViewInit {
     constructor(
         private _contest: ContestService,
         private _saving: SavingService,
-        private _review: ReviewService
-    ) { }
+        private _review: ReviewService,
+        private _route: ActivatedRoute
+
+    ) { 
+        this.isSync = 
+            this._route.snapshot.paramMap.get('state') === 'sync' ||
+            (this.editorMode === EditorMode.write && !this.isSolutionComplete && !this.isSolutionExpired);
+    }
     public ngAfterViewInit(): void {
         if (this.review) {
             this.taskList.loadInterviewTasks(this.review.interviewSolutionId, this.startTaskId);
             this.grade = this.review.averageGrade;
             this.comment = this.review.reviewerComment;
         }
+
+        if (this.editorMode !== EditorMode.review) {
+            interval(100).subscribe(t => {
+                var code = this.codeEditor?.codeMirrorCmpt.codeMirror?.getValue() ?? 'EMPTY DATA SENT';
+
+                this.signalR?.sendData(code);
+            });
+        }
+
+        this.signalR?.signalR.data$.subscribe(data => { //todo unsub
+            this.codeEditor?.codeMirrorCmpt.codeMirror?.setValue(data ?? 'CANT READ DATA');
+        });
+    }
+
+    public updateCode(code: string): void {
+        this.codeEditor?.codeMirrorCmpt.codeMirror?.setValue(code);
     }
 
     public start(sln: InterviewSolutionInfo): void {

@@ -35,6 +35,12 @@
             <div class="wrapper" [ngStyle]="{'width': !isInfoHidden ? '' : '0'}">
                 <div class="about" [ngStyle]="{'display': isDraftOpen ? 'none' : ''}">
                     <app-info *ngIf="review" [review]="review"></app-info>
+                    <app-webcam 
+                        *ngIf="solutionId && isSync" 
+                        [roomName]="solutionId" 
+                        [currentUserName]="'testName'" 
+                        #signalR>
+                    </app-webcam>
                     <app-task class="task" [editorMode]="editorMode"></app-task>
                 </div>
                 <app-draft [ngStyle]="{'display': !isDraftOpen ? 'none' : ''}" class="draft"></app-draft>
@@ -43,6 +49,7 @@
                 [editorMode]="editorMode" 
                 class="editor"
                 [taskSelected$]="taskSelected$"
+                #editor
             >
             </app-code-editor>
         </div>

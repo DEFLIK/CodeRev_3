@@ -69,7 +69,6 @@ export class SignalrService{
         this.hubConnection.on('SendData', (userName, data) =>{
             // this.data.next(JSON.parse(data))
             this.data.next(data);
-            console.log('Send Data', data);
         });
 
         this.hubConnection.invoke('NewUser', currentUserName, roomName);

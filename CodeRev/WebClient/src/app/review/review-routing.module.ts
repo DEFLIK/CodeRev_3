@@ -10,7 +10,7 @@ const routes: Routes = [
         component: ReviewComponent
     },
     {
-        path: 'grade/:solutionId',
+        path: 'grade/:solutionId/:state',
         component: CandidateGradeComponent
     },
     {

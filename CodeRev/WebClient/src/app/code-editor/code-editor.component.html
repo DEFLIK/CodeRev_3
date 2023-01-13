@@ -3,7 +3,7 @@
 </head>
 
 <ng-container>
-    <app-controls #controls [editorMode]="editorMode" [taskSelected$]="taskSelected$"></app-controls>
+    <app-controls *ngIf="!isSync" #controls [editorMode]="editorMode" [taskSelected$]="taskSelected$"></app-controls>
     <ngx-codemirror
         class="editor"
         [ngClass]="{

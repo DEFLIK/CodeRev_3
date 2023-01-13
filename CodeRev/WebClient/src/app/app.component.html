@@ -1,7 +1,7 @@
 <header *ngIf="!isAuthPage">
     <img [routerLink]="'/auth'" src="../assets/svg/logo.svg" class="logo">
     <div class="settings" [ngClass]="{'showingNotify': isShowingNotify}">
-        <mat-icon [matBadge]="notifications.length" matBadgeColor="warn" matBadgeSize="small">
+        <mat-icon [matBadge]="notifications.length !== 0 ? notifications.length : ''" matBadgeColor="warn" matBadgeSize="small">
             <img src="../assets/svg/notification.svg" alt="notify" class="notify" (click)="showNotify(true)">
         </mat-icon>
     </div>

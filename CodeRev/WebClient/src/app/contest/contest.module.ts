@@ -17,6 +17,8 @@ import { InfoComponent } from './components/info/info.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { MatRadioButton, MatRadioModule } from '@angular/material/radio';
+import { SignalrComponent } from '../webcam/components/signalr.component';
+import { WebcamModule } from '../webcam/webcam.module';
 
 @NgModule({
     declarations: [
@@ -35,7 +37,8 @@ import { MatRadioButton, MatRadioModule } from '@angular/material/radio';
         MatCheckboxModule,
         MatRadioModule,
         FormsModule,
-        DragDropModule
+        DragDropModule,
+        WebcamModule
     ],
     exports: [
         ContestComponent

@@ -1,5 +1,5 @@
-﻿<div>
-  <div class="col">
+﻿<div class="webcams">
+  <!-- <div class="col">
     <input [(ngModel)]="currentUserName" required placeholder="UserName" type="text">
   </div>
   <div class="col">
@@ -19,14 +19,12 @@
   </div>
   <div>
     <button (click)="disconnect()" type="button">Disc</button>
+  </div> -->
+  <div>
+    <video #ourVideoPlayer width="220" height="140" class="webcam"></video>
   </div>
   <div>
-    <div>You Video</div>
-    <video #ourVideoPlayer width="320" height="240"></video>
-  </div>
-  <div>
-    <div>Other video</div>
-    <video #otherVideoPlayer width="320" height="240" controls></video>
+    <video #otherVideoPlayer width="220" height="140" class="webcam"></video>
   </div>
 
 </div>
