@@ -19,6 +19,7 @@ import { InterviewInfoResponse } from '../models/response/interviewInfo-response
 import { InterviewSolutionReviewResponse } from '../models/response/interviewSolutionReview-response';
 import { InvitationResponse } from '../models/response/invitation-response';
 import { MeetInfoResponse } from '../models/response/meetInfo-response';
+import { NotificationResponse } from '../models/response/notification-response';
 import { TaskInfoResponse } from '../models/response/taskInfo-response';
 import { TaskInfo } from '../models/taskInfo';
 
@@ -164,6 +165,14 @@ export class ReviewService {
             url: `${UrlRoutes.user}/api/Interviews`,
             method: RequestMethodType.post,
             body: req,
+            auth: true
+        });
+    }
+
+    public getNotifications(): Observable<HttpResponse<NotificationResponse[]>> {
+        return this._http.request<NotificationResponse[]>({
+            url: `${UrlRoutes.user}/api/Notifications`,
+            method: RequestMethodType.get,
             auth: true
         });
     }

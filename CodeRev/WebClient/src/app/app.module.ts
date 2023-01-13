@@ -8,6 +8,7 @@ import { AuthInterceptor } from './auth/interceptor/authInterceptor';
 import { HttpService } from './global-services/request/http.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBar, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { MatBadgeModule } from '@angular/material/badge'; 
 
 @NgModule({
     declarations: [
@@ -18,7 +19,8 @@ import { MatSnackBar, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@
         AppRoutingModule,
         HttpClientModule,
         BrowserAnimationsModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatBadgeModule
     ],
     providers: [
         HttpService,
