@@ -58,19 +58,25 @@
                 </div>
 
             </div>
-                
-            <button class="invite" (click)="invite()">
-                <img src="../../../../assets/svg/plus.svg">
-                Пригласить участника
+
+            <button class="create-int" (click)="createInterview()">
+                <img src="../../../../assets/svg/plus-purple.svg">
+                Создать новое интервью
             </button>
         </form>
     </div>
     
     <div class="candidates">
-        <label class="search" for="card-search" [formGroup]="searchForm">
-            <input id="card-search" type="text" placeholder="Поиск..." formControlName="serachInput">
-            <img src="../../../../assets/svg/loupe.svg">
-        </label>
+        <div class="top">
+            <label class="search" for="card-search" [formGroup]="searchForm">
+                <input id="card-search" type="text" placeholder="Поиск..." formControlName="serachInput">
+                <img src="../../../../assets/svg/loupe.svg">
+            </label>
+            <button class="invite" (click)="invite()">
+                <img src="../../../../assets/svg/plus.svg">
+                Пригласить участника
+            </button>
+        </div>
         <div class="list" *ngIf="candidates && !isShowingMeets">
             <app-candidate-card 
                 *ngFor="let candidate of candidates | candidateFilter : filterCriteria : searchCriteria" 

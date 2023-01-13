@@ -199,22 +199,20 @@ export class ControlsComponent implements OnInit, OnDestroy {
     }
 
     private changeTask(nextTask: TaskSolutionInfo): void {
-        if (nextTask.id === this._currentTask?.id) {
-            return;
-        }
-
         switch (this.editorMode) {
             case (EditorMode.write):
+                const isEditable = !nextTask.isDone && !this._contest.isSolutionExpired && !this._contest.isSolutionComplete;
+
                 if (!this._bindedEditor) {
                     console.log('Cant resolve binded editor');
                     break; 
                 }
 
-                if (!this._currentTask?.isDone) {
+                if (isEditable) {
                     this.save(false); 
                 }
     
-                if (nextTask.isDone) {
+                if (!isEditable) {
                     this._bindedEditor.setDisabledState(true);
                     this.readOnly = true;
                 } else {
@@ -224,7 +222,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
     
                 this._bindedEditor.codeMirror?.setValue(this._saving.getLastSavedCode(nextTask.id) ?? nextTask.startCode);
 
-                if (!nextTask.isDone) {
+                if (isEditable) {
                     this._record.startRecordingTask(nextTask.id);
                 }
                 break;

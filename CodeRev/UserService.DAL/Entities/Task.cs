@@ -4,5 +4,6 @@
     {
         public string TaskText { get; set; }
         public string StartCode { get; set; }
+        public string Name { get; set; }
     }
 }

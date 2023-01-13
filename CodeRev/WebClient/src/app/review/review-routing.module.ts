@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { LoadChildren, LoadChildrenCallback, RouterModule, Routes } from '@angular/router';
 import { CandidateGradeComponent } from './components/candidate-grade/candidate-grade.component';
+import { InterviewCreateComponent } from './components/interview-create/interview-create.component';
 import { ReviewComponent } from './review.component';
 
 const routes: Routes = [
@@ -11,6 +12,10 @@ const routes: Routes = [
     {
         path: 'grade/:solutionId',
         component: CandidateGradeComponent
+    },
+    {
+        path: 'create/interview',
+        component: InterviewCreateComponent
     }
 ];
 

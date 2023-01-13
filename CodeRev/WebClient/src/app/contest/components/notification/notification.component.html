@@ -1,10 +1,9 @@
+<div class="wrapper">
+    <span class="top">{{topText}}</span>
+    <span class="text">{{text}}</span>
 
-<ng-container *ngIf="this.sln && !this.sln.isStarted">
-    <span class="top">Добро пожаловать на интервью по вакансии: {{this.sln.vacancy}}</span>
-    <span>Дополнительная информация: {{this.sln.interviewText}}</span>
-    <span>Интервью будет закрыто: {{this.sln.endTimeMs | date : 'short'}}</span>
-    
-    
-    <button (click)="start()">Приступить</button>
-</ng-container>
-
+    <div class="controls">
+        <button class="btn-green" (click)="confirm()">{{acceptText}}</button>
+        <button (click)="decline()">{{declineText}}</button>
+    </div>
+</div>

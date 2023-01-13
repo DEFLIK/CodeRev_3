@@ -24,6 +24,9 @@ export class ContestService {
 
         return this.currentInterview.endTimeMs < Date.now();
     }
+    public get isSolutionComplete(): boolean {
+        return this.currentInterview?.isSubmittedByCandidate ?? false;
+    }
     public get taskSelected$(): Observable<TaskSolutionInfo> {
         return this._taskSelected$.asObservable();
     }
@@ -59,7 +62,7 @@ export class ContestService {
 
     public endTask(taskSolutionId: string): Observable<HttpResponse<void>> {
         return this._http.request<void>({
-            url: `${UrlRoutes.user}/api/contest/end-task-sln?id= ${taskSolutionId}`,
+            url: `${UrlRoutes.user}/api/contest/end-task-sln?id=${taskSolutionId}`,
             method: RequestMethodType.put,
             auth: true
         }).pipe(
@@ -67,6 +70,20 @@ export class ContestService {
                 if (resp.ok && this.currentTask) {
                     this.currentTask.isDone = true;
                     this.selectTask(this.currentTask);
+                }
+            })
+        );
+    }
+
+    public endSolution(): Observable<HttpResponse<void>> {
+        return this._http.request<void>({
+            url: `${UrlRoutes.user}/api/contest/end-i-sln?id=${this.currentInterview?.id}`,
+            method: RequestMethodType.put,
+            auth: true
+        }).pipe(
+            tap(resp => {
+                if (resp.ok && this.currentInterview) {
+                    this.currentInterview.isSubmittedByCandidate = true;
                 }
             })
         );

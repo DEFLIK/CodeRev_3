@@ -63,7 +63,7 @@ export class PatchedTimelineComponent implements OnDestroy, OnInit {
         this.timeLineComp.playBarColor = '#ff6464';
 
         // this.subscribeToValueChange(this.timeLineComp.keyUp);
-        // this.subscribeToValueChange(this.timeLineComp.mouseDown);
+        this.subscribeToValueChange(this.timeLineComp.mouseDown);
         
         setTimeout(() => {
             if (!this.timeLineComp) {
@@ -78,7 +78,9 @@ export class PatchedTimelineComponent implements OnDestroy, OnInit {
     }
 
     public setCurrentTime(time: number): void {
-        if (!this.timeLineComp) {       
+        if (!this.timeLineComp) {    
+            console.log('Time line comp is not initialized');
+               
             return;
         }
 

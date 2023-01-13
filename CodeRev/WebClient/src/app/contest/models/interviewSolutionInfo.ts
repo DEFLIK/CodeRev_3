@@ -8,6 +8,9 @@ export class InterviewSolutionInfo {
     public isStarted: boolean;
     public startTimeMs: number;
     public endTimeMs: number;
+    public isSubmittedByCandidate: boolean;
+    public programmingLanguage: string;
+    public isSynchronous: boolean;
 
     constructor(resp: InterviewSolutionInfoResposne) {
         this.id = resp.id ?? '';
@@ -17,5 +20,8 @@ export class InterviewSolutionInfo {
         this.isStarted = resp.isStarted ?? false;
         this.startTimeMs = resp.startTimeMs ?? -1;
         this.endTimeMs = resp.endTimeMs ?? -1;
+        this.isSubmittedByCandidate = resp.isSubmittedByCandidate ?? false;
+        this.programmingLanguage = resp.programmingLanguage ?? 'no language';
+        this.isSynchronous = resp.isSynchronous ?? false;
     }
 }

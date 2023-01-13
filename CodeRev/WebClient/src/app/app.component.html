@@ -1,10 +1,17 @@
 <header *ngIf="!isAuthPage">
     <img [routerLink]="'/auth'" src="../assets/svg/logo.svg" class="logo">
-    <div class="settings">
-        <img src="../assets/svg/notification.svg" alt="notify" class="notify">
-        <img src="../assets/svg/avatar.svg" alt="avatar" class="avatar">
+    <div class="settings" [ngClass]="{'showingNotify': isShowingNotify}">
+        <mat-icon [matBadge]="notifications.length" matBadgeColor="warn" matBadgeSize="small">
+            <img src="../assets/svg/notification.svg" alt="notify" class="notify" (click)="showNotify(true)">
+        </mat-icon>
     </div>
 </header>
+<div class="notifies" [ngClass]="{'showFrame': isShowingNotify}">
+    <div class="not-item" *ngFor="let notification of notifications">
+        <span class="name">{{notification.firstName}} {{notification.surname}}</span>
+        <span class="text">{{notification.text}}</span>
+    </div>
+</div>
 <body class="route">
     <router-outlet></router-outlet>
     <div class="load-process" *ngIf="loading">

@@ -1,19 +1,21 @@
 <div class="wrapper">
     <img class="logo" src="../../../../assets/svg/logo.svg">
-    
-    <form class="contLogin" [formGroup] = "loginForm">
-        <div class="LoginBox">
-            <h1>Вход</h1>
-            <input class="txt" type="text" formControlName="userName" placeholder="Почта">
-            <input class="txt" type="password" formControlName="userPassword" placeholder="Пароль">
-            <div class="contCB">
-                <input class="checkbox" type="checkbox" id="rememberPW">
-                <label for="rememberPW">Запомнить пароль</label>
-            </div>
-            <button class="auth-form-button" (click)="submit()">Войти</button>
-            <a href="#">Не удается войти в систему?</a>
+
+    <form class="loginForm" [formGroup] = "loginForm">
+        <h1>Вход</h1>
+        <div class='inputDiv formChild'>
+            <input type="text" class='input' placeholder="Почта" formControlName="userName"/>
         </div>
-    </form>  
+        <div class='inputDiv formChild'>
+            <input type="password" class='input' placeholder="Пароль" formControlName="userPassword"/>
+        </div>
+        <div class="contCB">
+            <input class="checkbox" type="checkbox" id="rememberPW">
+            <label for="rememberPW">Запомнить пароль</label>
+        </div>
+        <button class='formChild button color-red' (click)="submit()">Войти</button>
+        <a href="#">Не удается войти в систему?</a>
+    </form>
 </div>
 
 

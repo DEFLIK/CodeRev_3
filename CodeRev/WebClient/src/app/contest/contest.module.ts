@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { TaskComponent } from './components/task/task.component';
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
-import { NotificationComponent } from './components/notification/notification.component';
 import { ContestComponent } from './contest.component';
 import { CodeEditorModule } from '../code-editor/code-editor.module';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
@@ -15,21 +14,26 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { InfoComponent } from './components/info/info.component';
+import { WelcomeComponent } from './components/welcome/welcome.component';
+import { NotificationComponent } from './components/notification/notification.component';
+import { MatRadioButton, MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
     declarations: [
         TaskComponent,
         TasksListComponent,
-        NotificationComponent,
+        WelcomeComponent,
         ContestComponent,
         DraftComponent,
-        InfoComponent
+        InfoComponent,
+        NotificationComponent
     ],
     imports: [
         CodeEditorModule,
         CommonModule,
         ContestRoutingModule,
         MatCheckboxModule,
+        MatRadioModule,
         FormsModule,
         DragDropModule
     ],

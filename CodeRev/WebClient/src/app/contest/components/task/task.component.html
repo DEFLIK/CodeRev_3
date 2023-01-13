@@ -7,10 +7,10 @@
     </textarea>
 
     <ng-container *ngIf="editorMode === mode.write else review">
-        <button (click)="endTask()" class="submit" *ngIf="!taskInfo.isDone && !isSolutionExpired else done">Сдать задачу</button>
-        <ng-template #done>
+        <button (click)="endTask()" class="submit" *ngIf="!taskInfo.isDone && !isSolutionExpired && !isSolutionComplete">Сдать задачу</button>
+        <ng-container *ngIf="taskInfo.isDone">
             <span class="done">Задача успешно сдана!</span>
-        </ng-template>
+        </ng-container>
     </ng-container>
     <ng-template #review>
         <div class="review">

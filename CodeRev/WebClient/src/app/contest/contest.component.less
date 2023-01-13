@@ -9,8 +9,83 @@
     overflow: hidden;
     // width: 100%;
     gap: 10px;
+
+    .grade {
+        top: 0;
+        left: 0;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.185);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .grade-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            width: 400px;
+            background-color: white;
+            border-radius: 15px;
+            gap: 20px;
+
+            .label {
+                color: @color-black50;
+                font-size: 18px;
+            }
+
+            .header {
+                font-family: Raleway-Bold;
+                font-size: 23px;
+            }
+
+            .grading {
+                width: 70%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+
+                .grades {
+                    display: flex;
+                    gap: 10px;
+                }
+            }
+
+            .comment {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+
+                span {
+
+                }
+
+                textarea {
+                    resize: none;
+                    width: 100%;
+                    height: 300px;
+                    outline: none;
+                    border: solid 1px @color-black25;
+                    border-radius: 5px;
+                }
+            }
+
+            .control-btns {
+                display: flex;
+                justify-content: space-between;
+                gap: 20px;
+            }
+        }
+    }
     
-    .expired {
+    .complete {
         color: white;
         text-align: center;
         background-color: @color-green;
@@ -18,8 +93,12 @@
         border-radius: 5px;
     }
 
+    .expired {
+        .complete;
+        background-color: @color-red;
+    }
+
     .about {
-        width: 100%;
         flex: 1 1 auto;
         display: flex;
         gap: 10px;
@@ -66,6 +145,25 @@
             img {
                 height: 35px;
             }
+        }
+
+        .end-btn, .grade-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: @color-red;
+
+            img {
+                height: 65%;
+            }
+        }
+
+        .grade-btn {
+            background-color: @color-green;
         }
 
         .open::after {

@@ -94,6 +94,10 @@ export class CandidatesListComponent implements OnInit {
         this._router.navigateByUrl(`review/grade/${candidate.interviewSolutionId}`);
     }
 
+    public createInterview(): void {
+        this._router.navigateByUrl(`review/create/interview`);
+    }
+
     public invite(): void {
         this.inviteEvent.emit();
     }

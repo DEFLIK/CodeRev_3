@@ -1,0 +1,83 @@
+<div class="settings">
+    <div class="settings-wrapper">
+        <span class="header">Создание интервью</span>
+        <div class="settings-inner">
+            <div class="option">
+                <!-- <mat-form-field appearance="fill" class="vacancy">
+                    
+                    <select matNativeControl>
+                        <option [value]="vacancy" *ngFor="let vacancy of vacancies">
+                            {{vacancy.name}}
+                        </option>
+                    </select>
+                </mat-form-field> -->
+                <mat-form-field class="vacancy-wrapper">
+                    <mat-label>Название вакансии</mat-label>
+                    <input matInput type="text" class="vacancy" step="2" required [(ngModel)]="vacancy">
+                </mat-form-field>
+            </div>
+            <div class="option gap">
+                <mat-radio-group [(ngModel)]="selectedMode" class="sync-group">
+                    <mat-radio-button value="sync">
+                        Синхронное
+                    </mat-radio-button>
+                    <mat-radio-button value="async">
+                        Асинхронное
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <div class="option time-option gap">
+                <mat-form-field class="time-wrapper">
+                    <mat-label class="name">Длительность</mat-label>
+                    <input matInput type="time" class="time" step="1000" required [(ngModel)]="duration">
+                </mat-form-field>
+            </div>
+            <div class="option gap">
+                <span class="name">Язык программирования:</span>
+                <div class="language">
+                    C#
+                </div>
+            </div>
+            <div class="option welcome-text">
+                <span class="name">Текст приветствия:</span>
+                <textarea class="welcome-text" [(ngModel)]="welcomeText"></textarea>
+            </div>
+        </div>
+    </div>
+    <button class="btn-purple" (click)="create()">Создать интервью</button>
+</div>
+
+<div class="task-list">
+    <label class="search" for="card-search" [formGroup]="searchForm">
+        <input id="card-search" type="text" placeholder="Поиск по задачам..." formControlName="serachInput">
+        <img src="../../../../assets/svg/loupe.svg">
+    </label>
+    <div *ngFor="let task of selectedTasks | tasksFilter : searchCriteria" class="task-item selected" (click)="openTask(task)" [ngClass]="{'showed': task.id === taskToShow?.id}">
+        <span class="name">{{task.name}}</span>
+        <button class="remove-btn" (click)="removeTask(task)"><img src="../../../../assets/svg/plus-gray.svg"></button>
+    </div>
+    <span class="no-select" *ngIf="selectedTasks.length === 0">Нет выбранных задач</span>
+    <div class="line"></div>
+    <div *ngFor="let task of tasks | tasksFilter : searchCriteria" class="task-item" (click)="openTask(task)" [ngClass]="{'showed': task.id === taskToShow?.id}">
+        <span class="name">{{task.name}}</span>
+        <button class="btn-green add-btn" (click)="selectTask(task)"><img src="../../../../assets/svg/plus-green.svg"></button>
+    </div>
+</div>
+
+<div class="task">
+    <ng-container *ngIf="taskToShow">
+        <div class="task-inner">
+            <span class="header">{{taskToShow.name}}</span>
+            <span class="task-text">{{taskToShow.taskText}}</span>
+        </div>
+        <ngx-codemirror
+            class="code"
+            #codeMirror
+            [(ngModel)]="editor"
+            [options]="options"
+        ></ngx-codemirror>
+    </ng-container>
+    <ng-container *ngIf="!taskToShow">
+        <span class="nothing">Выбери любую задачку из списка</span>
+    </ng-container>
+</div>

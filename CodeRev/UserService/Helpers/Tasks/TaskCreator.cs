@@ -56,6 +56,7 @@ namespace UserService.Helpers.Tasks
             {
                 TaskText = taskCreation.TaskText,
                 StartCode = taskCreation.StartCode,
+                Name = taskCreation.Name,
             };
     }
 }

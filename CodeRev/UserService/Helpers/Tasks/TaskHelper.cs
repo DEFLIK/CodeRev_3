@@ -22,6 +22,7 @@ namespace UserService.Helpers.Tasks
         TaskSolution GetTaskSolution(string taskSolutionId, out string errorString);
         bool TryPutTaskSolutionGrade(string taskSolutionId, Grade grade, out string errorString);
         bool EndTaskSolution(string taskSolutionId, out string errorString);
+        IEnumerable<Task> GetAllTasks();
     }
 
     public class TaskHelper : ITaskHelper
@@ -167,5 +168,8 @@ namespace UserService.Helpers.Tasks
             dbRepository.SaveChangesAsync().Wait();
             return true;
         }
+
+        public IEnumerable<Task> GetAllTasks()
+            => dbRepository.Get<Task>();
     }
 }

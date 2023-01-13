@@ -8,5 +8,7 @@ namespace UserService.Models.Tasks
         public string TaskText { get; set; }
         [Required]
         public string StartCode { get; set; }
+        [Required]
+        public string Name { get; set; }
     }
 }

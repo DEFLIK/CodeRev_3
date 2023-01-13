@@ -16,6 +16,12 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MeetCardComponent } from './components/meet-card/meet-card.component'; 
 import { MeetsFilterPipe } from './pipes/meets-filter.pipe';
+import { InterviewCreateComponent } from './components/interview-create/interview-create.component';
+import { MatSelectModule } from '@angular/material/select'; 
+import { MatInputModule } from '@angular/material/input';
+import { TasksFilterPipe } from './pipes/tasks-filter.pipe'; 
+import { CodeEditorModule } from '../code-editor/code-editor.module';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 
 @NgModule({
     declarations: [
@@ -26,7 +32,9 @@ import { MeetsFilterPipe } from './pipes/meets-filter.pipe';
         MeetsFilterPipe,
         CandidateGradeComponent,
         CandidateInviteComponent,
-        MeetCardComponent
+        MeetCardComponent,
+        InterviewCreateComponent,
+        TasksFilterPipe
     ],
     imports: [
         ReviewRoutingModule,
@@ -36,7 +44,10 @@ import { MeetsFilterPipe } from './pipes/meets-filter.pipe';
         FormsModule,
         MatCheckboxModule,
         MatRadioModule,
-        MatProgressBarModule
+        MatProgressBarModule,
+        MatSelectModule,
+        MatInputModule,
+        CodemirrorModule,
     ]
 })
 export class ReviewModule { }
