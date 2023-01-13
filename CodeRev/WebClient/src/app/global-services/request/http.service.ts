@@ -92,9 +92,9 @@ export class HttpService {
                         this._snackBar.open('Отправлены неверные данные', 'Ок');
                     }
 
-                    if (err.status === 401 || err.status === 403) {
-                        this._snackBar.open('Ошибка авторизации', 'Ок');
-                    }
+                    // if (err.status === 401 || err.status === 403) {
+                    //     this._snackBar.open('Ошибка авторизации', 'Ок');
+                    // }
 
                     return throwError(err);
                 }),
