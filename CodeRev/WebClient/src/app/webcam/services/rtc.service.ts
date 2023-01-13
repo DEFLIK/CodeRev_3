@@ -39,7 +39,9 @@ export class RtcService{
   public disconnectedUser(user: UserInfo): void {
     const filteredUsers = this.users.getValue().filter(x => x.connectionId === user.connectionId);
     this.users.next(filteredUsers);
-    this.currentPeer = null;
+    if (this.currentPeer) {
+      this.currentPeer.destroy();
+    }
   }
 
   public createPeer(stream:MediaStream, userId: string, initiator: boolean): Instance {
@@ -66,6 +68,10 @@ export class RtcService{
       console.log('on data', data);
       this.onData.next({ id: userId, data });
     });
+
+    peer.on('close', ()=>{
+      console.log("close");
+    })
 
     return peer;
   }

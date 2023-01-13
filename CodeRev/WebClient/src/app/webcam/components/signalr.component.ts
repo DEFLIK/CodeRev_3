@@ -1,9 +1,11 @@
 ﻿import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {SignalrService} from "../services/signalr.service";
 import {RtcService} from "../services/rtc.service";
-import {PeerData, SignalInfo, UserInfo} from "../models/peerData.interface";
+import {PeerData, SignalInfo, UserInfo, UserVideo} from "../models/peerData.interface";
 import {Subscription} from "rxjs";
 import {UrlRoutes} from "../../global-services/request/models/url-routes";
+import {userInfo} from "os";
+import {ICodeRecord} from "../../code-editor/models/codeRecord";
 
 @Component({
   selector: 'app-webcam',
@@ -15,14 +17,15 @@ export class SignalrComponent implements OnInit, OnDestroy {
   @ViewChild('ourVideoPlayer') ourVideoPlayer!: ElementRef;
 
   public subscriptions = new Subscription();
-  public currentUser!: string;
+  public currentUserName!: string;
   public roomName!: string;
+  public message!: string;
   public dataString!: string;
   public userVideo!: string;
   public otherUser!: UserInfo | null;
   private stream!: MediaStream;
   private mediaRecorder!: MediaRecorder;
-  private mediaChunks!: any[];
+  private mediaChunks!: Blob[];
 
   constructor(private rtcService: RtcService, private signalR: SignalrService) {
   }
@@ -35,7 +38,7 @@ export class SignalrComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(this.signalR.newPeer$.subscribe((user: UserInfo) => {
       this.rtcService.newUser(user);
-      this.signalR.sayHello(this.currentUser, user.connectionId);
+      this.signalR.sayHello(this.currentUserName, this.roomName, user.connectionId);
       console.log(user.userName);
       if (!this.otherUser) {
         this.otherUser = user;
@@ -77,10 +80,16 @@ export class SignalrComponent implements OnInit, OnDestroy {
     this.rtcService.currentPeer = peer;
   }
 
+  public async sendData() {
+    if (this.otherUser) {
+      this.signalR.sendData(this.otherUser.connectionId, this.message);
+    }
+  }
+
   public async saveUsername(): Promise<void> {
     try {
       await this.turnOnWebCamera();
-      await this.signalR.startConnection(this.currentUser);
+      await this.signalR.startConnection(this.currentUserName, this.roomName);
     } catch (error) {
       console.error(`Can't join room, error ${error}`);
     }
@@ -105,35 +114,41 @@ export class SignalrComponent implements OnInit, OnDestroy {
     this.mediaRecorder.addEventListener("dataavailable", this.pushMedia);
   }
 
-  private async pushMedia(event: BlobEvent){
-    this.mediaChunks.push(event.data);
+  private pushMedia(event: BlobEvent){
+    console.log(event.data.arrayBuffer());
+    try {
+      this.mediaChunks.push(event.data);
+    }catch (e) {
+      console.log(event.data.arrayBuffer());
+    }
   }
 
   public async stopRecorder(){
-    this.mediaRecorder.stop();
-
     this.mediaRecorder.addEventListener("stop", this.stop);
+    this.mediaRecorder.stop();
   }
 
   private async stop(){
-    const audioBlob = new Blob(this.mediaChunks, {
+    const videoBlob = new Blob(this.mediaChunks, {
       type: "video/webm"
     });
 
+    console.log(this.mediaChunks);
+
     let fd = new FormData();
-    fd.append('voice', audioBlob);
-    await SignalrComponent.sendMedia(fd);
+    fd.append('video', videoBlob);
+    console.log(fd);
+    await SignalrComponent.sendMedia(new UserVideo(videoBlob));
     this.mediaChunks = [];
   }
 
-  private static async sendMedia(form: FormData) {
+  private static async sendMedia(form: UserVideo) {
     let promise = await fetch(`${UrlRoutes.tracker}/api/v1.0/tracker/save-video`, {
       method: 'POST',
-      body: JSON.stringify(form)
+      body: JSON.stringify(form),
     });
     if (promise.ok) {
-      let response = await promise.json();
-      console.log(response.data);
+      console.log(promise);
     }
   }
 }

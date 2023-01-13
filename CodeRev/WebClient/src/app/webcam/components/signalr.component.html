@@ -1,15 +1,21 @@
 ﻿<div>
   <div class="col">
-    <input [(ngModel)]="currentUser" required placeholder="UserName" type="text">
+    <input [(ngModel)]="currentUserName" required placeholder="UserName" type="text">
   </div>
   <div class="col">
     <input [(ngModel)]="roomName" required placeholder="Room name" type="text">
+  </div>
+  <div class="col">
+    <input [(ngModel)]="message" required placeholder="Message" type="text">
   </div>
   <div>
     <button (click)="saveUsername()" type="button">Save</button>
   </div>
   <div>
     <button (click)="stopRecorder()" type="button">Stop record</button>
+  </div>
+  <div>
+    <button (click)="sendData()" type="button">Send Data</button>
   </div>
   <div>
     <div>You Video</div>

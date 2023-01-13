@@ -2,6 +2,7 @@
 import * as signalR from "@aspnet/signalr";
 import {Subject} from "rxjs";
 import {SignalInfo, UserInfo} from "../models/peerData.interface";
+import {ICodeRecord} from "../../code-editor/models/codeRecord";
 
 
 @Injectable({
@@ -23,9 +24,12 @@ export class SignalrService{
   private signal = new Subject<SignalInfo>();
   public signal$ = this.signal.asObservable();
 
+  private data = new Subject<string>();
+  public data$ = this.data.asObservable();
+
   constructor() {  }
 
-  public async startConnection(currentUser: string){
+  public async startConnection(currentUserName: string, roomName: string){
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl('https://localhost:5001/signalrtc')
       .build();
@@ -48,7 +52,6 @@ export class SignalrService{
         this.disconnectedPeer.next(JSON.parse(data));
       }catch (e) {
       }
-
       console.log('User Disconnect', data);
     });
 
@@ -57,14 +60,24 @@ export class SignalrService{
       console.log('Send Signal', user);
     });
 
-    this.hubConnection.invoke('NewUser', currentUser);
+    this.hubConnection.on('SendData', (userName, data) =>{
+      // this.data.next(JSON.parse(data))
+      this.data.next(data)
+      console.log('Send Data', data)
+    })
+
+    this.hubConnection.invoke('NewUser', currentUserName, roomName);
   }
 
   public sendSignalToUser(signal: string, user: string) {
     this.hubConnection.invoke('SendSignal', signal, user);
   }
 
-  public sayHello(userName: string, user: string): void{
-    this.hubConnection.invoke('HelloUser', userName, user);
+  public sayHello(userName: string, roomName: string, user: string): void{
+    this.hubConnection.invoke('HelloUser', userName, roomName, user);
+  }
+
+  public sendData(userConncetionId: string, data:string): void{
+    this.hubConnection.invoke('SendData', userConncetionId, data);
   }
 }
