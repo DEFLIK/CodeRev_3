@@ -5,6 +5,7 @@
 
 export interface UserInfo{
   userName: string;
+  groupName: string;
   connectionId: string;
 }
 
@@ -16,4 +17,12 @@ export interface SignalInfo{
 export interface ChatMessage{
   own: boolean;
   message: string;
+}
+
+export class UserVideo{
+  video: Blob;
+
+  constructor(video: Blob) {
+    this.video = video;
+  }
 }
