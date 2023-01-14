@@ -8,5 +8,6 @@
         InterviewAdded,
         TaskAdded,
         UserCreated,
+        MeetStarted,
     }
 }

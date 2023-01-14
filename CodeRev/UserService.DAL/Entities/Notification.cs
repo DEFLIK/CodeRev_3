@@ -8,5 +8,6 @@ namespace UserService.DAL.Entities
         public Guid UserId { get; set; }
         public Guid InterviewSolutionId { get; set; }
         public NotificationType NotificationType { get; set; }
+        public long CreationTimeMs { get; set; } 
     }
 }

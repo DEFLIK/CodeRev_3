@@ -29,6 +29,7 @@ namespace UserService.Helpers.Notifications
                 UserId = userId,
                 InterviewSolutionId = interviewSolutionId,
                 NotificationType = type,
+                CreationTimeMs = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
             }).Wait();
             
             dbRepository.SaveChangesAsync().Wait();

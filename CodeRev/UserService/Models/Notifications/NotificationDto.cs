@@ -8,6 +8,7 @@ namespace UserService.Models.Notifications
         public Guid UserId { get; set; }
         public Guid InterviewSolutionId { get; set; }
         public NotificationType NotificationType { get; set; }
+        public long CreationTimeMs { get; set; } 
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string Vacancy { get; set; }

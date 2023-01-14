@@ -257,8 +257,11 @@ namespace UserService.Helpers.Interviews
             interviewSolution.TimeToCheckMs = nowTime + TimeToCheckInterviewSolutionMs;
             dbRepository.SaveChangesAsync().Wait();
 
-            notificationsCreator.Create(interviewSolution.UserId, interviewSolution.Id, NotificationType.InterviewSolutionStarted);
-            
+            var notificationType = interview.IsSynchronous
+                ? NotificationType.MeetStarted
+                : NotificationType.InterviewSolutionStarted;
+            notificationsCreator.Create(interviewSolution.UserId, interviewSolution.Id, notificationType);
+
             return true;
         }
 
