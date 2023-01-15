@@ -34,6 +34,7 @@ public class NotificationMassageBuilder
             NotificationType.InterviewSolutionSubmitted => "Решение интервью закончено",
             NotificationType.TaskAdded => "Добавлена новая задача",
             NotificationType.UserCreated => "Создан новый пользователь",
+            NotificationType.MeetStarted => "Присоединился к встрече",
             _ => "Неизвестно"
         };
 }
