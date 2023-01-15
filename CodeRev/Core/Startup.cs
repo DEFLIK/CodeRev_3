@@ -143,7 +143,9 @@ namespace Core
             services.AddScoped<IMeetsHelper, MeetsHelper>();
             services.AddScoped<INotificationsHelper, NotificationsHelper>();
             services.AddScoped<INotificationsCreator, NotificationsCreator>();
+            services.AddScoped<TelegramBotHelper, TelegramBotHelper>();
             services.AddScoped<NotificationHub, NotificationHub>();
+            services.AddScoped<NotificationMassageBuilder, NotificationMassageBuilder>();
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

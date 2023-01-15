@@ -16,11 +16,15 @@ namespace UserService.Helpers.Notifications
     public class NotificationsCreator : INotificationsCreator
     {
         private readonly IDbRepository dbRepository;
+        private TelegramBotHelper telegramBotHelper;
         private IHubContext<NotificationHub> hubContext;
 
-        public NotificationsCreator(IDbRepository dbRepository, IHubContext<NotificationHub> hubContext)
+        public NotificationsCreator(IDbRepository dbRepository, 
+                                    IHubContext<NotificationHub> hubContext,
+                                    TelegramBotHelper telegramBotHelper)
         {
             this.dbRepository = dbRepository;
+            this.telegramBotHelper = telegramBotHelper;
             this.hubContext = hubContext;
         }
 
@@ -40,8 +44,8 @@ namespace UserService.Helpers.Notifications
             dbRepository.Add(notification).Wait();
             
             dbRepository.SaveChangesAsync().Wait();
-            
-            
+
+            telegramBotHelper.SendNotification(notification).ConfigureAwait(false);
             hubContext.Clients.All.SendAsync("SendNotification", JsonConvert.SerializeObject(notification));
             
             return notificationId;
