@@ -21,13 +21,15 @@ namespace UserService.Helpers.Interviews
         private readonly ITaskCreator taskCreator;
         private readonly IReviewerDraftCreator reviewerDraftCreator;
         private readonly INotificationsCreator notificationsCreator;
+        private readonly IInterviewHelper interviewHelper;
 
-        public InterviewCreator(IDbRepository dbRepository, ITaskCreator taskCreator, IReviewerDraftCreator reviewerDraftCreator, INotificationsCreator notificationsCreator)
+        public InterviewCreator(IDbRepository dbRepository, ITaskCreator taskCreator, IReviewerDraftCreator reviewerDraftCreator, INotificationsCreator notificationsCreator, IInterviewHelper interviewHelper)
         {
             this.dbRepository = dbRepository;
             this.taskCreator = taskCreator;
             this.reviewerDraftCreator = reviewerDraftCreator;
             this.notificationsCreator = notificationsCreator;
+            this.interviewHelper = interviewHelper;
         }
 
         public Guid Create(InterviewCreationDto interviewCreation)
@@ -47,6 +49,7 @@ namespace UserService.Helpers.Interviews
         {
             var interviewSolutionGuid = Guid.NewGuid();
             var reviewerDraftId = reviewerDraftCreator.Create(interviewSolutionGuid);
+            var interview = interviewHelper.GetInterview(interviewGuid);
             
             dbRepository.Add(new InterviewSolution
             {
@@ -55,7 +58,7 @@ namespace UserService.Helpers.Interviews
                 InterviewId = interviewGuid,
                 ReviewerDraftId = reviewerDraftId,
                 StartTimeMs = -1,
-                EndTimeMs = -1,
+                EndTimeMs = DateTimeOffset.Now.ToUnixTimeMilliseconds() + interview.InterviewDurationMs,
                 TimeToCheckMs = -1,
                 ReviewerComment = "",
                 InterviewResult = InterviewResult.NotChecked,
