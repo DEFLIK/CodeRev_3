@@ -24,7 +24,7 @@
             <div *ngIf="!isReview && !isSolutionComplete && !isSolutionExpired" class="end-btn" (click)="showEnd(true)">
                 <img src="../../assets/svg/flag.svg">
             </div>
-            <div *ngIf="isReview && !isSync" class="grade-btn" (click)="showGrade(true)">
+            <div *ngIf="isReview && !isSyncReview" class="grade-btn" (click)="showGrade(true)">
                 <img src="../../assets/svg/star.svg">
             </div>
         </div>
@@ -36,7 +36,7 @@
                 <div class="about" [ngStyle]="{'display': isDraftOpen ? 'none' : ''}">
                     <app-info *ngIf="review" [review]="review"></app-info>
                     <app-webcam 
-                        *ngIf="solutionId && isSync" 
+                        *ngIf="solutionId && (isSyncReview || isSyncWrite)" 
                         [roomName]="solutionId" 
                         [currentUserName]="'testName'" 
                         #signalR>

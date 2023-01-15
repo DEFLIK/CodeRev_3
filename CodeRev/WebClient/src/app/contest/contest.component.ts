@@ -54,10 +54,10 @@ export class ContestComponent implements AfterViewInit {
     public editType = EditorMode;
     public grade: number = 3;
     public comment: string = '';
-    public get isSync(): boolean {
-        return (this.editorMode === EditorMode.review && this._route.snapshot.paramMap.get('state') === 'sync') ||
-            (this.editorMode === EditorMode.write && this._contest.isSolutionInMeet);
+    public get isSyncReview(): boolean {
+        return (this.editorMode === EditorMode.review && this._route.snapshot.paramMap.get('state') === 'sync');
     };
+    public isSyncWrite = false;
     public get taskSelected$(): Observable<TaskSolutionInfo> {
         return this._contest.taskSelected$;
     }
@@ -91,34 +91,21 @@ export class ContestComponent implements AfterViewInit {
             this.taskList.loadInterviewTasks(this.review.interviewSolutionId, this.startTaskId);
             this.grade = this.review.averageGrade;
             this.comment = this.review.reviewerComment;
+
+            if (this.editorMode === EditorMode.review && this.isSyncReview) {
+                this.signalR!.signalR.data$.subscribe(data => { //todo unsub
+                    if (data.codeUpdate) {
+                        this.codeEditor!.codeMirrorCmpt.codeMirror!.setValue(data.codeUpdate);
+                    }
+                    if (data.taskIdUpdate) {
+                        this.taskList.openTask(this.taskList.tasks.filter(task => task.id === data.taskIdUpdate)[0]);
+                    }
+                });
+            }
         }
 
-        if (this.editorMode === EditorMode.write && this._contest.isSolutionInMeet) {
-            interval(100).subscribe(t => {
-                var code = this.codeEditor?.codeMirrorCmpt.codeMirror?.getValue() ?? 'EMPTY DATA SENT';
-                var meetData = new MeetPeerData();
-                meetData.codeUpdate = code;
-
-                this.signalR!.sendData(JSON.stringify(meetData));
-            });
-            this._contest.taskSelected$.subscribe(task => {
-                var meetData = new MeetPeerData();
-                meetData.taskIdUpdate = task.id;
-
-                this.signalR!.sendData(JSON.stringify(meetData));
-            });
-        }
+        console.log(this);
         
-        if (this.editorMode === EditorMode.review && this._contest.isSolutionInMeet) {
-            this.signalR!.signalR.data$.subscribe(data => { //todo unsub
-                if (data.codeUpdate) {
-                    this.codeEditor!.codeMirrorCmpt.codeMirror!.setValue(data.codeUpdate);
-                }
-                if (data.taskIdUpdate) {
-                    this.taskList.openTask(this.taskList.tasks.filter(task => task.id === data.taskIdUpdate)[0]);
-                }
-            });
-        }
     }
 
     public updateCode(code: string): void {
@@ -143,6 +130,23 @@ export class ContestComponent implements AfterViewInit {
         this.isStarted = true;
         this._contest.continueInterview(sln);
         this.taskList.loadInterviewTasks(sln.id);
+        this.isSyncWrite = sln.isSynchronous && !this._contest.isSolutionComplete && !this._contest.isSolutionExpired;
+
+        if (this.editorMode === EditorMode.write && sln.isSynchronous) {
+            interval(100).subscribe(t => {
+                var code = this.codeEditor?.codeMirrorCmpt.codeMirror?.getValue() ?? 'EMPTY DATA SENT';
+                var meetData = new MeetPeerData();
+                meetData.codeUpdate = code;
+                
+                this.signalR!.sendData(JSON.stringify(meetData));
+            });
+            this._contest.taskSelected$.subscribe(task => {
+                var meetData = new MeetPeerData();
+                meetData.taskIdUpdate = task.id;
+
+                this.signalR!.sendData(JSON.stringify(meetData));
+            });
+        }
     }
 
     public applyTaskError(task: TaskSolutionInfo): void {
@@ -178,5 +182,6 @@ export class ContestComponent implements AfterViewInit {
     public saveGrade(): void {
         this._review.setInterviewComment(this.review?.interviewSolutionId ?? 'govno', this.comment).subscribe();
         this._review.setInterviewGrade(this.review?.interviewSolutionId ?? 'govno', this.grade).subscribe();
+        this.isShowingGrade = false;
     }
 }

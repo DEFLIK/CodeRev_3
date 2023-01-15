@@ -14,6 +14,7 @@ export class WelcomeComponent implements OnInit {
     public continueInterview = new EventEmitter<InterviewSolutionInfo>();
     @Input()
     public loadedSlnId?: string;
+    public isMeeting?: boolean;
 
     public sln?: InterviewSolutionInfo;
 
