@@ -64,6 +64,7 @@
     </div>
 
     <div class="bottom">
+        <span class="avg-grade" *ngIf="candidate.averageGrade !== 0">{{candidate.averageGrade}}</span>
         <img class="comment-img"
             *ngIf="candidate.reviewerComment" 
             (click)="showComment()"
