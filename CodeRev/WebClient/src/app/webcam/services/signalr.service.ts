@@ -29,7 +29,7 @@ export class SignalrService{
     private signal = new Subject<SignalInfo>();
     public signal$ = this.signal.asObservable();
 
-    private data = new Subject<MeetPeerData>();
+    public data = new Subject<MeetPeerData>();
     public data$ = this.data.asObservable();
 
     constructor() {  }
@@ -69,9 +69,7 @@ export class SignalrService{
 
         this.hubConnection.on('SendData', (userName, data) =>{
             // this.data.next(JSON.parse(data))
-            console.log('recieved contest peer data:', data);
-            
-            this.data.next(data);
+            this.data.next(JSON.parse(data) as MeetPeerData);
         });
 
         this.hubConnection.invoke('NewUser', currentUserName, roomName);

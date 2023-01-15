@@ -1,3 +1,7 @@
+<head>
+    <link rel="stylesheet" href="/../../assets/code-themes/coderev.css">
+</head>
+
 <div class="settings">
     <div class="settings-wrapper">
         <span class="header">Создание интервью</span>
@@ -71,7 +75,7 @@
             <span class="task-text">{{taskToShow.taskText}}</span>
         </div>
         <ngx-codemirror
-            class="code"
+            class="editor"
             #codeMirror
             [(ngModel)]="editor"
             [options]="options"

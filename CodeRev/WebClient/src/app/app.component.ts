@@ -11,7 +11,7 @@ import { NotificationSignalrService } from './webcam/services/notificationsignal
     styleUrls: ['./app.component.less']
 })
 export class AppComponent implements AfterViewInit{
-    public title = 'Bua.CodeRev.WebClient';
+    public title = 'CodeRev';
     public loading = false;
     public isReview = false;
     public isShowingNotify = false;
@@ -27,7 +27,7 @@ export class AppComponent implements AfterViewInit{
             });
     }
     public async ngAfterViewInit(): Promise<void> {
-        await this._notify.startConnection('default');
+        await this._notify.startConnection('notification');
     }
 
     public navigationInterceptor(event: RouterEvent): void {

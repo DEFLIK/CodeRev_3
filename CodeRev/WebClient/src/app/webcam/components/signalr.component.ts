@@ -96,10 +96,10 @@ export class SignalrComponent implements OnInit, OnDestroy {
   public async saveUsername(): Promise<void> {
       try {
           await this.turnOnWebCamera();
-          await this.signalR.startConnection(this.currentUserName, this.roomName);
       } catch (error) {
-          console.error(`Can't join room, error ${error}`);
+          console.error(`Can't start webcam, error ${error}`);
       }
+      await this.signalR.startConnection(this.currentUserName, this.roomName);
   }
 
   public async disconnect(): Promise<void> {

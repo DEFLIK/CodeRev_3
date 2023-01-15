@@ -6,6 +6,7 @@ import { interval, Observable } from 'rxjs';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
 import { EditorMode } from '../code-editor/models/editorMode'; 
 import { SavingService } from '../code-editor/services/saving-service/saving.service';
+import { MeetPeerData } from '../global-services/request/models/meet-peer-data';
 import { InterviewSolutionReview } from '../review/models/interviewSolutionReview';
 import { ReviewService } from '../review/services/review.service';
 import { SignalrComponent } from '../webcam/components/signalr.component';
@@ -92,22 +93,32 @@ export class ContestComponent implements AfterViewInit {
             this.comment = this.review.reviewerComment;
         }
 
-        if (this.editorMode !== EditorMode.review) {
+        if (this.editorMode === EditorMode.write && this._contest.isSolutionInMeet) {
             interval(100).subscribe(t => {
                 var code = this.codeEditor?.codeMirrorCmpt.codeMirror?.getValue() ?? 'EMPTY DATA SENT';
+                var meetData = new MeetPeerData();
+                meetData.codeUpdate = code;
 
-                this.signalR?.sendData(code);
+                this.signalR!.sendData(JSON.stringify(meetData));
+            });
+            this._contest.taskSelected$.subscribe(task => {
+                var meetData = new MeetPeerData();
+                meetData.taskIdUpdate = task.id;
+
+                this.signalR!.sendData(JSON.stringify(meetData));
             });
         }
-
-        this.signalR?.signalR.data$.subscribe(data => { //todo unsub
-            if (data.codeUpdate) {
-                this.codeEditor?.codeMirrorCmpt.codeMirror?.setValue(data.codeUpdate);
-            }
-            if (data.taskIdUpdate) {
-                this._contest.selectTask(this.taskList.tasks.filter(task => task.id === data.taskIdUpdate)[0]);
-            }
-        });
+        
+        if (this.editorMode === EditorMode.review && this._contest.isSolutionInMeet) {
+            this.signalR!.signalR.data$.subscribe(data => { //todo unsub
+                if (data.codeUpdate) {
+                    this.codeEditor!.codeMirrorCmpt.codeMirror!.setValue(data.codeUpdate);
+                }
+                if (data.taskIdUpdate) {
+                    this.taskList.openTask(this.taskList.tasks.filter(task => task.id === data.taskIdUpdate)[0]);
+                }
+            });
+        }
     }
 
     public updateCode(code: string): void {
