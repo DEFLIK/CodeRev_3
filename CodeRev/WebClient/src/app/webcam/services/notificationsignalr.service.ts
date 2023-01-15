@@ -1,4 +1,5 @@
-﻿/* eslint-disable @typescript-eslint/member-ordering */
+﻿/* eslint-disable indent */
+/* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable object-curly-spacing */
 /* eslint-disable quotes */
@@ -15,8 +16,7 @@ export class NotificationSignalrService{
 
   private hubConnection!: signalR.HubConnection;
 
-  private notification = new Subject<NotificationInfo>();
-  public notification$ = this.notification.asObservable();
+  public notification = new Subject<string>();
 
   constructor() {  }
 
@@ -35,7 +35,7 @@ export class NotificationSignalrService{
     });
 
     this.hubConnection.on('SendNotification', (data) => {
-      this.notification.next(JSON.parse(data));
+      this.notification.next(data);
       console.log("Send Notification");
     });
 

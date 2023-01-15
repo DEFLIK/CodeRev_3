@@ -24,7 +24,7 @@
             <div *ngIf="!isReview && !isSolutionComplete && !isSolutionExpired" class="end-btn" (click)="showEnd(true)">
                 <img src="../../assets/svg/flag.svg">
             </div>
-            <div *ngIf="isReview" class="grade-btn" (click)="showGrade(true)">
+            <div *ngIf="isReview && !isSync" class="grade-btn" (click)="showGrade(true)">
                 <img src="../../assets/svg/star.svg">
             </div>
         </div>

@@ -27,6 +27,10 @@ export class ContestService {
     public get isSolutionComplete(): boolean {
         return this.currentInterview?.isSubmittedByCandidate ?? false;
     }
+
+    public get isSolutionInMeet(): boolean {
+        return !this.isSolutionComplete && !this.isSolutionExpired && (this.currentInterview?.isSynchronous ?? false);
+    }
     public get taskSelected$(): Observable<TaskSolutionInfo> {
         return this._taskSelected$.asObservable();
     }

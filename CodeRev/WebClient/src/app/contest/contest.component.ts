@@ -53,7 +53,10 @@ export class ContestComponent implements AfterViewInit {
     public editType = EditorMode;
     public grade: number = 3;
     public comment: string = '';
-    public isSync: boolean;
+    public get isSync(): boolean {
+        return (this.editorMode === EditorMode.review && this._route.snapshot.paramMap.get('state') === 'sync') ||
+            (this.editorMode === EditorMode.write && this._contest.isSolutionInMeet);
+    };
     public get taskSelected$(): Observable<TaskSolutionInfo> {
         return this._contest.taskSelected$;
     }
@@ -81,9 +84,6 @@ export class ContestComponent implements AfterViewInit {
         private _route: ActivatedRoute
 
     ) { 
-        this.isSync = 
-            this._route.snapshot.paramMap.get('state') === 'sync' ||
-            (this.editorMode === EditorMode.write && !this.isSolutionComplete && !this.isSolutionExpired);
     }
     public ngAfterViewInit(): void {
         if (this.review) {
@@ -101,7 +101,12 @@ export class ContestComponent implements AfterViewInit {
         }
 
         this.signalR?.signalR.data$.subscribe(data => { //todo unsub
-            this.codeEditor?.codeMirrorCmpt.codeMirror?.setValue(data ?? 'CANT READ DATA');
+            if (data.codeUpdate) {
+                this.codeEditor?.codeMirrorCmpt.codeMirror?.setValue(data.codeUpdate);
+            }
+            if (data.taskIdUpdate) {
+                this._contest.selectTask(this.taskList.tasks.filter(task => task.id === data.taskIdUpdate)[0]);
+            }
         });
     }
 

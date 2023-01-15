@@ -7,6 +7,7 @@ import * as signalR from "@aspnet/signalr";
 import {Subject} from "rxjs";
 import {SignalInfo, UserInfo} from "../models/peerData.interface";
 import {ICodeRecord} from "../../code-editor/models/codeRecord";
+import { MeetPeerData } from "src/app/global-services/request/models/meet-peer-data";
 
 
 @Injectable({
@@ -28,7 +29,7 @@ export class SignalrService{
     private signal = new Subject<SignalInfo>();
     public signal$ = this.signal.asObservable();
 
-    private data = new Subject<string>();
+    private data = new Subject<MeetPeerData>();
     public data$ = this.data.asObservable();
 
     constructor() {  }
@@ -68,6 +69,8 @@ export class SignalrService{
 
         this.hubConnection.on('SendData', (userName, data) =>{
             // this.data.next(JSON.parse(data))
+            console.log('recieved contest peer data:', data);
+            
             this.data.next(data);
         });
 

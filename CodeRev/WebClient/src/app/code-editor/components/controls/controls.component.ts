@@ -208,7 +208,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
                     console.log('Cant resolve binded editor');
                     break; 
                 }
-
+                
                 if (isEditable) {
                     this.save(false); 
                 }

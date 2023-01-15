@@ -1,4 +1,5 @@
-﻿/* eslint-disable object-curly-spacing */
+﻿/* eslint-disable indent */
+/* eslint-disable object-curly-spacing */
 /* eslint-disable quotes */
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, ElementRef, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
