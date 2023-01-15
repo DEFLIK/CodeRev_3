@@ -8,6 +8,7 @@ using UserService.Helpers.Auth;
 using UserService.Helpers.Notifications;
 using UserService.Helpers.Tasks;
 using UserService.Models.Review;
+using static System.String;
 
 namespace UserService.Helpers.Interviews
 {
@@ -94,11 +95,7 @@ namespace UserService.Helpers.Interviews
 
         public bool TryPutInterviewSolutionComment(string interviewSolutionId, string reviewerComment, out string errorString)
         {
-            if (reviewerComment == null)
-            {
-                errorString = $"{nameof(reviewerComment)} can't be null";
-                return false;
-            }
+            reviewerComment ??= Empty;
             
             (var interviewSolutionGuid, errorString) = GuidParser.TryParse(interviewSolutionId, nameof(interviewSolutionId));
             if (errorString != null)
