@@ -11,7 +11,6 @@ public class SignalRtcHub: Hub
         var userInfo = new UserInfo {userName = name, connectionId = Context.ConnectionId};
         await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
         await Clients.OthersInGroup(roomName).SendAsync("NewUserArrived", JsonSerializer.Serialize(userInfo));
-        // await Clients.Others.SendAsync("NewUserArrived", JsonSerializer.Serialize(userInfo));
     }
 
     public async Task HelloUser(string userName, string roomName, string user)
@@ -29,7 +28,7 @@ public class SignalRtcHub: Hub
     {
         await Clients.Client(userConnectionId).SendAsync("SendData", userConnectionId, data);
     }
-    
+
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         // Groups.RemoveFromGroupAsync(Context.ConnectionId,

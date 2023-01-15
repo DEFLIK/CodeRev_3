@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\TrackerService\TrackerService.csproj" />
       <ProjectReference Include="..\UserService.DAL\UserService.DAL.csproj" />
     </ItemGroup>
 

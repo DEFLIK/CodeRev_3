@@ -85,6 +85,7 @@ namespace Core
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<SignalRtcHub>("/signalrtc");
+                endpoints.MapHub<NotificationHub>("/notificationHub");
                 endpoints.MapControllers();
             });
 
@@ -142,6 +143,7 @@ namespace Core
             services.AddScoped<IMeetsHelper, MeetsHelper>();
             services.AddScoped<INotificationsHelper, NotificationsHelper>();
             services.AddScoped<INotificationsCreator, NotificationsCreator>();
+            services.AddScoped<NotificationHub, NotificationHub>();
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
