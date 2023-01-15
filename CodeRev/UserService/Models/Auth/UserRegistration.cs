@@ -14,7 +14,7 @@ namespace UserService.Models.Auth
         public string PhoneNumber { get; set; }
         
         [Required]
-        [EmailAddress]
+        //[EmailAddress]
         public string Email { get; set; }
         
         [Required]
