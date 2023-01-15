@@ -71,7 +71,7 @@ export class SignalrComponent implements OnInit, OnDestroy {
 
       this.subscriptions.add(this.rtcService.onStream$.subscribe((data: PeerData) => {
 		  console.log(data);
-		  
+
           this.userVideo = data.id;
           this.otherVideoPlayer.nativeElement.srcObject = data.data;
           this.otherVideoPlayer.nativeElement.load();
@@ -111,10 +111,10 @@ export class SignalrComponent implements OnInit, OnDestroy {
       this.subscriptions.unsubscribe();
   }
 
-  public stopRecorder(): void {
-      this._mediaRecorder.addEventListener("stop", this.stop);
-      this._mediaRecorder.stop();
-  }
+  // public stopRecorder(): void {
+  //     this._mediaRecorder.addEventListener("stop", this.stop);
+  //     this._mediaRecorder.stop();
+  // }
 
   private async turnOnWebCamera(): Promise<void> {
       this._stream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
@@ -124,43 +124,43 @@ export class SignalrComponent implements OnInit, OnDestroy {
       this.ourVideoPlayer.nativeElement.load();
       this.ourVideoPlayer.nativeElement.play();
 
-      this._mediaRecorder = new MediaRecorder(this._stream);
-
-      this._mediaRecorder.start();
-      this._mediaChunks = [];
-      this._mediaRecorder.addEventListener('dataavailable', this.pushMedia);
+      // this._mediaRecorder = new MediaRecorder(this._stream);
+      //
+      // this._mediaRecorder.start();
+      // this._mediaChunks = [];
+      // this._mediaRecorder.addEventListener('dataavailable', this.pushMedia);
   }
 
-  private pushMedia(event: BlobEvent): void {
-      console.log(event.data.arrayBuffer());
-      try {
-          this._mediaChunks.push(event.data);
-      }catch (e) {
-          console.log(event.data.arrayBuffer());
-      }
-  }
+  // private pushMedia(event: BlobEvent): void {
+  //     console.log(event.data.arrayBuffer());
+  //     try {
+  //         this._mediaChunks.push(event.data);
+  //     }catch (e) {
+  //         console.log(event.data.arrayBuffer());
+  //     }
+  // }
 
-  private async stop(): Promise<void> {
-      const videoBlob = new Blob(this._mediaChunks, {
-          type: "video/webm"
-      });
+  // private async stop(): Promise<void> {
+  //     const videoBlob = new Blob(this._mediaChunks, {
+  //         type: "video/webm"
+  //     });
+  //
+  //     console.log(this._mediaChunks);
+  //
+  //     const fd = new FormData();
+  //     fd.append('video', videoBlob);
+  //     console.log(fd);
+  //     await SignalrComponent.sendMedia(new UserVideo(videoBlob));
+  //     this._mediaChunks = [];
+  // }
 
-      console.log(this._mediaChunks);
-
-      const fd = new FormData();
-      fd.append('video', videoBlob);
-      console.log(fd);
-      await SignalrComponent.sendMedia(new UserVideo(videoBlob));
-      this._mediaChunks = [];
-  }
-
-  private static async sendMedia(form: UserVideo): Promise<void> {
-      const promise = await fetch(`${UrlRoutes.tracker}/api/v1.0/tracker/save-video`, {
-          method: 'POST',
-          body: JSON.stringify(form),
-      });
-      if (promise.ok) {
-          console.log(promise);
-      }
-  }
+  // private static async sendMedia(form: UserVideo): Promise<void> {
+  //     const promise = await fetch(`${UrlRoutes.tracker}/api/v1.0/tracker/save-video`, {
+  //         method: 'POST',
+  //         body: JSON.stringify(form),
+  //     });
+  //     if (promise.ok) {
+  //         console.log(promise);
+  //     }
+  // }
 }
