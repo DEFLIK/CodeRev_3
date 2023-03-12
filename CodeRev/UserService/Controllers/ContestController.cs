@@ -31,14 +31,7 @@ namespace UserService.Controllers
         [HttpGet("i-sln-info")]
         public IActionResult GetInterviewSolutionInfo([Required][FromHeader(Name = "Authorization")] string authorization)
         {
-            if (!authorization.StartsWith("Bearer"))
-                return BadRequest($"Unexpected {nameof(authorization)} header value");
-            var splitValue = authorization.Split();
-            if (splitValue.Length != 2)
-                return BadRequest($"Unexpected {nameof(authorization)} header value");
-            
-            var userId = tokenHelper.TakeUserIdFromToken(splitValue[1]);
-            if (userId == null)
+            if (!tokenHelper.TakeUserIdFromAuthHeader(authorization, out var userId))
                 return BadRequest($"Unexpected {nameof(authorization)} header value");
             
             var user = userHelper.Get(userId, out var errorString);

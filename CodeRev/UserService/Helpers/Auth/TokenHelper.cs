@@ -16,6 +16,7 @@ namespace UserService.Helpers.Auth
         Claim GetClaim(string token, string claimType);
         Role? GetRole(string token);
         string TakeUserIdFromToken(string token);
+        bool TakeUserIdFromAuthHeader(string header, out string userId);
     }
     
     public class TokenHelper : ITokenHelper
@@ -87,5 +88,18 @@ namespace UserService.Helpers.Auth
 
         public string TakeUserIdFromToken(string token) => 
             IsValidToken(token) ? GetClaim(token, JwtRegisteredClaimNames.Sub)?.Value : null;
+
+        public bool TakeUserIdFromAuthHeader(string header, out string userId)
+        {
+            userId = null;
+            if (!header.StartsWith("Bearer"))
+                return false;
+            var splitValue = header.Split();
+            if (splitValue.Length != 2)
+                return false;
+            
+            userId = TakeUserIdFromToken(splitValue[1]);
+            return userId != null;
+        }
     }
 }

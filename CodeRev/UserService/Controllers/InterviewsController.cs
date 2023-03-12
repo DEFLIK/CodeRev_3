@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using UserService.DAL.Models.Enums;
 using UserService.Helpers;
+using UserService.Helpers.Auth;
 using UserService.Helpers.Interviews;
 using UserService.Models.Interviews;
 using UserService.Models.Review;
@@ -21,12 +22,16 @@ namespace UserService.Controllers
         private readonly IInterviewHelper interviewHelper;
         private readonly IDraftHelper draftHelper;
         private readonly IInterviewCreator interviewCreator;
+        private readonly ITokenHelper tokenHelper;
+        private readonly IUserHelper userHelper;
         
-        public InterviewsController(IInterviewHelper interviewHelper, IDraftHelper draftHelper, IInterviewCreator interviewCreator)
+        public InterviewsController(IInterviewHelper interviewHelper, IDraftHelper draftHelper, IInterviewCreator interviewCreator, ITokenHelper tokenHelper, IUserHelper userHelper)
         {
             this.interviewHelper = interviewHelper;
             this.draftHelper = draftHelper;
             this.interviewCreator = interviewCreator;
+            this.tokenHelper = tokenHelper;
+            this.userHelper = userHelper;
         }
 
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
@@ -38,11 +43,22 @@ namespace UserService.Controllers
 
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpPost]
-        public IActionResult PostInterview([Required] [FromBody] InterviewCreationDto interviewCreation)
+        public IActionResult PostInterview([Required] [FromHeader(Name = "Authorization")] string authorization,
+            [Required] [FromBody] InterviewCreationDto interviewCreation)
         {
+            //note накопипастил код ниже из ContestController - надо покрасивее сделать
+            if (!tokenHelper.TakeUserIdFromAuthHeader(authorization, out var userId))
+                return BadRequest($"Unexpected {nameof(authorization)} header value");
+            
+            var user = userHelper.Get(userId, out var errorString);
+            if (errorString != null)
+                return BadRequest(errorString);
+            if (user == null)
+                return Conflict($"no {nameof(user)} with such id");
+            
             return Ok(new
             {
-                interviewId = interviewCreator.Create(interviewCreation)
+                interviewId = interviewCreator.Create(interviewCreation, user.Id)
             });
         }
 

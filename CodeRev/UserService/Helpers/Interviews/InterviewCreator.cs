@@ -11,7 +11,7 @@ namespace UserService.Helpers.Interviews
 {
     public interface IInterviewCreator
     {
-        Guid Create(InterviewCreationDto interviewCreation);
+        Guid Create(InterviewCreationDto interviewCreation, Guid creatorId);
         Guid CreateSolution(Guid userGuid, Guid interviewGuid);
     }
 
@@ -32,9 +32,9 @@ namespace UserService.Helpers.Interviews
             this.interviewHelper = interviewHelper;
         }
 
-        public Guid Create(InterviewCreationDto interviewCreation)
+        public Guid Create(InterviewCreationDto interviewCreation, Guid creatorId)
         {
-            var interview = MapInterviewCreationToInterviewEntity(interviewCreation);
+            var interview = MapInterviewCreationToInterviewEntity(interviewCreation, creatorId);
             interview.Id = Guid.NewGuid();
 
             dbRepository.Add(interview).Wait();
@@ -87,7 +87,7 @@ namespace UserService.Helpers.Interviews
                 TaskId = taskId,
             }).Wait(); //не сохраняем изменение в БД, потому что сохраним сразу все изменения в Create
 
-        private static Interview MapInterviewCreationToInterviewEntity(InterviewCreationDto interviewCreation)
+        private static Interview MapInterviewCreationToInterviewEntity(InterviewCreationDto interviewCreation, Guid creatorId)
             => new()
             {
                 Vacancy = interviewCreation.Vacancy,
@@ -95,6 +95,7 @@ namespace UserService.Helpers.Interviews
                 InterviewDurationMs = interviewCreation.InterviewDurationMs,
                 ProgrammingLanguage = interviewCreation.ProgrammingLanguage,
                 IsSynchronous = interviewCreation.IsSynchronous,
+                CreatedBy = creatorId,
             };
     }
 }
