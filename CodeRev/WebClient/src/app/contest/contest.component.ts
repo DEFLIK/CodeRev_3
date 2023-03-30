@@ -5,6 +5,7 @@ import * as CodeMirror from 'codemirror';
 import { interval, Observable } from 'rxjs';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
 import { EditorMode } from '../code-editor/models/editorMode'; 
+import { CompileService } from '../code-editor/services/compile-service/compile-service.service';
 import { SavingService } from '../code-editor/services/saving-service/saving.service';
 import { MeetPeerData } from '../global-services/request/models/meet-peer-data';
 import { InterviewSolutionReview } from '../review/models/interviewSolutionReview';
@@ -15,7 +16,7 @@ import { SignalrService } from '../webcam/services/signalr.service';
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
 import { InterviewSolutionInfo } from './models/interviewSolutionInfo';
 import { TaskSolutionInfo } from './models/taskSolutionInfo';
-import { ContestService } from './services/contest-service/contest.service';
+import { ContestService } from './services/contest.service';
 
 @Component({
     selector: 'app-contest',
@@ -82,7 +83,8 @@ export class ContestComponent implements AfterViewInit {
         private _contest: ContestService,
         private _saving: SavingService,
         private _review: ReviewService,
-        private _route: ActivatedRoute
+        private _route: ActivatedRoute,
+        private _compiler: CompileService
 
     ) { 
     }
@@ -93,12 +95,15 @@ export class ContestComponent implements AfterViewInit {
             this.comment = this.review.reviewerComment;
 
             if (this.editorMode === EditorMode.review && this.isSyncReview) {
-                this.signalR!.signalR.data$.subscribe(data => { //todo unsub
-                    if (data.codeUpdate) {
+                var sub1 = this.signalR?.signalR.data$.subscribe(data => { // todo unsub
+                    if (data.codeUpdate !== undefined) {
                         this.codeEditor!.codeMirrorCmpt.codeMirror!.setValue(data.codeUpdate);
                     }
                     if (data.taskIdUpdate) {
-                        this.taskList.openTask(this.taskList.tasks.filter(task => task.id === data.taskIdUpdate)[0]);
+                        this.taskList.openTask(this.taskList.tasks.filter(task => task.id === data.taskIdUpdate)[0], true);
+                    }
+                    if (data.outputUpdate) {
+                        this._compiler.emitOutput(data.outputUpdate);
                     }
                 });
             }
@@ -132,21 +137,19 @@ export class ContestComponent implements AfterViewInit {
         this.taskList.loadInterviewTasks(sln.id);
         this.isSyncWrite = sln.isSynchronous && !this._contest.isSolutionComplete && !this._contest.isSolutionExpired;
 
-        if (this.editorMode === EditorMode.write && sln.isSynchronous) {
-            interval(100).subscribe(t => {
-                var code = this.codeEditor?.codeMirrorCmpt.codeMirror?.getValue() ?? 'EMPTY DATA SENT';
-                var meetData = new MeetPeerData();
-                meetData.codeUpdate = code;
-                
-                this.signalR!.sendData(JSON.stringify(meetData));
-            });
-            this._contest.taskSelected$.subscribe(task => {
-                var meetData = new MeetPeerData();
-                meetData.taskIdUpdate = task.id;
+        var sub3 = this._contest.taskSelected$.subscribe(task => {
+            var meetData = new MeetPeerData();
+            meetData.taskIdUpdate = task.id;
 
-                this.signalR!.sendData(JSON.stringify(meetData));
-            });
-        }
+            this.signalR?.sendData(JSON.stringify(meetData));
+        });
+
+        var sub5 = this._compiler.onOutputRefresh$.subscribe(output => {
+            var meetData = new MeetPeerData();
+            meetData.outputUpdate = output;
+
+            this.signalR?.sendData(JSON.stringify(meetData));
+        });
     }
 
     public applyTaskError(task: TaskSolutionInfo): void {
@@ -183,5 +186,14 @@ export class ContestComponent implements AfterViewInit {
         this._review.setInterviewComment(this.review?.interviewSolutionId ?? 'govno', this.comment).subscribe();
         this._review.setInterviewGrade(this.review?.interviewSolutionId ?? 'govno', this.grade).subscribe();
         this.isShowingGrade = false;
+    }
+
+    public onCodeChanged(code: string): void {
+        // if (this.editorMode === EditorMode.write && sln.isSynchronous) {
+        var meetData = new MeetPeerData();
+        meetData.codeUpdate = code;
+
+        this.signalR?.sendData(JSON.stringify(meetData));
+        // }
     }
 }

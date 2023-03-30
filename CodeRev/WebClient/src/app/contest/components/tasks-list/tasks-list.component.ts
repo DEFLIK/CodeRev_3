@@ -3,7 +3,7 @@ import { catchError, first, forkJoin, Observable, of, Subject, Subscription, tak
 import { EditorMode } from 'src/app/code-editor/models/editorMode';
 import { SavingService } from 'src/app/code-editor/services/saving-service/saving.service';
 import { TaskSolutionInfo } from '../../models/taskSolutionInfo';
-import { ContestService } from '../../services/contest-service/contest.service';
+import { ContestService } from '../../services/contest.service';
 
 @Component({
     selector: 'app-tasks-list',
@@ -20,12 +20,18 @@ export class TasksListComponent {
     public taskLoadingError = new EventEmitter<TaskSolutionInfo>();
     @Output()
     public draftButtonClick = new EventEmitter<boolean>();
+    @Input()
+    public isSyncReview!: boolean;
     constructor(
         private _contest: ContestService,
         private _saving: SavingService
     ) { }
 
-    public openTask(task: TaskSolutionInfo): void {
+    public openTask(task: TaskSolutionInfo, force: boolean = false): void {
+        if (this.isSyncReview && !force) {
+            return;
+        }
+
         this.currentTask = task;
         this._contest.selectTask(task);
     }

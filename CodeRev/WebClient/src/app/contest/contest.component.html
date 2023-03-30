@@ -11,7 +11,7 @@
     ></app-welcome>
 
     <div class="left-bar" [ngStyle]="{'display' : isStarted || review ? '': 'none'}">
-        <app-tasks-list #list (taskLoadingError)="applyTaskError($event)"></app-tasks-list>
+        <app-tasks-list #list (taskLoadingError)="applyTaskError($event)" [isSyncReview]="isSyncReview"></app-tasks-list>
         <div class="controls">
             <div *ngIf="!isInfoHidden && isReview" class="draft-btn" (click)="clickDraft()">
                 <img *ngIf="!isDraftOpen && isReview" src="../../assets/svg/pencil.svg" alt="E">
@@ -49,6 +49,7 @@
                 [editorMode]="editorMode" 
                 class="editor"
                 [taskSelected$]="taskSelected$"
+                (codeChanged$)="onCodeChanged($event)"
                 #editor
             >
             </app-code-editor>

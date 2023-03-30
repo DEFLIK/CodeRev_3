@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import * as CodeMirror from 'codemirror';
 import { interval, Observable, Subject, Subscription, takeUntil } from 'rxjs';
@@ -12,7 +12,7 @@ import { RecordService } from './services/record-service/record.service';
 import { TaskSolutionInfo } from '../contest/models/taskSolutionInfo';
 import { CompileService } from './services/compile-service/compile-service.service';
 import { PlayerService } from './services/player-service/player.service';
-import { ContestService } from '../contest/services/contest-service/contest.service';
+import { ContestService } from '../contest/services/contest.service';
 import { ReviewService } from '../review/services/review.service';
 import { ActivatedRoute } from '@angular/router';
 
@@ -38,6 +38,8 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
     public editorMode!: EditorMode;
     @Input()
     public taskSelected$!: Observable<TaskSolutionInfo>;
+    @Output()
+    public codeChanged$ = new EventEmitter<string>();
     public isSync: boolean;
     public solutionId?: string;
     public isHidden = false;
@@ -108,6 +110,7 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
             }
 
             this.codeMirrorCmpt.codeMirror.on('change', () => {
+                this.codeChanged$.emit(this.codeMirrorCmpt.codeMirror?.getValue());
                 this.codeMirrorCmpt.codeMirror?.getAllMarks().forEach(marker => marker.clear());
             });
 

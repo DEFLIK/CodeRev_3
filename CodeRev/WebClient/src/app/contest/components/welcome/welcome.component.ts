@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { InterviewSolutionInfo } from '../../models/interviewSolutionInfo';
-import { ContestService } from '../../services/contest-service/contest.service';
+import { ContestService } from '../../services/contest.service';
 
 @Component({
     selector: 'app-welcome',

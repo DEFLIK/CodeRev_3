@@ -7,7 +7,7 @@ import { EditorMode } from 'src/app/code-editor/models/editorMode';
 import { SaveChunk } from 'src/app/code-editor/models/saveChunk';
 import { SavingService } from 'src/app/code-editor/services/saving-service/saving.service';
 import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
-import { ContestService } from 'src/app/contest/services/contest-service/contest.service';
+import { ContestService } from 'src/app/contest/services/contest.service';
 import { CandidateCardInfo } from '../../models/candidateCardInfo';
 import { InterviewSolutionReview } from '../../models/interviewSolutionReview';
 import { InterviewSolutionReviewResponse } from '../../models/response/interviewSolutionReview-response';

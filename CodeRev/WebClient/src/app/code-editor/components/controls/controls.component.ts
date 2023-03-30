@@ -17,7 +17,7 @@ import { SavingService } from '../../services/saving-service/saving.service';
 import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
 import { ReviewService } from 'src/app/review/services/review.service';
 import { SaveChunk } from '../../models/saveChunk';
-import { ContestService } from 'src/app/contest/services/contest-service/contest.service';
+import { ContestService } from 'src/app/contest/services/contest.service';
 import { InterviewSolutionInfo } from 'src/app/contest/models/interviewSolutionInfo';
 
 @Component({

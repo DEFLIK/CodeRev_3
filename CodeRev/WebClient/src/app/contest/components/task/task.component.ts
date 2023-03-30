@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { EditorMode } from 'src/app/code-editor/models/editorMode';
 import { InterviewSolutionInfo } from '../../models/interviewSolutionInfo';
 import { TaskSolutionInfo } from '../../models/taskSolutionInfo';
-import { ContestService } from '../../services/contest-service/contest.service';
+import { ContestService } from '../../services/contest.service';
 
 @Component({
     selector: 'app-task',

@@ -28,7 +28,7 @@ import { WebcamModule } from '../webcam/webcam.module';
         ContestComponent,
         DraftComponent,
         InfoComponent,
-        NotificationComponent
+        NotificationComponent,
     ],
     imports: [
         CodeEditorModule,
