@@ -9,7 +9,7 @@ namespace UserService.Helpers.Auth.Invitations
 {
     public interface IInvitationCreator
     {
-        Invitation Create(InvitationParams invitationParams, out string errorString);
+        Invitation Create(InvitationParams invitationParams, Guid creatorId, out string errorString);
     }
     
     public class InvitationCreator : IInvitationCreator
@@ -22,7 +22,7 @@ namespace UserService.Helpers.Auth.Invitations
             this.dbRepository = dbRepository;
         }
 
-        public Invitation Create(InvitationParams invitationParams, out string errorString)
+        public Invitation Create(InvitationParams invitationParams, Guid creatorId, out string errorString)
         {
             if (!Enum.TryParse(invitationParams.Role, true, out Role roleEnum))
             {
@@ -58,7 +58,8 @@ namespace UserService.Helpers.Auth.Invitations
                     Id = Guid.NewGuid(),
                     Role = roleEnum,
                     InterviewId = interviewGuid,
-                    ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + InvitationDurationMs
+                    ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + InvitationDurationMs,
+                    CreatedBy = creatorId,
                 };
                 dbRepository.Add(invitation).Wait();
             }
