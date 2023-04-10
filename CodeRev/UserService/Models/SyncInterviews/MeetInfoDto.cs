@@ -12,5 +12,6 @@ namespace UserService.Models.SyncInterviews
         public string Vacancy { get; set; }
         public int TasksCount { get; set; }
         public string ProgrammingLanguage { get; set; }
+        public bool IsOwnerMeet { get; set; }
     }
 }
