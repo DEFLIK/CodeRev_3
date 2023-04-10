@@ -9,19 +9,9 @@ using UserService.DAL.Models.Enums;
 
 namespace UserService.Helpers.Auth
 {
-    public interface ITokenHelper
+    public static class TokenHelper
     {
-        bool IsValidToken(string token);
-        string GenerateTokenString(User user);
-        Claim GetClaim(string token, string claimType);
-        Role? GetRole(string token);
-        string TakeUserIdFromToken(string token);
-        bool TakeUserIdFromAuthHeader(string header, out string userId);
-    }
-    
-    public class TokenHelper : ITokenHelper
-    {
-        public bool IsValidToken(string token)
+        public static bool IsValidToken(string token)
         {
             try
             {
@@ -45,7 +35,7 @@ namespace UserService.Helpers.Auth
             return true;
         }
 
-        public string GenerateTokenString(User user)
+        public static string GenerateTokenString(User user)
         {
             var claims = new List<Claim>
             {
@@ -65,13 +55,13 @@ namespace UserService.Helpers.Auth
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
-        public Claim GetClaim(string token, string claimType) =>
+        public static Claim GetClaim(string token, string claimType) =>
             new JwtSecurityTokenHandler()
                 .ReadJwtToken(token)
                 .Claims
                 .FirstOrDefault(c => c.Type == claimType);
 
-        public Role? GetRole(string token)
+        public static Role? GetRole(string token)
         {
             if (!IsValidToken(token))
                 return null;
@@ -86,10 +76,10 @@ namespace UserService.Helpers.Auth
             return role;
         }
 
-        public string TakeUserIdFromToken(string token) => 
-            IsValidToken(token) ? GetClaim(token, JwtRegisteredClaimNames.Sub)?.Value : null;
+        public static string TakeUserIdFromToken(string token)
+            => IsValidToken(token) ? GetClaim(token, JwtRegisteredClaimNames.Sub)?.Value : null;
 
-        public bool TakeUserIdFromAuthHeader(string header, out string userId)
+        public static bool TakeUserIdFromAuthHeader(string header, out string userId)
         {
             userId = null;
             if (!header.StartsWith("Bearer"))

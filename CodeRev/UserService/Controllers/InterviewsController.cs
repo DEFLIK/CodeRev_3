@@ -22,15 +22,13 @@ namespace UserService.Controllers
         private readonly IInterviewHelper interviewHelper;
         private readonly IDraftHelper draftHelper;
         private readonly IInterviewCreator interviewCreator;
-        private readonly ITokenHelper tokenHelper;
         private readonly IUserHelper userHelper;
         
-        public InterviewsController(IInterviewHelper interviewHelper, IDraftHelper draftHelper, IInterviewCreator interviewCreator, ITokenHelper tokenHelper, IUserHelper userHelper)
+        public InterviewsController(IInterviewHelper interviewHelper, IDraftHelper draftHelper, IInterviewCreator interviewCreator, IUserHelper userHelper)
         {
             this.interviewHelper = interviewHelper;
             this.draftHelper = draftHelper;
             this.interviewCreator = interviewCreator;
-            this.tokenHelper = tokenHelper;
             this.userHelper = userHelper;
         }
 
@@ -47,7 +45,7 @@ namespace UserService.Controllers
             [Required] [FromBody] InterviewCreationDto interviewCreation)
         {
             //note накопипастил код ниже из ContestController - надо покрасивее сделать
-            if (!tokenHelper.TakeUserIdFromAuthHeader(authorization, out var userId))
+            if (!TokenHelper.TakeUserIdFromAuthHeader(authorization, out var userId))
                 return BadRequest($"Unexpected {nameof(authorization)} header value");
             
             var user = userHelper.Get(userId, out var errorString);

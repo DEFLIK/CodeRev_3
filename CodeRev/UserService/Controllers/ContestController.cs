@@ -14,14 +14,12 @@ namespace UserService.Controllers
     [ApiController]
     public class ContestController : Controller
     {
-        private readonly ITokenHelper tokenHelper;
         private readonly IUserHelper userHelper;
         private readonly IInterviewHelper interviewHelper;
         private readonly ITaskHelper taskHelper;
 
-        public ContestController(ITokenHelper tokenHelper, IUserHelper userHelper, IInterviewHelper interviewHelper, ITaskHelper taskHelper)
+        public ContestController(IUserHelper userHelper, IInterviewHelper interviewHelper, ITaskHelper taskHelper)
         {
-            this.tokenHelper = tokenHelper;
             this.userHelper = userHelper;
             this.interviewHelper = interviewHelper;
             this.taskHelper = taskHelper;
@@ -31,7 +29,7 @@ namespace UserService.Controllers
         [HttpGet("i-sln-info")]
         public IActionResult GetInterviewSolutionInfo([Required][FromHeader(Name = "Authorization")] string authorization)
         {
-            if (!tokenHelper.TakeUserIdFromAuthHeader(authorization, out var userId))
+            if (!TokenHelper.TakeUserIdFromAuthHeader(authorization, out var userId))
                 return BadRequest($"Unexpected {nameof(authorization)} header value");
             
             var user = userHelper.Get(userId, out var errorString);
