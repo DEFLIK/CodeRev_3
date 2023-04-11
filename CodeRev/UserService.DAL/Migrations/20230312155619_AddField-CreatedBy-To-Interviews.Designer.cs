@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UserService.DAL;
@@ -10,9 +11,10 @@ using UserService.DAL.Models.Draft;
 namespace UserService.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230312155619_AddField-CreatedBy-To-Interviews")]
+    partial class AddFieldCreatedByToInterviews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,9 +69,6 @@ namespace UserService.DAL.Migrations
                     b.Property<int>("InterviewResult")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("InvitedBy")
-                        .HasColumnType("uuid");
-
                     b.Property<bool>("IsSubmittedByCandidate")
                         .HasColumnType("boolean");
 
@@ -114,9 +113,6 @@ namespace UserService.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
                     b.Property<long>("ExpiredAt")

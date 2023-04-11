@@ -7,4 +7,5 @@ export class MeetInfoResponse {
     public vacancy?: string;
     public tasksCount?: number;
     public programmingLanguage?: string;
+    public isOwnerMeet?: boolean;
 }

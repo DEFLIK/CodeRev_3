@@ -11,12 +11,10 @@ namespace UserService.Controllers
     [ApiController]
     public class AuthController : Controller
     {
-        private readonly ITokenHelper tokenHelper;
         private readonly IUserHelper userHelper;
         
-        public AuthController(ITokenHelper tokenHelper, IUserHelper userHelper)
+        public AuthController(IUserHelper userHelper)
         {
-            this.tokenHelper = tokenHelper;
             this.userHelper = userHelper;
         }
         
@@ -30,14 +28,14 @@ namespace UserService.Controllers
             
             return Ok(new
             {
-                accessToken = tokenHelper.GenerateTokenString(user)
+                accessToken = TokenHelper.GenerateTokenString(user)
             });
         }
         
         [HttpGet("validate-role")]
         public IActionResult ValidateRole([Required][FromQuery(Name = "token")] string token)
         {
-            var role = tokenHelper.GetRole(token);
+            var role = TokenHelper.GetRole(token);
             if (role == null)
                 return Unauthorized();
             
@@ -49,6 +47,6 @@ namespace UserService.Controllers
         
         [HttpGet("validate")]
         public IActionResult ValidateToken([Required][FromQuery(Name = "token")] string token)
-            => tokenHelper.IsValidToken(token) ? Ok() : Unauthorized();
+            => TokenHelper.IsValidToken(token) ? Ok() : Unauthorized();
     }
 }

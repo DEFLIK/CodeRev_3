@@ -9,7 +9,7 @@ namespace UserService.Helpers
 {
     public interface IMeetsHelper
     {
-        public IEnumerable<MeetInfoDto> GetMeets();
+        public IEnumerable<MeetInfoDto> GetMeets(string requestingUserId);
     }
     
     public class MeetsHelper : IMeetsHelper
@@ -23,8 +23,12 @@ namespace UserService.Helpers
             this.userHelper = userHelper;
         }
 
-        public IEnumerable<MeetInfoDto> GetMeets()
+        public IEnumerable<MeetInfoDto> GetMeets(string requestingUserId)
         {
+            var requestingUser = userHelper.Get(requestingUserId, out _);
+            if (requestingUser == null)
+                return Enumerable.Empty<MeetInfoDto>();
+            
             var tasksPerInterviews = dbRepository.Get<InterviewTask>()
                 .ToList()
                 .GroupBy(interviewTask => interviewTask.InterviewId)
@@ -45,6 +49,7 @@ namespace UserService.Helpers
                     InterviewId = interview.Id,
                     Vacancy = interview.Vacancy,
                     ProgrammingLanguage = interview.ProgrammingLanguage,
+                    IsOwnerMeet = interviewSolution.InvitedBy.Equals(requestingUser.Id),
                 });
             
             meets = meets.Join(

@@ -17,16 +17,14 @@ namespace UserService.Controllers
     public class NotificationsController : Controller
     {
         private readonly INotificationsHelper notificationsHelper;
-        private readonly ITokenHelper tokenHelper;
 
         private readonly List<NotificationType> notificationTypesForInterviewer;
 
         private readonly List<NotificationType> notificationTypesForHr;
 
-        public NotificationsController(INotificationsHelper notificationsHelper, ITokenHelper tokenHelper)
+        public NotificationsController(INotificationsHelper notificationsHelper)
         {
             this.notificationsHelper = notificationsHelper;
-            this.tokenHelper = tokenHelper;
 
             notificationTypesForInterviewer = new List<NotificationType>
                 { NotificationType.UserCreated, NotificationType.InterviewSolutionStarted, NotificationType.InterviewSolutionSubmitted };
@@ -43,7 +41,7 @@ namespace UserService.Controllers
             {
                 var scheme = headerValue.Scheme; //"Bearer"
                 var token = headerValue.Parameter; //token
-                role = tokenHelper.GetRole(token);
+                role = TokenHelper.GetRole(token);
             }
             
             if (role is null)

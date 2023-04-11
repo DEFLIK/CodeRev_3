@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Helpers;
+using UserService.Helpers.Auth;
 
 namespace UserService.Controllers
 {
@@ -19,9 +21,13 @@ namespace UserService.Controllers
 
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
         [HttpGet]
-        public IActionResult GetMeets()
+        public IActionResult GetMeets([Required] [FromHeader(Name = "Authorization")] string authorization)
         {
-            return Ok(meetsHelper.GetMeets());
+            //note накопипастил код ниже из ContestController - надо покрасивее сделать
+            if (!TokenHelper.TakeUserIdFromAuthHeader(authorization, out var userId))
+                return BadRequest($"Unexpected {nameof(authorization)} header value");
+
+            return Ok(meetsHelper.GetMeets(userId));
         }
     }
 }

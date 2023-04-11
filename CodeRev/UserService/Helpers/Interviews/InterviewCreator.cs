@@ -11,8 +11,8 @@ namespace UserService.Helpers.Interviews
 {
     public interface IInterviewCreator
     {
-        Guid Create(InterviewCreationDto interviewCreation);
-        Guid CreateSolution(Guid userGuid, Guid interviewGuid);
+        Guid Create(InterviewCreationDto interviewCreation, Guid creatorId);
+        Guid CreateSolution(Guid userGuid, Guid interviewGuid, Guid invitingUserId);
     }
 
     public class InterviewCreator : IInterviewCreator
@@ -32,9 +32,9 @@ namespace UserService.Helpers.Interviews
             this.interviewHelper = interviewHelper;
         }
 
-        public Guid Create(InterviewCreationDto interviewCreation)
+        public Guid Create(InterviewCreationDto interviewCreation, Guid creatorId)
         {
-            var interview = MapInterviewCreationToInterviewEntity(interviewCreation);
+            var interview = MapInterviewCreationToInterviewEntity(interviewCreation, creatorId);
             interview.Id = Guid.NewGuid();
 
             dbRepository.Add(interview).Wait();
@@ -45,7 +45,7 @@ namespace UserService.Helpers.Interviews
             return interview.Id;
         }
 
-        public Guid CreateSolution(Guid userGuid, Guid interviewGuid)
+        public Guid CreateSolution(Guid userGuid, Guid interviewGuid, Guid invitingUserId)
         {
             var interviewSolutionGuid = Guid.NewGuid();
             var reviewerDraftId = reviewerDraftCreator.Create(interviewSolutionGuid);
@@ -63,6 +63,7 @@ namespace UserService.Helpers.Interviews
                 ReviewerComment = "",
                 InterviewResult = InterviewResult.NotChecked,
                 IsSubmittedByCandidate = false,
+                InvitedBy = invitingUserId,
             }).Wait();
 
             var interviewTasks = dbRepository
@@ -87,7 +88,7 @@ namespace UserService.Helpers.Interviews
                 TaskId = taskId,
             }).Wait(); //не сохраняем изменение в БД, потому что сохраним сразу все изменения в Create
 
-        private static Interview MapInterviewCreationToInterviewEntity(InterviewCreationDto interviewCreation)
+        private static Interview MapInterviewCreationToInterviewEntity(InterviewCreationDto interviewCreation, Guid creatorId)
             => new()
             {
                 Vacancy = interviewCreation.Vacancy,
@@ -95,6 +96,7 @@ namespace UserService.Helpers.Interviews
                 InterviewDurationMs = interviewCreation.InterviewDurationMs,
                 ProgrammingLanguage = interviewCreation.ProgrammingLanguage,
                 IsSynchronous = interviewCreation.IsSynchronous,
+                CreatedBy = creatorId,
             };
     }
 }

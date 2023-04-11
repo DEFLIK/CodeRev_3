@@ -8,6 +8,7 @@ import { CandidateVacancy } from '../../models/candidateVacancy';
 import { MeetInfo } from '../../models/meetInfo';
 import { ReviewService } from '../../services/review.service';
 import { CandidateCardComponent } from '../candidate-card/candidate-card.component';
+import {MeetFilterCriteria} from "../../models/meetFilterCriteria";
 
 @Component({
     selector: 'app-candidates-list',
@@ -20,7 +21,8 @@ export class CandidatesListComponent implements OnInit {
     @Output()
     public inviteEvent = new EventEmitter<void>();
     public candidates?: CandidateCardInfo[];
-    public meets?: MeetInfo[];
+    public myMeets?: MeetInfo[];
+    public otherMeets?: MeetInfo[];
 
     public isShowingMeets: boolean = false;
     public searchForm: FormGroup = new FormGroup({
@@ -42,7 +44,7 @@ export class CandidatesListComponent implements OnInit {
     public get searchCriteria(): string {
         return this.searchForm.get('serachInput')?.value;
     }
-    public get filterCriteria(): CandidateFitlerCriteria {
+    public get filterCandidateCriteria(): CandidateFitlerCriteria {
         return new CandidateFitlerCriteria(
             this.filtersForm.get('ending')?.value,
             this.filtersForm.get('date')?.value === 'old',
@@ -50,17 +52,22 @@ export class CandidatesListComponent implements OnInit {
             this.filtersForm.get('vacancy')?.value
         );
     }
+    public get filterMeetCriteria(): MeetFilterCriteria {
+        return new MeetFilterCriteria(
+          this.filtersForm.get('vacancy')?.value
+        );
+    }
 
     constructor(
         private _router: Router,
         private _review: ReviewService
     ) { }
-    public ngOnInit(): void {    
+    public ngOnInit(): void {
         this._review
             .getCards()
             .subscribe(resp => {
                 console.log(resp);
-                
+
                 return this.candidates = resp;
             });
         this._review
@@ -69,14 +76,14 @@ export class CandidatesListComponent implements OnInit {
                 if (resp.ok && resp.body) {
                     const stateVals = Object.values(CandidateState);
                     const stateKeys = Object.keys(CandidateState);
-            
+
                     for (let i = 0; i < stateKeys.length; i++) {
                         this.states.push({
                             name: stateVals[i],
                             value: stateKeys[i]
                         });
                     }
-            
+
                     for (let i = 0; i < resp.body.length; i++) {
                         this.vacancies.push({
                             name: resp.body[i],
@@ -87,7 +94,10 @@ export class CandidatesListComponent implements OnInit {
             });
         this._review
             .getMeets()
-            .subscribe(resp => this.meets = resp);
+            .subscribe(resp => {
+              this.myMeets = resp.filter(m => m.isOwnerMeet)
+              this.otherMeets = resp.filter(m => !m.isOwnerMeet)
+            });
     }
 
     public selectCard(candidate: CandidateCardInfo): void {
@@ -155,7 +165,7 @@ export class CandidatesListComponent implements OnInit {
     //         } else {
     //             newCardInfo.startTimeMs = Date.now() - 100000 - this.getRandomInt(400000);
     //         }
-            
+
 
     //         result.push(newCardInfo);
     //     }

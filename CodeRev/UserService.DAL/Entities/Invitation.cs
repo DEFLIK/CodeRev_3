@@ -8,5 +8,6 @@ namespace UserService.DAL.Entities
         public Role Role { get; set; }
         public Guid InterviewId { get; set; }
         public long ExpiredAt { get; set; }
+        public Guid CreatedBy { get; set; }
     }
 }

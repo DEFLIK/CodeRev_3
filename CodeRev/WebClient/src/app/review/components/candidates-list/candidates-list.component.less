@@ -29,7 +29,7 @@
             flex-direction: column;
             flex: 1 1 auto;
             gap: 20px;
-            justify-content: space-between;
+            //justify-content: space-between;
 
             .top {
                 display: flex;
@@ -50,19 +50,19 @@
                     align-items: center;
                     gap: 10px;
                     flex: 1 0 25px;
-                    
-            
+
+
                     input {
                         width: 100%;
                         font-size: 15px;
                         background-color: inherit;
                         border: none;
-            
+
                         &:focus {
                             outline: none;
                         }
                     }
-            
+
                     img {
                         height: 70%;
                     }
@@ -92,8 +92,27 @@
                 align-items: center;
                 display: flex;
                 flex-direction: column;
-                gap: 20px;
                 overflow: auto;
+
+                .meet-card {
+                    margin-bottom: 24px;
+                    width: 90%;
+                }
+
+                :last-child.meet-card {
+                    margin-bottom: 0;
+                }
+
+                .meets-separator {
+                    width: 90%;
+                    border-bottom: 1px solid @color-black25;
+                    margin-bottom: 24px;
+
+                    &:first-child, &:last-child {
+                      visibility: collapse;
+                      margin-bottom: 0;
+                    }
+                }
             }
         }
 
@@ -148,7 +167,7 @@
 
                 .option {
                     display: flex;
-                    
+
                     label {
                         user-select: none;
                         cursor: pointer;
@@ -157,7 +176,7 @@
                         gap: 10px;
                     }
                 }
-                
+
                 .title {
                     color: @color-black75;
                     font-size: 20px;
@@ -166,6 +185,7 @@
                 .segments {
                     margin-top: 10px;
                     display: flex;
+                    min-width: 100%;
                     flex-direction: column;
                     justify-content: flex-start;
                     align-items: center;
@@ -182,9 +202,7 @@
                 }
 
                 .sgm-hidden {
-                    max-height: 0;
-                    margin: 0;
-                    padding: 0;
+                    display: none;
                 }
 
                 .create-int {
@@ -211,7 +229,7 @@
             /deep/ .mat-checkbox-background {
                 background-color: transparent;
             }
-            
+
         }
 
         .checked {

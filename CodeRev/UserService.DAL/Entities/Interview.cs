@@ -1,4 +1,6 @@
-﻿namespace UserService.DAL.Entities
+﻿using System;
+
+namespace UserService.DAL.Entities
 {
     public class Interview : BaseEntity
     {
@@ -7,5 +9,6 @@
         public long InterviewDurationMs { get; set; }
         public string ProgrammingLanguage { get; set; }
         public bool IsSynchronous { get; set; }
+        public Guid CreatedBy { get; set; }
     }
 }

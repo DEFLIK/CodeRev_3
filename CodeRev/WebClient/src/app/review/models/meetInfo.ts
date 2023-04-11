@@ -9,6 +9,7 @@ export class MeetInfo{
     public vacancy: string;
     public tasksCount: number;
     public programmingLanguage: string;
+    public isOwnerMeet: boolean;
 
     constructor(response: MeetInfoResponse) {
         this.userId = response.userId ?? 'none';
@@ -19,5 +20,6 @@ export class MeetInfo{
         this.vacancy = response.vacancy ?? 'Без вакансии';
         this.tasksCount = response.tasksCount ?? -1;
         this.programmingLanguage = response.programmingLanguage ?? '?';
+        this.isOwnerMeet = response.isOwnerMeet ?? false;
     }
 }

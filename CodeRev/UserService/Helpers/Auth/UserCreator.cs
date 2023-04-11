@@ -57,7 +57,7 @@ namespace UserService.Helpers.Auth
                 dbRepository.Remove(invitation).Wait();
 
             if (!invitation.InterviewId.Equals(Guid.Empty))
-                interviewCreator.CreateSolution(user.Id, invitation.InterviewId);
+                interviewCreator.CreateSolution(user.Id, invitation.InterviewId, invitation.CreatedBy);
 
             dbRepository.SaveChangesAsync().Wait();
 

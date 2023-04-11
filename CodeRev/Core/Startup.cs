@@ -133,7 +133,6 @@ namespace Core
             services.AddScoped<IInvitationCreator, InvitationCreator>();
             services.AddScoped<IUserCreator, UserCreatorWithoutUniqueValidations>();
             services.AddScoped<IUserHelper, UserHelper>();
-            services.AddScoped<ITokenHelper, TokenHelper>();
             services.AddScoped<IInterviewHelper, InterviewHelper>();
             services.AddScoped<ITaskHelper, TaskHelper>();
             services.AddScoped<ICardHelper, CardHelper>();
