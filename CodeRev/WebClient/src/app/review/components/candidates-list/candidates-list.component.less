@@ -92,12 +92,21 @@
                 align-items: center;
                 display: flex;
                 flex-direction: column;
-                gap: 24px;
                 overflow: auto;
 
+                .meet-card {
+                  margin-bottom: 24px;
+                }
+                //список после фильтра скачет из-за этой полоски, если остаются только элементы ниже полоски
                 .meets-separator {
                     width: 100%;
                     border-bottom: 1px solid @color-black25;
+                    margin-bottom: 24px;
+
+                    &:first-child, &:last-child {
+                      visibility: collapse;
+                      margin-bottom: 0;
+                    }
                 }
             }
         }
@@ -171,6 +180,7 @@
                 .segments {
                     margin-top: 10px;
                     display: flex;
+                    min-width: 100%;
                     flex-direction: column;
                     justify-content: flex-start;
                     align-items: center;
@@ -187,9 +197,7 @@
                 }
 
                 .sgm-hidden {
-                    max-height: 0;
-                    margin: 0;
-                    padding: 0;
+                    display: none;
                 }
 
                 .create-int {

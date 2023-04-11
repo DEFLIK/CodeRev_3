@@ -8,6 +8,7 @@ import { CandidateVacancy } from '../../models/candidateVacancy';
 import { MeetInfo } from '../../models/meetInfo';
 import { ReviewService } from '../../services/review.service';
 import { CandidateCardComponent } from '../candidate-card/candidate-card.component';
+import {MeetFilterCriteria} from "../../models/meetFilterCriteria";
 
 @Component({
     selector: 'app-candidates-list',
@@ -43,12 +44,17 @@ export class CandidatesListComponent implements OnInit {
     public get searchCriteria(): string {
         return this.searchForm.get('serachInput')?.value;
     }
-    public get filterCriteria(): CandidateFitlerCriteria {
+    public get filterCandidateCriteria(): CandidateFitlerCriteria {
         return new CandidateFitlerCriteria(
             this.filtersForm.get('ending')?.value,
             this.filtersForm.get('date')?.value === 'old',
             this.filtersForm.get('state')?.value,
             this.filtersForm.get('vacancy')?.value
+        );
+    }
+    public get filterMeetCriteria(): MeetFilterCriteria {
+        return new MeetFilterCriteria(
+          this.filtersForm.get('vacancy')?.value
         );
     }
 

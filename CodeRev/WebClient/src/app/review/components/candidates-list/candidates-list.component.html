@@ -6,8 +6,8 @@
         </div>
         <form class="filters" [formGroup]="filtersForm">
 
-            <div [ngClass]="{'sgm-hidden': isShowingMeets}" class="segments">
-                <div class="segment">
+            <div class="segments">
+                <div [ngClass]="{'sgm-hidden': isShowingMeets}" class="segment">
                     <div class="option">
                         <label>
                             <mat-checkbox type="checkbox" formControlName="ending"></mat-checkbox>
@@ -16,7 +16,7 @@
                     </div>
                 </div>
 
-                <div class="segment">
+                <div [ngClass]="{'sgm-hidden': isShowingMeets}" class="segment">
                     <span class="title">По добавлению:</span>
                     <mat-radio-group formControlName="date">
                         <div class="option">
@@ -34,7 +34,7 @@
                     </mat-radio-group>
                 </div>
 
-                <div class="segment">
+                <div [ngClass]="{'sgm-hidden': isShowingMeets}" class="segment">
                     <span class="title">По статусу:</span>
                     <!-- <div class="option">
                         <input type="checkbox" formControlName="state" value="done"> Выполнено
@@ -79,7 +79,7 @@
         </div>
         <div class="list" *ngIf="candidates && !isShowingMeets">
             <app-candidate-card
-                *ngFor="let candidate of candidates | candidateFilter : filterCriteria : searchCriteria"
+                *ngFor="let candidate of candidates | candidateFilter : filterCandidateCriteria : searchCriteria"
                 #candidateCard
                 class="candidate-card"
                 (clickEvent)="selectCard($event)"
@@ -94,13 +94,13 @@
         </div>
         <div *ngIf="myMeets && otherMeets && isShowingMeets" class="meets">
             <app-meet-card class="meet-card"
-                *ngFor="let meetInfo of myMeets | meetsFilter : searchCriteria"
+                *ngFor="let meetInfo of myMeets | meetsFilter : filterMeetCriteria : searchCriteria"
                 [meetInfo]="meetInfo"
                 (click)="selectMeet(meetInfo)">
             </app-meet-card>
             <div *ngIf="myMeets.length > 0 && otherMeets.length > 0" class="meets-separator"></div>
             <app-meet-card class="meet-card"
-                *ngFor="let meetInfo of otherMeets | meetsFilter : searchCriteria"
+                *ngFor="let meetInfo of otherMeets | meetsFilter : filterMeetCriteria : searchCriteria"
                 [meetInfo]="meetInfo"
                 (click)="selectMeet(meetInfo)">
             </app-meet-card>
