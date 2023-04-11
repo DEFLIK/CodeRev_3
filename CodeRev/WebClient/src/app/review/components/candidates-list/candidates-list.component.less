@@ -29,7 +29,7 @@
             flex-direction: column;
             flex: 1 1 auto;
             gap: 20px;
-            justify-content: space-between;
+            //justify-content: space-between;
 
             .top {
                 display: flex;
@@ -95,11 +95,16 @@
                 overflow: auto;
 
                 .meet-card {
-                  margin-bottom: 24px;
+                    margin-bottom: 24px;
+                    width: 90%;
                 }
-                //список после фильтра скачет из-за этой полоски, если остаются только элементы ниже полоски
+
+                :last-child.meet-card {
+                    margin-bottom: 0;
+                }
+
                 .meets-separator {
-                    width: 100%;
+                    width: 90%;
                     border-bottom: 1px solid @color-black25;
                     margin-bottom: 24px;
 
