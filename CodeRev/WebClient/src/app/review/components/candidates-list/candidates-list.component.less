@@ -50,19 +50,19 @@
                     align-items: center;
                     gap: 10px;
                     flex: 1 0 25px;
-                    
-            
+
+
                     input {
                         width: 100%;
                         font-size: 15px;
                         background-color: inherit;
                         border: none;
-            
+
                         &:focus {
                             outline: none;
                         }
                     }
-            
+
                     img {
                         height: 70%;
                     }
@@ -92,8 +92,13 @@
                 align-items: center;
                 display: flex;
                 flex-direction: column;
-                gap: 20px;
+                gap: 24px;
                 overflow: auto;
+
+                .meets-separator {
+                    width: 100%;
+                    border-bottom: 1px solid @color-black25;
+                }
             }
         }
 
@@ -148,7 +153,7 @@
 
                 .option {
                     display: flex;
-                    
+
                     label {
                         user-select: none;
                         cursor: pointer;
@@ -157,7 +162,7 @@
                         gap: 10px;
                     }
                 }
-                
+
                 .title {
                     color: @color-black75;
                     font-size: 20px;
@@ -211,7 +216,7 @@
             /deep/ .mat-checkbox-background {
                 background-color: transparent;
             }
-            
+
         }
 
         .checked {
