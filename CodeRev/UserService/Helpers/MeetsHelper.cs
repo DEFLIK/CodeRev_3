@@ -49,7 +49,7 @@ namespace UserService.Helpers
                     InterviewId = interview.Id,
                     Vacancy = interview.Vacancy,
                     ProgrammingLanguage = interview.ProgrammingLanguage,
-                    IsOwnerMeet = interview.CreatedBy.Equals(requestingUser.Id),
+                    IsOwnerMeet = interviewSolution.InvitedBy.Equals(requestingUser.Id),
                 });
             
             meets = meets.Join(

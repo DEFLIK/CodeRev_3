@@ -15,5 +15,6 @@ namespace UserService.DAL.Entities
         public Grade AverageGrade { get; set; }
         public InterviewResult InterviewResult { get; set; }
         public bool IsSubmittedByCandidate { get; set; }
+        public Guid InvitedBy { get; set; }
     }
 }

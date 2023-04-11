@@ -12,7 +12,7 @@ namespace UserService.Helpers.Interviews
     public interface IInterviewCreator
     {
         Guid Create(InterviewCreationDto interviewCreation, Guid creatorId);
-        Guid CreateSolution(Guid userGuid, Guid interviewGuid);
+        Guid CreateSolution(Guid userGuid, Guid interviewGuid, Guid invitingUserId);
     }
 
     public class InterviewCreator : IInterviewCreator
@@ -45,7 +45,7 @@ namespace UserService.Helpers.Interviews
             return interview.Id;
         }
 
-        public Guid CreateSolution(Guid userGuid, Guid interviewGuid)
+        public Guid CreateSolution(Guid userGuid, Guid interviewGuid, Guid invitingUserId)
         {
             var interviewSolutionGuid = Guid.NewGuid();
             var reviewerDraftId = reviewerDraftCreator.Create(interviewSolutionGuid);
@@ -63,6 +63,7 @@ namespace UserService.Helpers.Interviews
                 ReviewerComment = "",
                 InterviewResult = InterviewResult.NotChecked,
                 IsSubmittedByCandidate = false,
+                InvitedBy = invitingUserId,
             }).Wait();
 
             var interviewTasks = dbRepository
