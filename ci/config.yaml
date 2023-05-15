@@ -50,7 +50,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: coderev-ingress
-  namespace: coderev
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
     - host: "coderev.stk8s.66bit.ru"
