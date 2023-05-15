@@ -47,7 +47,7 @@ spec:
       targetPort: 80
 ---
 apiVersion: networking.k8s.io/v1
-kind: Ingress
+kind: IngressClass
 metadata:
   name: coderev-ingress
   namespace: coderev

@@ -39,8 +39,8 @@ k8s_deploy_back:
     - kubectl get svc -n coderev
     - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.1/deploy/static/provider/cloud/deploy.yaml
    # - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
-#    - kubectl delete -f config.yaml
-    #- kubectl apply -f config.yaml
+    - kubectl delete -f config.yaml
+    - kubectl apply -f config.yaml
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
       when: manual
