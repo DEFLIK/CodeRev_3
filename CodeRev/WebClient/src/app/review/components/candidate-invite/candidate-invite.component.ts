@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { InterviewInfo } from '../../models/interviewInfo';
 import { Invitation } from '../../models/invitation';
 import { ReviewService } from '../../services/review.service';
+import { UrlRoutes } from "../../../global-services/request/models/url-routes";
 
 @Component({
     selector: 'app-candidate-invite',
@@ -41,7 +42,7 @@ export class CandidateInviteComponent implements OnInit, OnDestroy {
 
     public getInvitation(id: string): string | undefined {
         if (this.links.get(id)) {
-            return `https://localhost:5001/auth/register/${this.links.get(id)}`;
+            return `${UrlRoutes.user}/auth/register/${this.links.get(id)}`;
         }
 
         return undefined;

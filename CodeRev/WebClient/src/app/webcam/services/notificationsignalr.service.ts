@@ -6,7 +6,7 @@
 import {Injectable} from "@angular/core";
 import * as signalR from "@aspnet/signalr";
 import {Subject} from "rxjs";
-import {NotificationInfo} from "../../review/models/notification";
+import { UrlRoutes } from "../../global-services/request/models/url-routes";
 
 
 @Injectable({
@@ -24,7 +24,7 @@ export class NotificationSignalrService{
     console.log('HUB CONNECTED -----------------------', roomName);
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:5001/notificationHub')
+      .withUrl(`${UrlRoutes.tracker}/notificationHub`)
       .build();
 
     await this.hubConnection.start();
