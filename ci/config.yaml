@@ -51,7 +51,7 @@ kind: Ingress
 metadata:
   name: coderev-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
     - host: "coderev.stk8s.66bit.ru"
