@@ -36,7 +36,7 @@ k8s_deploy_back:
   stage: deploy
   image: hub.66bit.ru/shared/stk8s:1.26.2
   script:
-    - ls
+    - cd ci/
 #    - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
 #    - kubectl delete -f config.yaml
     - kubectl apply -f config.yaml
