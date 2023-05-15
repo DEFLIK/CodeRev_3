@@ -39,7 +39,7 @@ k8s_deploy_back:
     - kubectl get svc -n coderev
   #  - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.45.0/deploy/static/provider/cloud/deploy.yaml
     - cd ci/
-    - kubectl delete -f config.yaml
+    #- kubectl delete -f config.yaml
     - kubectl apply -f config.yaml
    # - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
   rules:
