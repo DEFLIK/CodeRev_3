@@ -56,13 +56,11 @@ spec:
     - host: coderev.stk8s.66bit.ru
       http:
         paths:
-          - pathType: Prefix
-            path: /
-            backend:
-              service:
-                name: coderev-service
-                port:
-                  number: 80
+        - backend:
+          service:
+            name: coderev-service
+            port:
+              number: 80
 ---
 apiVersion: apps/v1
 kind: StatefulSet
