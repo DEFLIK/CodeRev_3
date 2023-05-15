@@ -6,8 +6,8 @@ import {Injectable} from "@angular/core";
 import * as signalR from "@aspnet/signalr";
 import {Subject} from "rxjs";
 import {SignalInfo, UserInfo} from "../models/peerData.interface";
-import {ICodeRecord} from "../../code-editor/models/codeRecord";
 import { MeetPeerData } from "src/app/global-services/request/models/meet-peer-data";
+import { UrlRoutes } from "../../global-services/request/models/url-routes";
 
 
 @Injectable({
@@ -36,9 +36,9 @@ export class SignalrService{
 
     public async startConnection(currentUserName: string, roomName: string): Promise<void> {
         console.log('HUB CONNECTED -----------------------', roomName);
-    
+
         this.hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl('https://localhost:5001/signalrtc')
+            .withUrl(`${UrlRoutes.tracker}/signalrtc`)
             .build();
 
         await this.hubConnection.start();
@@ -89,7 +89,7 @@ export class SignalrService{
 
     public disconnect(): Promise<void> {
         console.log('HUB DISCONNECT -----------------------------');
-    
+
         return this.hubConnection.stop();
     }
 }

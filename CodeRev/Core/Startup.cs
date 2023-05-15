@@ -32,12 +32,14 @@ namespace Core
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -63,16 +65,18 @@ namespace Core
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext context)
         {
+            var isDevEnv = Environment.IsDevelopment();
             context.Database.Migrate();
             
-            if (env.IsDevelopment())
+            if (isDevEnv)
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Core v1"));
             }
 
-            app.UseHttpsRedirection();
+            //ToDo решить вопроскики
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCors(builder => builder
@@ -92,14 +96,14 @@ namespace Core
             });
 
             app.UseStaticFiles();
-            if (!env.IsDevelopment())
+            if (!isDevEnv)
                 app.UseSpaStaticFiles();
 
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "../WebClient";
 
-                if (env.IsDevelopment())
+                if (isDevEnv)
                     spa.UseAngularCliServer("start");
             });
 
@@ -113,8 +117,11 @@ namespace Core
         private void ConfigureTrackerService(IServiceCollection services)
         {
             services.AddTransient<ValidationMiddleware>();
-            services.Configure<TaskRecordsTrackerDataBaseSettings>(Configuration.GetSection(nameof(TaskRecordsTrackerDataBaseSettings)));
+
+            var dataBaseSettingsConfig = nameof(TaskRecordsTrackerDataBaseSettings) + Environment.EnvironmentName;
+            services.Configure<TaskRecordsTrackerDataBaseSettings>(Configuration.GetSection(dataBaseSettingsConfig));
             services.AddSingleton<ITaskRecordsTrackerDataBaseSettings>(sp => sp.GetRequiredService<IOptions<TaskRecordsTrackerDataBaseSettings>>().Value);
+            
             services.AddTransient<ITrackerManager, TrackerManager>();
             services.AddTransient<IRepository, Repository>();
             services.AddTransient<ISerializer, Serializer>();
@@ -124,8 +131,8 @@ namespace Core
 
         private void ConfigureUserService(IServiceCollection services)
         {
-            // todo сделать нормальную настройку конфигурации базы
-            services.AddDbContext<DataContext>(options => options.UseNpgsql(Configuration.GetConnectionString("default"),
+            var postgresConnectionString = Configuration.GetConnectionString($"postgres{Environment.EnvironmentName}");
+            services.AddDbContext<DataContext>(options => options.UseNpgsql(postgresConnectionString,
                 assembly => assembly.MigrationsAssembly("UserService.DAL")));
             
             services.AddScoped<IDbRepository, DbRepository>();
@@ -151,7 +158,7 @@ namespace Core
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.RequireHttpsMetadata = false; //todo change to true after dev for using ssl
+                    options.RequireHttpsMetadata = false; //todo make true for using ssl
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
