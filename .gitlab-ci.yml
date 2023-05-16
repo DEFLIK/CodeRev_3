@@ -23,14 +23,6 @@ build:
     - merge_request
     - main
 
-check1:
-  stage: deploy
-  image: hub.66bit.ru/urfu2022/ci/deploy:1.26.2
-  script:
-    - kubectl create namespace cal-core
-    - kubectl create secret generic m95 --from-file=.dockerconfigjson=$DOCKER_M95_CREDS --type=kubernetes.io/dockerconfigjson --namespace=cal-core
-  when: manual
-
 check:
   stage: deploy
   image: hub.66bit.ru/shared/stk8s:1.26.2
