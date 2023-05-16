@@ -9,6 +9,7 @@ namespace UserService.DAL.Entities
         public Guid InterviewSolutionId { get; set; }
         public bool IsDone { get; set; }
         public Grade Grade { get; set; }
+        public int RunAttemptsLeft { get; set; }
         
     }
 }
