@@ -6,4 +6,5 @@ export class TaskReviewResponse {
     public isDone?: boolean;
     public taskOrder?: string;
     public grade?: number;
+    public runAttemptsLeft?: number;
 }

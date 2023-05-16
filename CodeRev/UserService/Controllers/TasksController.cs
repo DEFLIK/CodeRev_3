@@ -65,5 +65,17 @@ namespace UserService.Controllers
                 return BadRequest(errorString);
             return Ok();
         }
+        
+        [Authorize]
+        [HttpPost($"{Solution}/reduce-attempt")]
+        public IActionResult ReduceTaskSolutionAttempt([Required] [FromQuery(Name = "id")] string taskSolutionId)
+        {
+            if (!taskHelper.TryReduceTaskSolutionAttempt(taskSolutionId, out var errorString, out var attemptsLeft) || errorString != null)
+                return BadRequest(errorString);
+            return Ok(new
+            {
+                attemptsLeft
+            });
+        }
     }
 }

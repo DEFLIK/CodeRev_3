@@ -12,5 +12,6 @@ namespace UserService.Models.Review
         public char TaskOrder { get; set; }
         public bool IsDone { get; set; }
         public Grade Grade { get; set; }
+        public int RunAttemptsLeft { get; set; }
     }
 }

@@ -8,6 +8,7 @@ export class TaskReview {
     public isDone: boolean;
     public taskOrder: string;
     public grade: number;
+    public runAttemptsLeft: number;
 
     constructor(resp: TaskReviewResponse) {
         this.taskSolutionId = resp.taskSolutionId ?? '';
@@ -17,5 +18,6 @@ export class TaskReview {
         this.isDone = resp.isDone ?? false;
         this.taskOrder = resp.taskOrder ?? '?';
         this.grade = resp.grade ?? -1;
+        this.runAttemptsLeft = resp.runAttemptsLeft ?? 0;
     }
 }

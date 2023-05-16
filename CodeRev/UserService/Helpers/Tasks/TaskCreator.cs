@@ -15,10 +15,12 @@ namespace UserService.Helpers.Tasks
     public class TaskCreator : ITaskCreator
     {
         private readonly IDbRepository dbRepository;
+        private readonly ITaskHelper taskHelper;
 
-        public TaskCreator(IDbRepository dbRepository)
+        public TaskCreator(IDbRepository dbRepository, ITaskHelper taskHelper)
         {
             this.dbRepository = dbRepository;
+            this.taskHelper = taskHelper;
         }
 
         public Guid Create(TaskCreationDto taskCreation)
@@ -36,14 +38,16 @@ namespace UserService.Helpers.Tasks
         public Guid CreateSolution(Guid interviewSolutionGuid, Guid taskGuid)
         {
             var taskSolutionGuid = Guid.NewGuid();
+            var task = taskHelper.GetTask(taskGuid);
             
             dbRepository.Add(new TaskSolution
             {
                 Id = taskSolutionGuid,
                 InterviewSolutionId = interviewSolutionGuid,
-                TaskId = taskGuid,
+                TaskId = task.Id,
                 IsDone = false,
                 Grade = Grade.Zero,
+                RunAttemptsLeft = task.RunAttempts,
             }).Wait();
             
             dbRepository.SaveChangesAsync().Wait();
@@ -57,6 +61,7 @@ namespace UserService.Helpers.Tasks
                 TaskText = taskCreation.TaskText,
                 StartCode = taskCreation.StartCode,
                 Name = taskCreation.Name,
+                RunAttempts = taskCreation.RunAttempts >= 0 ? taskCreation.RunAttempts : 0,
             };
     }
 }
