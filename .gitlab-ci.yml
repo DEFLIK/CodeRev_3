@@ -27,6 +27,7 @@ check:
   stage: deploy
   image: hub.66bit.ru/shared/stk8s:1.26.2
   script:
+    - docker --version
 #    - kubectl create namespace coderev
     #- kubectl delete secret coderevcred -n coderev
     #- kubectl create secret generic coderevcred --from-file=.dockerconfigjson=$DOCKER_M95_CREDS --type=kubernetes.io/dockerconfigjson --namespace=coderev
