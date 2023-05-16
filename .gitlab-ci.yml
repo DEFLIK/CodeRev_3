@@ -28,6 +28,7 @@ check:
   image: hub.66bit.ru/shared/stk8s:1.26.2
   script:
     - kubectl get pods -n coderev
+    - kubectk describe -n coderev pods/coderev-deployment-67964769c9-pswmk
 #    - kubectl create namespace coderev
 #    - kubectl create secret generic coderevcred --from-file=.dockerconfigjson=$DOCKER_M95_CREDS --type=kubernetes.io/dockerconfigjson --namespace=coderev
 #    - kubectl create secret docker-registry coderevcred -n coderev --docker-server=$CI_REGISTRY --docker-username="$CI_REGISTRY_USER" --docker-password="$CI_REGISTRY_PASSWORD"
