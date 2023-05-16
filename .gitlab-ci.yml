@@ -27,13 +27,11 @@ check:
   stage: deploy
   image: hub.66bit.ru/shared/stk8s:1.26.2
   script:
-    - apt install docker-ce
-    - docker run hello-world
 #    - kubectl create namespace coderev
     - kubectl delete secret coderevcred -n coderev
-    - kubectl create secret generic coderevcred --from-file=.dockerconfigjson=$DOCKER_M95_CREDS --type=kubernetes.io/dockerconfigjson --namespace=coderev
+    #- kubectl create secret generic coderevcred --from-file=.dockerconfigjson=$DOCKER_M95_CREDS --type=kubernetes.io/dockerconfigjson --namespace=coderev
     - kubectl get pods -n coderev
-    - kubectl describe -n coderev pods/coderev-deployment-67964769c9-c9mbf
+    #- kubectl describe -n coderev pods/coderev-deployment-67964769c9-c9mbf
     #- kubectl create secret docker-registry coderevcred -n coderev --docker-server=$CI_REGISTRY --docker-username="$CI_REGISTRY_USER" --docker-password="$CI_REGISTRY_PASSWORD"
   when: manual
   
@@ -43,9 +41,7 @@ deploy_ingress_controller:
   script:
   - kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
     - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-      when: manual
+  when: manual
 
 k8s_deploy_back:
   stage: deploy
@@ -54,6 +50,4 @@ k8s_deploy_back:
     - cd ci/
     - kubectl delete -f config.yaml
     - kubectl apply -f config.yaml
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-      when: manual
+  when: manual
