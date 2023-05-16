@@ -1,13 +1,20 @@
 <div class="info">
-    <span class="language">{{meetInfo.programmingLanguage}}</span>
-
-    <div class="left">
-        <span class="name">
-            {{meetInfo.surname}} {{meetInfo.firstName}}
+    <span class="name">
+        {{meetInfo.surname}} {{meetInfo.firstName}}
+    </span>
+    <div class="tags">
+        <span class="tag important" *ngIf="meetInfo.isOwnerMeet">
+            Ваше интервью
         </span>
-
-        <span class="vacancy">{{meetInfo.vacancy}}</span>
+        <span class="tag">
+            {{meetInfo.vacancy}}
+        </span>
+        <span class="tag">
+            {{meetInfo.programmingLanguage}}
+        </span>
     </div>
 </div>
 
-<button class="btn-green">Присоединиться</button>
+<button class="btn-green" (click)="selectMeetEvent.emit(meetInfo)">
+    Присоединиться
+</button>

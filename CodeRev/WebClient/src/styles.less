@@ -4,6 +4,7 @@
 @color-main: #D33030;
 @color-active: lighten(@color-main, 5%);
 
+@color-yellow-light: rgba(255, 231, 131);
 @color-yellow: rgba(255, 225, 98);
 @color-red: rgba(255, 100, 100);
 @color-green: rgba(145, 196, 131);
@@ -89,7 +90,7 @@ button {
 .btn-green {
     border-color: @color-green;
     color: @color-green;
-    
+
     &:hover {
         background-color: @color-green;
         color: white;
@@ -103,7 +104,7 @@ button {
 .btn-purple {
     border-color: @color-purple;
     color: @color-purple;
-    
+
     &:hover {
         background-color: @color-purple;
         color: white;
@@ -152,7 +153,7 @@ button {
 
 .mat-checkbox-inner-container {
     width: @input-size !important;
-    height: @input-size !important; 
+    height: @input-size !important;
 }
 
 .mat-checkbox-frame {
@@ -194,13 +195,13 @@ button {
 ::-webkit-scrollbar {
     width: 15px;
   }
-  
+
 ::-webkit-scrollbar-track {
     margin-top: 5px;
     margin-bottom: 5px;
     background: transparent;
 }
-  
+
 ::-webkit-scrollbar-thumb {
     background-color: #C3C3C3;
     border: 5px solid transparent;
@@ -327,6 +328,11 @@ button {
 @font-face {
     font-family: 'Raleway-Bold';
     src: url('./assets/fonts/Raleway-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Raleway-Medium';
+    src: url('./assets/fonts/Raleway-Medium.ttf');
 }
 
 @font-face {
