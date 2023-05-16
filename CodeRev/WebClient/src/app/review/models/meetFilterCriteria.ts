@@ -1,5 +1,6 @@
 ﻿export class MeetFilterCriteria {
 
     constructor(
-        public vacancies: string[]) {}
+        public vacancies: string[],
+        public myMeetsFirst: boolean) {}
 }
