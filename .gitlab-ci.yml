@@ -31,8 +31,8 @@ check:
     - kubectl describe -n coderev pods/coderev-deployment-67964769c9-pswmk
 #    - kubectl create namespace coderev
     #- kubectl delete secret coderevcred -n coderev
-    - kubectl create secret generic coderevcred --from-file=.dockerconfigjson=$DOCKER_M95_CREDS --type=kubernetes.io/dockerconfigjson --namespace=coderev
-    #- kubectl create secret docker-registry coderevcred -n coderev --docker-server=$CI_REGISTRY --docker-username="$CI_REGISTRY_USER" --docker-password="$CI_REGISTRY_PASSWORD"
+    #- kubectl create secret generic coderevcred --from-file=.dockerconfigjson=$DOCKER_M95_CREDS --type=kubernetes.io/dockerconfigjson --namespace=coderev
+    - kubectl create secret docker-registry coderevcred -n coderev --docker-server=$CI_REGISTRY --docker-username="$CI_REGISTRY_USER" --docker-password="$CI_REGISTRY_PASSWORD"
   when: manual
   
 deploy_ingress_controller:
