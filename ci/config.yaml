@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
         - name: coderev-container
-          #image: hub.66bit.ru/urfu/coding-interview-3458:latest
-          image: 17102002/k8scoderev:latest
+          image: hub.66bit.ru/urfu/coding-interview-3458:latest
+          #image: 17102002/k8scoderev:latest
           ports:
             - name: pod-port
               containerPort: 80
