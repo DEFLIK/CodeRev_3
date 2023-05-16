@@ -31,7 +31,7 @@ check:
     #- kubectl delete secret coderevcred -n coderev
     #- kubectl create secret generic coderevcred --from-file=.dockerconfigjson=$DOCKER_M95_CREDS --type=kubernetes.io/dockerconfigjson --namespace=coderev
     - kubectl get pods -n coderev
-    #- kubectl describe -n coderev pods/coderev-deployment-67964769c9-c9mbf
+    - kubectl describe -n coderev pods/coderev-deployment-5cb7c497d9-znx29
     #- kubectl create secret docker-registry coderevcred -n coderev --docker-server=$CI_REGISTRY --docker-username="$CI_REGISTRY_USER" --docker-password="$CI_REGISTRY_PASSWORD"
   when: manual
   
