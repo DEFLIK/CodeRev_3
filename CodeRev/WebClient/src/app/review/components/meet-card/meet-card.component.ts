@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { MeetInfo } from '../../models/meetInfo';
 
 @Component({
@@ -10,6 +10,8 @@ export class MeetCardComponent {
 
     @Input()
     public meetInfo!: MeetInfo;
+    @Output()
+    public selectMeetEvent: EventEmitter<MeetInfo> = new EventEmitter();
 
     constructor() { }
 

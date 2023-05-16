@@ -105,7 +105,7 @@
             <app-meet-card class="meet-card"
                 *ngFor="let meetInfo of meets | meetsFilter : filterMeetCriteria : searchCriteria"
                 [meetInfo]="meetInfo"
-                (click)="selectMeet(meetInfo)">
+                (selectMeetEvent)="selectMeet($event)"> <!-- //todo Клим сделай так же для обычных карточек -->
             </app-meet-card>
         </div>
     </div>
