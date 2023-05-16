@@ -15,14 +15,21 @@
     >
     </ngx-video-timeline> -->
 </div>
-<div class="write" *ngIf="editorMode === 0 && !readOnly">
-    <button (click)="run()" class="b-green">
-        <img src="../../../../assets/svg/play.svg" alt=">">
-        Запуск
+<div class="write" *ngIf="editorMode === 0 && !readOnly && _currentTask">
+    <button (click)="run()" class="b-green"
+        [ngClass]="{
+            'b-green': _currentTask.runAttemptsLeft > 0,
+            'b-disabled': _currentTask.runAttemptsLeft == 0
+        }">
+            <img src="../../../../assets/svg/play.svg" alt=">"> <!-- //todo менять цвет иконки тоже -->
+            Запуск
     </button>
     <!-- <button (click)="startRecord()">Start record</button> -->
     <button (click)="save(true)" class="b-blue">
         <img src="../../../../assets/svg/save.svg" alt=">">
         Сохранить
     </button>
+  <span class="attempts">
+      Попыток осталось: {{_currentTask.runAttemptsLeft}}
+  </span>
 </div>
