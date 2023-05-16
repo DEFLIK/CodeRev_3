@@ -16,6 +16,15 @@
                     </div>
                 </div>
 
+                <div [ngClass]="{'sgm-hidden': !isShowingMeets}" class="segment">
+                    <div class="option">
+                        <label>
+                            <mat-checkbox type="checkbox" formControlName="myMeetsFirst"></mat-checkbox>
+                            Мои интервью
+                        </label>
+                    </div>
+                </div>
+
                 <div [ngClass]="{'sgm-hidden': isShowingMeets}" class="segment">
                     <span class="title">По добавлению:</span>
                     <mat-radio-group formControlName="date">
@@ -92,17 +101,11 @@
                 }" >
             </app-candidate-card >
         </div>
-        <div *ngIf="myMeets && otherMeets && isShowingMeets" class="meets">
+        <div *ngIf="meets && isShowingMeets" class="meets">
             <app-meet-card class="meet-card"
-                *ngFor="let meetInfo of myMeets | meetsFilter : filterMeetCriteria : searchCriteria"
+                *ngFor="let meetInfo of meets | meetsFilter : filterMeetCriteria : searchCriteria"
                 [meetInfo]="meetInfo"
-                (click)="selectMeet(meetInfo)">
-            </app-meet-card>
-            <div *ngIf="myMeets.length > 0 && otherMeets.length > 0" class="meets-separator"></div>
-            <app-meet-card class="meet-card"
-                *ngFor="let meetInfo of otherMeets | meetsFilter : filterMeetCriteria : searchCriteria"
-                [meetInfo]="meetInfo"
-                (click)="selectMeet(meetInfo)">
+                (selectMeetEvent)="selectMeet($event)"> <!-- //todo Клим сделай так же для обычных карточек -->
             </app-meet-card>
         </div>
     </div>

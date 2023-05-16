@@ -21,8 +21,7 @@ export class CandidatesListComponent implements OnInit {
     @Output()
     public inviteEvent = new EventEmitter<void>();
     public candidates?: CandidateCardInfo[];
-    public myMeets?: MeetInfo[];
-    public otherMeets?: MeetInfo[];
+    public meets?: MeetInfo[];
 
     public isShowingMeets: boolean = false;
     public searchForm: FormGroup = new FormGroup({
@@ -30,6 +29,7 @@ export class CandidatesListComponent implements OnInit {
     });
     public filtersForm: FormGroup = new FormGroup({
         ending: new FormControl(''),
+        myMeetsFirst: new FormControl(''),
         date: new FormControl('new'),
         state: new FormArray([]),
         vacancy: new FormArray([])
@@ -54,7 +54,8 @@ export class CandidatesListComponent implements OnInit {
     }
     public get filterMeetCriteria(): MeetFilterCriteria {
         return new MeetFilterCriteria(
-          this.filtersForm.get('vacancy')?.value
+            this.filtersForm.get('vacancy')?.value,
+            this.filtersForm.get('myMeetsFirst')?.value
         );
     }
 
@@ -94,10 +95,7 @@ export class CandidatesListComponent implements OnInit {
             });
         this._review
             .getMeets()
-            .subscribe(resp => {
-              this.myMeets = resp.filter(m => m.isOwnerMeet)
-              this.otherMeets = resp.filter(m => !m.isOwnerMeet)
-            });
+            .subscribe(resp => this.meets = resp);
     }
 
     public selectCard(candidate: CandidateCardInfo): void {
