@@ -142,7 +142,7 @@ spec:
         name: coderev-postgres
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: "coderev"
+        storageClassName: "rook-ceph-block"
         resources:
           requests:
             storage: 1Gi
@@ -202,7 +202,7 @@ spec:
         name: coderev-mongodb
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: "coderev"
+        storageClassName: "rook-ceph-block"
         resources:
           requests:
             storage: 1Gi
