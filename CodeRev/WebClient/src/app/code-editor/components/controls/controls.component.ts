@@ -99,7 +99,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (resp) => {
                     if (resp.ok && resp.body) {
-                        this._currentTask!.runAttemptsLeft = resp.body; //todo не обновляет динамически, надо починить
+                        this._currentTask!.runAttemptsLeft = resp.body.runAttemptsLeft!;
                     }
                 }
             });

@@ -23,7 +23,7 @@ namespace UserService.Helpers.Tasks
         bool TryPutTaskSolutionGrade(string taskSolutionId, Grade grade, out string errorString);
         bool EndTaskSolution(string taskSolutionId, out string errorString);
         IEnumerable<Task> GetAllTasks();
-        bool TryReduceTaskSolutionAttempt(string taskSolutionId, out string errorString, out int attemptsLeft);
+        bool TryReduceTaskSolutionAttempt(string taskSolutionId, out string errorString, out int runAttemptsLeft);
     }
 
     public class TaskHelper : ITaskHelper
@@ -175,9 +175,9 @@ namespace UserService.Helpers.Tasks
         public IEnumerable<Task> GetAllTasks()
             => dbRepository.Get<Task>();
 
-        public bool TryReduceTaskSolutionAttempt(string taskSolutionId, out string errorString, out int attemptsLeft)
+        public bool TryReduceTaskSolutionAttempt(string taskSolutionId, out string errorString, out int runAttemptsLeft)
         {
-            attemptsLeft = 0;
+            runAttemptsLeft = 0;
             (var taskSolutionGuid, errorString) = GuidParser.TryParse(taskSolutionId, nameof(taskSolutionId));
             if (errorString != null)
                 return false;
@@ -193,7 +193,7 @@ namespace UserService.Helpers.Tasks
 
             taskSolution.RunAttemptsLeft -= 1;
             dbRepository.SaveChangesAsync().Wait();
-            attemptsLeft = taskSolution.RunAttemptsLeft;
+            runAttemptsLeft = taskSolution.RunAttemptsLeft;
             return true;
         }
     }

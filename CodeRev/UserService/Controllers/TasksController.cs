@@ -70,11 +70,11 @@ namespace UserService.Controllers
         [HttpPost($"{Solution}/reduce-attempt")]
         public IActionResult ReduceTaskSolutionAttempt([Required] [FromQuery(Name = "id")] string taskSolutionId)
         {
-            if (!taskHelper.TryReduceTaskSolutionAttempt(taskSolutionId, out var errorString, out var attemptsLeft) || errorString != null)
+            if (!taskHelper.TryReduceTaskSolutionAttempt(taskSolutionId, out var errorString, out var runAttemptsLeft) || errorString != null)
                 return BadRequest(errorString);
             return Ok(new
             {
-                attemptsLeft
+                runAttemptsLeft
             });
         }
     }
