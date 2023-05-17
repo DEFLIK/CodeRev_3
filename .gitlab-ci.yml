@@ -1,5 +1,6 @@
 stages:
   - build
+#  - test  до лучших времен
   - deploy
 
 variables:
@@ -29,11 +30,13 @@ check:
     #- docker --version
     - kubectl describe -n coderev pods/coderev-postgres-0
     - kubectl get sc
+    - kubectl get pvc
+    - kubectl get pv
 #    - kubectl create namespace coderev
     #- kubectl delete secret coderevcred -n coderev
     #- kubectl create secret generic coderevcred --from-file=.dockerconfigjson=$DOCKER_M95_CREDS --type=kubernetes.io/dockerconfigjson --namespace=coderev
     - kubectl get pods -n coderev
-    #- kubectl describe -n coderev pods/coderev-deployment-5cb7c497d9-znx29
+    - kubectl describe -n coderev pods/coderev-deployment-5cb7c497d9-znx29
     #- kubectl create secret docker-registry coderevcred -n coderev --docker-server=$CI_REGISTRY --docker-username="$CI_REGISTRY_USER" --docker-password="$CI_REGISTRY_PASSWORD"
   when: manual
   
@@ -50,6 +53,6 @@ k8s_deploy_back:
   image: hub.66bit.ru/shared/stk8s:1.26.2
   script:
     - cd ci/
-    #- kubectl delete -f config.yaml
-    - kubectl apply -f config.yaml
+    - kubectl delete -f config.yaml
+    #- kubectl apply -f config.yaml
   when: manual
