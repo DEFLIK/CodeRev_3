@@ -16,12 +16,14 @@
     </ngx-video-timeline> -->
 </div>
 <div class="write" *ngIf="editorMode === 0 && !readOnly && _currentTask">
-    <button (click)="run()" class="b-green"
+    <button (click)="run()"
         [ngClass]="{
             'b-green': _currentTask.runAttemptsLeft > 0,
             'b-disabled': _currentTask.runAttemptsLeft == 0
         }">
-            <img src="../../../../assets/svg/play.svg" alt=">"> <!-- //todo менять цвет иконки тоже -->
+            <!-- todo менять цвет иконки тоже -->
+            <img src="../../../../assets/svg/play.svg" alt=">" *ngIf="_currentTask.runAttemptsLeft > 0">
+            <img src="../../../../assets/svg/play-disabled.svg" alt=">" *ngIf="_currentTask.runAttemptsLeft == 0">
             Запуск
     </button>
     <!-- <button (click)="startRecord()">Start record</button> -->
