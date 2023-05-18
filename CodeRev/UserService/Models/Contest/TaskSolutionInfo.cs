@@ -12,5 +12,6 @@ namespace UserService.Models.Contest
         public string TaskText { get; set; }
         public string StartCode { get; set; }
         public bool IsDone { get; set; }
+        public int RunAttemptsLeft { get; set; }
     }
 }

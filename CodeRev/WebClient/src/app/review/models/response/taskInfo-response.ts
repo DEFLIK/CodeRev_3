@@ -3,4 +3,5 @@ export class TaskInfoResponse {
     public name?: string;
     public taskText?: string;
     public startCode?: string;
+    public runAttempts?: number;
 }

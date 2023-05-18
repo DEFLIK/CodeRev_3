@@ -1,6 +1,6 @@
 ﻿import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { audit, map, Observable, Subject, tap } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
@@ -9,6 +9,7 @@ import { InterviewSolutionInfoResposne } from '../models/response/interviewSolut
 import { LastSavedCodeResponse } from '../models/response/lastSavedCode-response';
 import { TaskSolutionInfoResponse } from '../models/response/taskSolutionInfo-response';
 import { TaskSolutionInfo } from '../models/taskSolutionInfo';
+import { RunAttemptsLeftResponse } from "../models/response/runAttemptsLeft-response";
 
 @Injectable({
     providedIn: 'root'
@@ -109,6 +110,14 @@ export class ContestService {
         return this._http.request<LastSavedCodeResponse>({
             url: `${UrlRoutes.tracker}/api/v1.0/tracker/get-last-code?taskSolutionId=${taskSlnId}`,
             method: RequestMethodType.get,
+            auth: true
+        });
+    }
+
+    public reduceTaskSolutionAttempt(taskSlnId: string): Observable<HttpResponse<RunAttemptsLeftResponse>> {
+        return this._http.request<RunAttemptsLeftResponse>({
+            url: `${UrlRoutes.user}/api/tasks/solution/reduce-attempt?id=${taskSlnId}`,
+            method: RequestMethodType.post,
             auth: true
         });
     }

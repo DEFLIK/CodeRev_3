@@ -4,4 +4,5 @@ export class TaskSolutionInfoResponse {
     public taskText?: string;
     public startCode?: string;
     public isDone?: boolean;
+    public runAttemptsLeft?: number;
 }

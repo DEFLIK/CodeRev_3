@@ -6,6 +6,7 @@ export class TaskSolutionInfo {
     public taskText: string;
     public startCode: string;
     public isDone: boolean;
+    public runAttemptsLeft: number;
 
     constructor(resp: TaskSolutionInfoResponse) {
         this.id = resp.id ?? '';
@@ -13,5 +14,6 @@ export class TaskSolutionInfo {
         this.taskText = resp.taskText ?? 'Не удалось получить информацию о задании';
         this.startCode = resp.startCode ?? '';
         this.isDone = resp.isDone ?? false;
+        this.runAttemptsLeft = resp.runAttemptsLeft ?? 0;
     }
 }

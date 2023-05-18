@@ -1,16 +1,12 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, Component, ComponentFactoryResolver, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
-import { CanvasPos, NgxVideoTimelineComponent, VideoCellType } from 'ngx-video-timeline';
-import { interval, Observable, Subject, Subscription, takeUntil } from 'rxjs';
+import {interval, Observable, Subject, Subscription, takeUntil} from 'rxjs';
 import { EntryPoint } from 'src/app/code-editor/models/entryPoint';
 // import { CodeStorageService } from 'src/app/code-editor/services/storage-service/code-storage.service';
 import { CompileService } from 'src/app/code-editor/services/compile-service/compile-service.service';
 import { RecordService } from 'src/app/code-editor/services/record-service/record.service';
-import { IOperationMark, RecordInfo } from '../../models/codeRecord';
+import { RecordInfo } from '../../models/codeRecord';
 import { EditorMode } from '../../models/editorMode';
-import { ExecutionResult } from '../../models/executionResult';
-import { ExecutionResultResponse } from '../../models/response/executionResult-response';
 import { PlayerService } from '../../services/player-service/player.service';
 import { PatchedTimelineComponent } from '../patched-timeline/patched-timeline.component';
 import { SavingService } from '../../services/saving-service/saving.service';
@@ -18,7 +14,6 @@ import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
 import { ReviewService } from 'src/app/review/services/review.service';
 import { SaveChunk } from '../../models/saveChunk';
 import { ContestService } from 'src/app/contest/services/contest.service';
-import { InterviewSolutionInfo } from 'src/app/contest/models/interviewSolutionInfo';
 
 @Component({
     selector: 'app-controls',
@@ -44,11 +39,11 @@ export class ControlsComponent implements OnInit, OnDestroy {
     public readOnly = false;
     // public get width(): number {
     //     console.log(this.timeline?.nativeElement.offsetWidth);
-        
+
     //     return this.timeline?.nativeElement.offsetWidth ?? 0;
     // }
     private _bindedEditor?: CodemirrorComponent;
-    private _currentTask?: TaskSolutionInfo;
+    _currentTask?: TaskSolutionInfo;
     private _unsubscriber = new Subject<void>();
     private _timeLineUpdateSubscription?: Subscription;
 
@@ -87,7 +82,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
     }
 
     public run(): void {
-        if (!this._currentTask) {
+        if (!this._currentTask || this._currentTask.runAttemptsLeft === 0) {
             return;
         }
 
@@ -95,9 +90,19 @@ export class ControlsComponent implements OnInit, OnDestroy {
             .execute(
                 this._bindedEditor?.codeMirror?.getValue() ?? '',
                 new EntryPoint(
-                    'CodeRev', 
-                    'Program', 
+                    'CodeRev',
+                    'Program',
                     'Main'));
+
+        this._contest
+            .reduceTaskSolutionAttempt(this._currentTask.id)
+            .subscribe({
+                next: (resp) => {
+                    if (resp.ok && resp.body) {
+                        this._currentTask!.runAttemptsLeft = resp.body.runAttemptsLeft!;
+                    }
+                }
+            });
     }
 
     public startRecord(): void {
@@ -124,8 +129,8 @@ export class ControlsComponent implements OnInit, OnDestroy {
         this.stopRecord();
 
         this._saving.saveNext(
-            this._currentTask.id, 
-            this._bindedEditor.codeMirror?.getValue() ?? '', 
+            this._currentTask.id,
+            this._bindedEditor.codeMirror?.getValue() ?? '',
             this._record.getTaskRecord(this._currentTask.id));
 
         if (continueRecord) {
@@ -164,8 +169,8 @@ export class ControlsComponent implements OnInit, OnDestroy {
         if (saves.length !== 0) {
             this._player.selectSavesRecords(saves);
             this.patchedTimeline.setProperties(
-                saves[0].recordInfo.recordStartTime, 
-                this._player.getSaveDuration(), 
+                saves[0].recordInfo.recordStartTime,
+                this._player.getSaveDuration(),
                 this._player.getSaveRecords());
 
             this._timeLineUpdateSubscription = interval(100)
@@ -191,9 +196,9 @@ export class ControlsComponent implements OnInit, OnDestroy {
             );
             this._player.selectSavesRecords([
                 new SaveChunk(
-                    task.id, 
+                    task.id,
                     Date.now(),
-                    '', 
+                    '',
                     new RecordInfo([], Date.now()))]);
             this._bindedEditor?.codeMirror?.setValue('');
         }
@@ -206,13 +211,13 @@ export class ControlsComponent implements OnInit, OnDestroy {
 
                 if (!this._bindedEditor) {
                     console.log('Cant resolve binded editor');
-                    break; 
+                    break;
                 }
-                
+
                 if (isEditable) {
-                    this.save(false); 
+                    this.save(false);
                 }
-    
+
                 if (!isEditable) {
                     this._bindedEditor.setDisabledState(true);
                     this.readOnly = true;
@@ -220,7 +225,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
                     this.readOnly = false;
                     this._bindedEditor.setDisabledState(false);
                 }
-    
+
                 this._bindedEditor.codeMirror?.setValue(this._saving.getLastSavedCode(nextTask.id) ?? nextTask.startCode);
 
                 if (isEditable) {

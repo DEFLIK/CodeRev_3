@@ -1,3 +1,5 @@
+@import (reference) "/src/styles.less";
+
 @color-use: #91c483;
 @color-stop: #ff6464;
 
@@ -42,7 +44,7 @@
         background-color: white;
         color: @color;
         border: solid 1px @color;
-        
+
         &:hover {
             color: white;
             background-color: @color;
@@ -58,12 +60,21 @@
         .b(@color-stop);
     }
 
-    
     .b-green {
         .b(@color-use);
     }
 
+    .b-disabled {
+        .b(@color-black50);
+    }
+
     .b-blue {
         .b(#64a6ff);
+    }
+
+    .attempts {
+        font-size: 16px;
+        color: @color-black;
+        align-self: center;
     }
 }
