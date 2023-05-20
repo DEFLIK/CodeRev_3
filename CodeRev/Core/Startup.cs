@@ -108,6 +108,7 @@ namespace Core
         private void ConfigureCompilerService(IServiceCollection services)
         {
             services.AddTransient<ICompilerService, CompilerService.Services.CompilerService>();
+            services.AddTransient<AssemblyTestingService>();
         }
 
         private void ConfigureTrackerService(IServiceCollection services)
