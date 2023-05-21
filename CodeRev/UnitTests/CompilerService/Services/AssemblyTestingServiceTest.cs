@@ -18,7 +18,7 @@ public class AssemblyTestingServiceTest
     }
 
     [TestCaseSource(nameof(GetCases))]
-    public void Compile_ConsoleWriteLine_ShouldReturnText((string UserCode, string TestCode, bool ExpectedResult, string ExpectedResultText) testCase)
+    public void Tests_should_run_correctly((string UserCode, string TestCode, bool ExpectedResult, string ExpectedResultText) testCase)
     {
         var result = assemblyTestingService.RunTests(testCase.UserCode, testCase.TestCode);
 

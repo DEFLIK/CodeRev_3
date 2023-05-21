@@ -14,12 +14,12 @@ public class SomeTestCode
         Assert.AreEqual(result, 129);
     }
     
-        [Test]
-        public void Should_return_128()
-        {
-            var instance = new SomeProg();
-            var result = instance.MethodToCheck();
-            
-            Assert.AreEqual(result, 128);
-        }
+    [Test]
+    public void Should_return_128()
+    {
+        var instance = new SomeProg();
+        var result = instance.MethodToCheck();
+        
+        Assert.AreEqual(result, 128);
+    }
 }
