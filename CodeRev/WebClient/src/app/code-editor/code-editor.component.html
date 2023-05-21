@@ -13,5 +13,5 @@
         [(ngModel)]="editor"
         [options]="options"
     ></ngx-codemirror>
-    <app-output #output class="output"></app-output>
+    <app-toolbar #toolbar class="toolbar" [isTestsRunnable]="!isSync || editorMode === 0"></app-toolbar>
 </ng-container>
