@@ -10,6 +10,7 @@ public interface ITaskHandler
 {
     Task GetTask(Guid taskId);
     TaskSolution GetTaskSolution(Guid taskSolutionId);
+    bool TryChangeTaskTestsCode(Guid taskId, string testsCode);
 }
 
 public class TaskHandler : ITaskHandler
@@ -30,4 +31,16 @@ public class TaskHandler : ITaskHandler
         => dbRepository
           .Get<TaskSolution>(t => t.Id == taskSolutionId)
           .FirstOrDefault();
+    
+    public bool TryChangeTaskTestsCode(Guid taskId, string testsCode)
+    {
+        var task = GetTask(taskId);
+        if (task is null)
+            return false;
+
+        task.TestsCode = testsCode;
+        dbRepository.SaveChangesAsync().Wait();
+            
+        return true;
+    }
 }
