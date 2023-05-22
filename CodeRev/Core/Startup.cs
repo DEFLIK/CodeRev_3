@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using TaskTestsProvider;
 using TrackerService.DataAccess.Infrastructure;
 using TrackerService.DataAccess.Repositories;
 using TrackerService.EventHandling;
@@ -128,6 +129,8 @@ namespace Core
             // todo сделать нормальную настройку конфигурации базы
             services.AddDbContext<DataContext>(options => options.UseNpgsql(Configuration.GetConnectionString("default"),
                 assembly => assembly.MigrationsAssembly("UserService.DAL")));
+
+            services.AddScoped<ITaskTestsProviderClient, TaskTestsProviderClient>();
             
             services.AddScoped<IDbRepository, DbRepository>();
             services.AddScoped<IInterviewCreator, InterviewCreator>();

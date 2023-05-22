@@ -21,11 +21,11 @@ export class TestsRunnerService {
         private _req: HttpService,
     ) { }
 
-    public run(code: string, taskId: string): void {
+    public run(code: string, taskSolutionId: string): void {
         this._req.request<TestsRunResponse, TestsRunRequest>({
             url: `${UrlRoutes.compiler}/api/tests/run`,
             method: RequestMethodType.post,
-            body: new TestsRunRequest(code, taskId),
+            body: new TestsRunRequest(code, taskSolutionId),
             timeout: 10000000
         }).subscribe(resp => {
             if (resp.ok ?? resp.body) {

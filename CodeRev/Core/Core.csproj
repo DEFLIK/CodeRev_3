@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CompilerService\CompilerService.csproj" />
+    <ProjectReference Include="..\TaskTestsProvider\TaskTestsProvider.csproj" />
     <ProjectReference Include="..\TrackerService\TrackerService.csproj" />
     <ProjectReference Include="..\UserService\UserService.csproj" />
   </ItemGroup>

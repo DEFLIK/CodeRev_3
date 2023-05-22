@@ -3,6 +3,7 @@ using CompilerService.Models;
 using CompilerService.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using TaskTestsProvider;
 
 namespace CompilerService.Controllers;
 
@@ -12,41 +13,18 @@ namespace CompilerService.Controllers;
 public class TestsRunnerController : ControllerBase
 {
     private readonly AssemblyTestingService assemblyTestingService;
+    private readonly ITaskTestsProviderClient taskTestsProviderClient;
 
-    public TestsRunnerController(AssemblyTestingService assemblyTestingService)
+    public TestsRunnerController(AssemblyTestingService assemblyTestingService, ITaskTestsProviderClient taskTestsProviderClient)
     {
         this.assemblyTestingService = assemblyTestingService;
+        this.taskTestsProviderClient = taskTestsProviderClient;
     }
 
     [HttpPost("run")]
     public ActionResult<TestsRunResult> RunTests([FromBody]TestsRunRequest req)
     {
-        // todo брать код теста из БД по id задачи
-        var res = assemblyTestingService.RunTests(req.Code, @"using NUnit.Framework;
-
-namespace CodeRevSolution;
-
-[TestFixture]
-public class SomeTestCode
-{
-    [Test]
-    public void Should_return_129()
-    {
-        var instance = new SomeProg();
-        var result = instance.MethodToCheck();
-        
-        Assert.AreEqual(result, 129);
-    }
-    
-        [Test]
-        public void Should_return_128()
-        {
-            var instance = new SomeProg();
-            var result = instance.MethodToCheck();
-            
-            Assert.AreEqual(result, 128);
-        }
-}");
+        var res = assemblyTestingService.RunTests(req.Code, taskTestsProviderClient.GetTaskTestsCodeBySolutionId(req.TaskSolutionId));
         
         return Ok(res);
     }
