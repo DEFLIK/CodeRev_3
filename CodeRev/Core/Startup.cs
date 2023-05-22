@@ -66,7 +66,7 @@ namespace Core
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext context)
         {
             var isDevEnv = Environment.IsDevelopment();
-            context.Database.Migrate();
+            // context.Database.Migrate();
             
             if (isDevEnv)
             {
