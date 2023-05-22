@@ -8,6 +8,8 @@ RUN rm url-routes.ts
 RUN mv url-routes-prod.ts url-routes.ts
 WORKDIR /app/WebClient
 RUN npm install
+EXPOSE 80
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
 WORKDIR /src
