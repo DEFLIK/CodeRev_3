@@ -28,5 +28,5 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish ./Core
 WORKDIR /app/Core
-ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_ENVIRONMENT=Development
 ENTRYPOINT ["dotnet", "Core.dll"]
