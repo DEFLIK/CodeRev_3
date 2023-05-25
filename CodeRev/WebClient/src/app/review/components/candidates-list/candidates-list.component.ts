@@ -25,7 +25,7 @@ export class CandidatesListComponent implements OnInit {
 
     public isShowingMeets: boolean = false;
     public searchForm: FormGroup = new FormGroup({
-        serachInput: new FormControl('')
+        searchInput: new FormControl('')
     });
     public filtersForm: FormGroup = new FormGroup({
         ending: new FormControl(''),
@@ -44,7 +44,7 @@ export class CandidatesListComponent implements OnInit {
     }
     public programmingLanguages: string[] = [];
     public get searchCriteria(): string {
-        return this.searchForm.get('serachInput')?.value;
+        return this.searchForm.get('searchInput')?.value;
     }
     public get filterCandidateCriteria(): CandidateFilterCriteria {
         return new CandidateFilterCriteria(

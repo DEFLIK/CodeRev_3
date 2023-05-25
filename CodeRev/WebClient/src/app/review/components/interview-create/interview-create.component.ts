@@ -34,10 +34,10 @@ export class InterviewCreateComponent{
         // readOnly: 'true'
     };
     public searchForm: FormGroup = new FormGroup({
-        serachInput: new FormControl('')
+        searchInput: new FormControl('')
     });
     public get searchCriteria(): string {
-        return this.searchForm.get('serachInput')?.value ?? '';
+        return this.searchForm.get('searchInput')?.value ?? '';
     }
     public get isSync(): boolean {
         return true;
