@@ -2,20 +2,22 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { CandidateCardInfo } from '../models/candidateCardInfo';
 import { CandidateFitlerCriteria } from '../models/candidateFilterCriteria';
 import { CandidateStateKeys, CandidateState } from '../models/candidateState';
-import { CandidateVacancy, CandidateVacancyKeys } from '../models/candidateVacancy';
+import { convertProgrammingLanguageToString } from "../models/programmingLanguage";
 
 @Pipe({
     name: 'candidateFilter'
 })
 export class CandidateFilterPipe implements PipeTransform {
 
-    public transform(value: CandidateCardInfo[], filterCriteria: CandidateFitlerCriteria, serachCriteria: string): CandidateCardInfo[] {
+    public transform(value: CandidateCardInfo[], filterCriteria: CandidateFitlerCriteria, searchCriteria: string): CandidateCardInfo[] {
         return value
-            .filter((card: CandidateCardInfo) => 
-                (card.firstName.toLowerCase().includes(serachCriteria.toLowerCase()) 
-                    || card.surname.toLowerCase().includes(serachCriteria.toLowerCase()) 
-                    || card.vacancy.toLowerCase().includes(serachCriteria.toLowerCase()))
-                && (filterCriteria.vacancies.some(vacan => vacan === card.vacancy) 
+            .filter((card: CandidateCardInfo) =>
+                (card.firstName.toLowerCase().includes(searchCriteria.toLowerCase())
+                    || card.surname.toLowerCase().includes(searchCriteria.toLowerCase())
+                    || card.vacancy.toLowerCase().includes(searchCriteria.toLowerCase())
+                    || card.programmingLanguages.map(language => convertProgrammingLanguageToString(language))
+                        .includes(searchCriteria.toLocaleLowerCase()))
+                && (filterCriteria.vacancies.some(vacan => vacan === card.vacancy)
                     || filterCriteria.vacancies.length === 0)
                 && (filterCriteria.states.some(state => CandidateState[state as CandidateStateKeys] === card.getState())
                     || filterCriteria.states.length === 0))
