@@ -1,4 +1,4 @@
-<div 
+<div
     class="comment"
     [ngClass]="{
         'comment-show': isShowingComment
@@ -13,8 +13,8 @@
     </span>
 </div>
 
-<div 
-    class="review" 
+<div
+    class="review"
     [ngClass]="{
         'hide-right': isShowingComment,
         'hide-left': isShowingGrade
@@ -38,12 +38,12 @@
             <span *ngIf="candidate.startTimeMs !== -1 else startElse" class="time-stamp">
                 {{ candidate.startTimeMs | date : 'dd.MM.yyyy' }}
             </span>
-    
+
             <ng-template #startElse>
                 <span class="alert"> не приступал </span>
             </ng-template>
         </span>
-    
+
         <span  class="time-inner">
             Срок проверки:
 
@@ -56,7 +56,7 @@
             </ng-template>
         </span>
     </div>
-    
+
     <div class="progress">
         <div class="progress-label">
             <span>Выполнено</span>
@@ -68,9 +68,9 @@
     <div class="bottom">
         <span class="avg-grade" *ngIf="candidate.averageGrade !== 0">{{candidate.averageGrade}}</span>
         <img class="comment-img"
-            *ngIf="candidate.reviewerComment" 
+            *ngIf="candidate.reviewerComment"
             (click)="showComment()"
-            src="../../../../assets/svg/comment.svg" 
+            src="../../../../assets/svg/comment.svg"
             alt="..." class="comment-img">
         <button class="review-btn" *ngIf="candidate.getState() === state.toCheck" (click)="select()">Проверить</button>
         <span class="expired-label" *ngIf="candidate.getState() === state.expired" (click)="select()">Не сдано</span>
@@ -79,7 +79,7 @@
     </div>
 </div>
 
-<div 
+<div
     class="hr-grade"
     [ngClass]="{
         'grade-show': isShowingGrade

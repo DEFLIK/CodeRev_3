@@ -15,7 +15,7 @@ import { ReviewService } from '../../services/review.service';
 })
 export class InterviewCreateComponent{
     public editor: HTMLElement | null = document.getElementById('codeEdtior');
-    @ViewChild('codeMirror') 
+    @ViewChild('codeMirror')
     public codeMirrorCmpt!: CodemirrorComponent;
     public vacancies: any[] = [];
     public duration: string = '10:00';
