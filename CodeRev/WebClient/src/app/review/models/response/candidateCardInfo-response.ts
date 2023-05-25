@@ -1,3 +1,4 @@
+import { ProgrammingLanguage } from "../programmingLanguage";
 
 export class CandidateCardInfoResponse {
     public userId?: string;
@@ -16,6 +17,6 @@ export class CandidateCardInfoResponse {
     public hasHrCheckResult?: boolean;
     public isSubmittedByCandidate?: boolean;
     public isSolutionTimeExpired?: boolean;
-    public programmingLanguage?: string;
+    public programmingLanguages?: ProgrammingLanguage[];
     public isSynchronous?: boolean;
 }

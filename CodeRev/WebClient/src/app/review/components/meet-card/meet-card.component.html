@@ -9,8 +9,8 @@
         <span class="tag">
             {{meetInfo.vacancy}}
         </span>
-        <span class="tag">
-            {{meetInfo.programmingLanguage}}
+        <span class="tag" *ngFor="let programmingLanguage of meetInfo.programmingLanguages">
+            {{convertProgrammingLanguageToString(programmingLanguage)}}
         </span>
     </div>
 </div>

@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { MeetInfo } from '../../models/meetInfo';
+import { convertProgrammingLanguageToString, ProgrammingLanguage } from "../../models/programmingLanguage";
 
 @Component({
     selector: 'app-meet-card',
@@ -15,4 +16,7 @@ export class MeetCardComponent {
 
     constructor() { }
 
+    public convertProgrammingLanguageToString(language: ProgrammingLanguage): string {
+        return convertProgrammingLanguageToString(language);
+    }
 }

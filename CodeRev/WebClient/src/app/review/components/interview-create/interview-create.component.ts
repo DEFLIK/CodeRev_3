@@ -101,7 +101,6 @@ export class InterviewCreateComponent{
             this.vacancy,
             this.welcomeText,
             ms,
-            'C#',
             this.isSync,
             this.selectedTasks.map(task => task.id)
         )).subscribe(resp => {

@@ -25,7 +25,9 @@
             <span class="surname">{{ candidate.surname }}</span>
             <span class="firstName">{{ candidate.firstName }}</span>
         </div>
-        <span class="language">C#</span>
+        <span *ngFor="let programmingLanguage of candidate.programmingLanguages" class="language">
+            {{convertProgrammingLanguageToString(programmingLanguage)}}
+        </span>
     </div>
 
     <span class="vacancy"> {{ candidate.vacancy }} </span>

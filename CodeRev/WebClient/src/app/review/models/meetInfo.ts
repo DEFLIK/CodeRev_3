@@ -1,4 +1,5 @@
 import { MeetInfoResponse } from './response/meetInfo-response';
+import { ProgrammingLanguage } from "./programmingLanguage";
 
 export class MeetInfo{
     public userId: string;
@@ -8,7 +9,7 @@ export class MeetInfo{
     public surname: string;
     public vacancy: string;
     public tasksCount: number;
-    public programmingLanguage: string;
+    public programmingLanguages: ProgrammingLanguage[];
     public isOwnerMeet: boolean;
 
     constructor(response: MeetInfoResponse) {
@@ -19,7 +20,7 @@ export class MeetInfo{
         this.surname = response.surname ?? 'Unnamed';
         this.vacancy = response.vacancy ?? 'Без вакансии';
         this.tasksCount = response.tasksCount ?? -1;
-        this.programmingLanguage = response.programmingLanguage ?? '?';
+        this.programmingLanguages = response.programmingLanguages ?? [];
         this.isOwnerMeet = response.isOwnerMeet ?? false;
     }
 }

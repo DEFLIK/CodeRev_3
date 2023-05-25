@@ -1,4 +1,5 @@
 import { TaskReviewResponse } from './response/taskReview-response';
+import { ProgrammingLanguage } from "./programmingLanguage";
 
 export class TaskReview {
     public taskSolutionId: string;
@@ -9,6 +10,7 @@ export class TaskReview {
     public taskOrder: string;
     public grade: number;
     public runAttemptsLeft: number;
+    public programmingLanguage: ProgrammingLanguage;
 
     constructor(resp: TaskReviewResponse) {
         this.taskSolutionId = resp.taskSolutionId ?? '';
@@ -19,5 +21,6 @@ export class TaskReview {
         this.taskOrder = resp.taskOrder ?? '?';
         this.grade = resp.grade ?? -1;
         this.runAttemptsLeft = resp.runAttemptsLeft ?? 0;
+        this.programmingLanguage = resp.programmingLanguage ?? ProgrammingLanguage.csharp;
     }
 }

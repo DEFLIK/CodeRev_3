@@ -1,5 +1,6 @@
 import { CandidateState } from './candidateState';
 import { CandidateCardInfoResponse } from './response/candidateCardInfo-response';
+import { ProgrammingLanguage } from "./programmingLanguage";
 
 export class CandidateCardInfo {
     public userId: string;
@@ -18,7 +19,7 @@ export class CandidateCardInfo {
     public hasHrCheckResult: boolean;
     public isSubmittedByCandidate: boolean;
     public isSolutionTimeExpired: boolean;
-    public programmingLanguage: string;
+    public programmingLanguages: ProgrammingLanguage[];
     public isSynchronous: boolean;
 
     constructor(resp: CandidateCardInfoResponse) {
@@ -38,7 +39,7 @@ export class CandidateCardInfo {
         this.isSolutionTimeExpired = resp.isSolutionTimeExpired ?? false;
         this.hasReviewerCheckResult = resp.hasReviewerCheckResult ?? false;
         this.hasHrCheckResult = resp.hasHrCheckResult ?? false;
-        this.programmingLanguage = resp.programmingLanguage ?? '?';
+        this.programmingLanguages = resp.programmingLanguages ?? [];
         this.isSynchronous = resp.isSynchronous ?? false;
     }
 

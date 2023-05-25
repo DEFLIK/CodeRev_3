@@ -1,3 +1,5 @@
+import { ProgrammingLanguage } from "../programmingLanguage";
+
 export class MeetInfoResponse {
     public userId?: string;
     public interviewSolutionId?: string;
@@ -6,6 +8,6 @@ export class MeetInfoResponse {
     public surname?: string;
     public vacancy?: string;
     public tasksCount?: number;
-    public programmingLanguage?: string;
+    public programmingLanguages?: ProgrammingLanguage[];
     public isOwnerMeet?: boolean;
 }

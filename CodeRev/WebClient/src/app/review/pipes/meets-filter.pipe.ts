@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { MeetInfo } from '../models/meetInfo';
 import {MeetFilterCriteria} from "../models/meetFilterCriteria";
+import { convertProgrammingLanguageToString } from "../models/programmingLanguage";
 
 @Pipe({
     name: 'meetsFilter'
@@ -13,7 +14,8 @@ export class MeetsFilterPipe implements PipeTransform {
                 (meet.firstName.toLowerCase().includes(searchCriteria.toLowerCase())
                     || meet.surname.toLowerCase().includes(searchCriteria.toLowerCase())
                     || meet.vacancy.toLowerCase().includes(searchCriteria.toLowerCase())
-                    || meet.programmingLanguage.toLocaleLowerCase().includes(searchCriteria.toLocaleLowerCase()))
+                    || meet.programmingLanguages.map(language => convertProgrammingLanguageToString(language))
+                        .includes(searchCriteria.toLocaleLowerCase())) // todo не конвертить каждый раз в строку
                 && (filterCriteria.vacancies.some(vacancy => vacancy === meet.vacancy)
                     || filterCriteria.vacancies.length === 0));
         return filterCriteria.myMeetsFirst
