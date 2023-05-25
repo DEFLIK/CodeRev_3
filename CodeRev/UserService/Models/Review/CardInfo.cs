@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UserService.DAL.Models.Enums;
 
 namespace UserService.Models.Review
@@ -22,7 +23,7 @@ namespace UserService.Models.Review
         public bool IsSolutionTimeExpired { get; set; }
         public bool HasReviewerCheckResult { get; set; }
         public bool HasHrCheckResult { get; set; }
-        public string ProgrammingLanguage { get; set; }
+        public IList<ProgrammingLanguage> ProgrammingLanguages { get; set; }
         public bool IsSynchronous { get; set; }
     }
 }

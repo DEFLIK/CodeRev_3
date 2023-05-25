@@ -16,6 +16,7 @@ namespace UserService.DAL
         public DbSet<Invitation> Invitations { get; set; }
         public DbSet<ReviewerDraft> ReviewerDrafts { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<InterviewLanguage> InterviewLanguages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

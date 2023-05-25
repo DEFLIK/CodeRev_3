@@ -53,7 +53,7 @@ namespace UserService.Helpers.Notifications
                 FirstName = firstName,
                 Surname = surname,
                 Vacancy = interview.Vacancy,
-                ProgrammingLanguage = interview.ProgrammingLanguage,
+                ProgrammingLanguages = interviewHelper.GetInterviewLanguages(interviewId),
             };
         }
     }

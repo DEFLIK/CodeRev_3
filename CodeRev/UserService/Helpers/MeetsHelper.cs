@@ -3,6 +3,7 @@ using System.Linq;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Interfaces;
 using UserService.Helpers.Auth;
+using UserService.Helpers.Interviews;
 using UserService.Models.SyncInterviews;
 
 namespace UserService.Helpers
@@ -16,11 +17,13 @@ namespace UserService.Helpers
     {
         private readonly IDbRepository dbRepository;
         private readonly IUserHelper userHelper;
+        private readonly IInterviewHelper interviewHelper;
 
-        public MeetsHelper(IDbRepository dbRepository, IUserHelper userHelper)
+        public MeetsHelper(IDbRepository dbRepository, IUserHelper userHelper, IInterviewHelper interviewHelper)
         {
             this.dbRepository = dbRepository;
             this.userHelper = userHelper;
+            this.interviewHelper = interviewHelper;
         }
 
         public IEnumerable<MeetInfoDto> GetMeets(string requestingUserId)
@@ -48,7 +51,7 @@ namespace UserService.Helpers
                     InterviewSolutionId = interviewSolution.Id,
                     InterviewId = interview.Id,
                     Vacancy = interview.Vacancy,
-                    ProgrammingLanguage = interview.ProgrammingLanguage,
+                    ProgrammingLanguages = interviewHelper.GetInterviewLanguages(interview.Id),
                     IsOwnerMeet = interviewSolution.InvitedBy.Equals(requestingUser.Id),
                 });
             

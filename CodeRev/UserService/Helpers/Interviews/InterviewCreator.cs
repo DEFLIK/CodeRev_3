@@ -22,14 +22,16 @@ namespace UserService.Helpers.Interviews
         private readonly IReviewerDraftCreator reviewerDraftCreator;
         private readonly INotificationsCreator notificationsCreator;
         private readonly IInterviewHelper interviewHelper;
+        private readonly ITaskHelper taskHelper;
 
-        public InterviewCreator(IDbRepository dbRepository, ITaskCreator taskCreator, IReviewerDraftCreator reviewerDraftCreator, INotificationsCreator notificationsCreator, IInterviewHelper interviewHelper)
+        public InterviewCreator(IDbRepository dbRepository, ITaskCreator taskCreator, IReviewerDraftCreator reviewerDraftCreator, INotificationsCreator notificationsCreator, IInterviewHelper interviewHelper, ITaskHelper taskHelper)
         {
             this.dbRepository = dbRepository;
             this.taskCreator = taskCreator;
             this.reviewerDraftCreator = reviewerDraftCreator;
             this.notificationsCreator = notificationsCreator;
             this.interviewHelper = interviewHelper;
+            this.taskHelper = taskHelper;
         }
 
         public Guid Create(InterviewCreationDto interviewCreation, Guid creatorId)
@@ -38,7 +40,11 @@ namespace UserService.Helpers.Interviews
             interview.Id = Guid.NewGuid();
 
             dbRepository.Add(interview).Wait();
-            interviewCreation.TaskIds.ForEach(taskId => CreateLinkToTask(interview.Id, taskId));
+            interviewCreation.TaskIds.ForEach(taskId =>
+            {
+                CreateLinkToTask(interview.Id, taskId);
+                CreateLinkToLanguage(interview.Id, taskHelper.GetTask(taskId).ProgrammingLanguage);
+            });
             
             dbRepository.SaveChangesAsync().Wait();
 
@@ -88,13 +94,20 @@ namespace UserService.Helpers.Interviews
                 TaskId = taskId,
             }).Wait(); //не сохраняем изменение в БД, потому что сохраним сразу все изменения в Create
 
+        private void CreateLinkToLanguage(Guid interviewId, ProgrammingLanguage programmingLanguage)
+            => dbRepository.Add(new InterviewLanguage
+            {
+                Id = Guid.NewGuid(),
+                InterviewId = interviewId,
+                ProgrammingLanguage = programmingLanguage,
+            }).Wait(); //не сохраняем изменение в БД, потому что сохраним сразу все изменения в Create
+
         private static Interview MapInterviewCreationToInterviewEntity(InterviewCreationDto interviewCreation, Guid creatorId)
             => new()
             {
                 Vacancy = interviewCreation.Vacancy,
                 InterviewText = interviewCreation.InterviewText,
                 InterviewDurationMs = interviewCreation.InterviewDurationMs,
-                ProgrammingLanguage = interviewCreation.ProgrammingLanguage,
                 IsSynchronous = interviewCreation.IsSynchronous,
                 CreatedBy = creatorId,
             };

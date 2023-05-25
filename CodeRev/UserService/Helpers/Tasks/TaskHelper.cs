@@ -22,7 +22,7 @@ namespace UserService.Helpers.Tasks
         TaskSolution GetTaskSolution(string taskSolutionId, out string errorString);
         bool TryPutTaskSolutionGrade(string taskSolutionId, Grade grade, out string errorString);
         bool EndTaskSolution(string taskSolutionId, out string errorString);
-        IEnumerable<Task> GetAllTasks();
+        List<Task> GetAllTasks();
         bool TryReduceTaskSolutionAttempt(string taskSolutionId, out string errorString, out int runAttemptsLeft);
     }
 
@@ -63,6 +63,7 @@ namespace UserService.Helpers.Tasks
                 Grade = taskSolution.Grade,
                 IsDone = taskSolution.IsDone,
                 RunAttemptsLeft = taskSolution.RunAttemptsLeft,
+                ProgrammingLanguage = GetTask(taskSolution.TaskId).ProgrammingLanguage,
             };
         }
 
@@ -88,6 +89,7 @@ namespace UserService.Helpers.Tasks
                         StartCode = t.StartCode,
                         IsDone = tSln.IsDone,
                         RunAttemptsLeft = tSln.RunAttemptsLeft,
+                        ProgrammingLanguage = t.ProgrammingLanguage,
                     })
                 .OrderBy(t => t.TaskId)
                 .Select(t =>
@@ -172,8 +174,8 @@ namespace UserService.Helpers.Tasks
             return true;
         }
 
-        public IEnumerable<Task> GetAllTasks()
-            => dbRepository.Get<Task>();
+        public List<Task> GetAllTasks()
+            => dbRepository.Get<Task>().ToList();
 
         public bool TryReduceTaskSolutionAttempt(string taskSolutionId, out string errorString, out int runAttemptsLeft)
         {

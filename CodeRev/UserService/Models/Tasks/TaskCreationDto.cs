@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using UserService.DAL.Models.Enums;
 
 namespace UserService.Models.Tasks
 {
@@ -12,5 +13,7 @@ namespace UserService.Models.Tasks
         public string Name { get; set; }
         [Required]
         public int RunAttempts { get; set; }
+        [Required]
+        public ProgrammingLanguage ProgrammingLanguage { get; set; }
     }
 }
