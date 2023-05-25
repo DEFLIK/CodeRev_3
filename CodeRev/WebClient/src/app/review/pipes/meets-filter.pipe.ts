@@ -16,6 +16,8 @@ export class MeetsFilterPipe implements PipeTransform {
                     || meet.vacancy.toLowerCase().includes(searchCriteria.toLowerCase())
                     || meet.programmingLanguages.map(language => convertProgrammingLanguageToString(language))
                         .includes(searchCriteria.toLocaleLowerCase())) // todo не конвертить каждый раз в строку, то же в candidate-filter.pipe.ts
+                && (filterCriteria.programmingLanguages.every(lang =>
+                        meet.programmingLanguages.map(lang => convertProgrammingLanguageToString(lang)).includes(lang)))
                 && (filterCriteria.vacancies.some(vacancy => vacancy === meet.vacancy)
                     || filterCriteria.vacancies.length === 0));
         return filterCriteria.myMeetsFirst

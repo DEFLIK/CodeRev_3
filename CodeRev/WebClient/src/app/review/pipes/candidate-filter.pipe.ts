@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { CandidateCardInfo } from '../models/candidateCardInfo';
-import { CandidateFitlerCriteria } from '../models/candidateFilterCriteria';
+import { CandidateFilterCriteria } from '../models/candidateFilterCriteria';
 import { CandidateStateKeys, CandidateState } from '../models/candidateState';
 import { convertProgrammingLanguageToString } from "../models/programmingLanguage";
 
@@ -9,7 +9,7 @@ import { convertProgrammingLanguageToString } from "../models/programmingLanguag
 })
 export class CandidateFilterPipe implements PipeTransform {
 
-    public transform(value: CandidateCardInfo[], filterCriteria: CandidateFitlerCriteria, searchCriteria: string): CandidateCardInfo[] {
+    public transform(value: CandidateCardInfo[], filterCriteria: CandidateFilterCriteria, searchCriteria: string): CandidateCardInfo[] {
         return value
             .filter((card: CandidateCardInfo) =>
                 (card.firstName.toLowerCase().includes(searchCriteria.toLowerCase())
@@ -17,6 +17,8 @@ export class CandidateFilterPipe implements PipeTransform {
                     || card.vacancy.toLowerCase().includes(searchCriteria.toLowerCase())
                     || card.programmingLanguages.map(language => convertProgrammingLanguageToString(language))
                         .includes(searchCriteria.toLocaleLowerCase()))
+                && (filterCriteria.programmingLanguages.every(lang =>
+                        card.programmingLanguages.map(lang => convertProgrammingLanguageToString(lang)).includes(lang)))
                 && (filterCriteria.vacancies.some(vacan => vacan === card.vacancy)
                     || filterCriteria.vacancies.length === 0)
                 && (filterCriteria.states.some(state => CandidateState[state as CandidateStateKeys] === card.getState())
