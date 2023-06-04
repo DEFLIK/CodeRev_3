@@ -3,6 +3,7 @@ using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 using UserService.DAL.Models.Interfaces;
 using UserService.Models.Tasks;
+using Task = UserService.DAL.Entities.Task;
 
 namespace UserService.Helpers.Tasks
 {
@@ -61,6 +62,7 @@ namespace UserService.Helpers.Tasks
                 TaskText = taskCreation.TaskText,
                 StartCode = taskCreation.StartCode,
                 Name = taskCreation.Name,
+                TestsCode = taskCreation.TestsCode,
                 RunAttempts = taskCreation.RunAttempts >= 0 ? taskCreation.RunAttempts : 0,
             };
     }

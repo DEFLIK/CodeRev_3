@@ -1,0 +1,10 @@
+﻿namespace CodeRevSolution
+{
+    public class SomeProg
+    {
+        public int MethodToCheck()
+        {
+            return 129;
+        }
+    }
+}
