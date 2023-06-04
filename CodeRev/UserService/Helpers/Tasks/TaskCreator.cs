@@ -16,12 +16,12 @@ namespace UserService.Helpers.Tasks
     public class TaskCreator : ITaskCreator
     {
         private readonly IDbRepository dbRepository;
-        private readonly ITaskHelper taskHelper;
+        private readonly ITaskHandler taskHandler;
 
-        public TaskCreator(IDbRepository dbRepository, ITaskHelper taskHelper)
+        public TaskCreator(IDbRepository dbRepository, ITaskHandler taskHandler)
         {
             this.dbRepository = dbRepository;
-            this.taskHelper = taskHelper;
+            this.taskHandler = taskHandler;
         }
 
         public Guid Create(TaskCreationDto taskCreation)
@@ -39,7 +39,7 @@ namespace UserService.Helpers.Tasks
         public Guid CreateSolution(Guid interviewSolutionGuid, Guid taskGuid)
         {
             var taskSolutionGuid = Guid.NewGuid();
-            var task = taskHelper.GetTask(taskGuid);
+            var task = taskHandler.GetTask(taskGuid);
             
             dbRepository.Add(new TaskSolution
             {

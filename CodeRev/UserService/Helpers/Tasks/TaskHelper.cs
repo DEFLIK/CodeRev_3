@@ -171,7 +171,7 @@ namespace UserService.Helpers.Tasks
             (var taskSolutionGuid, errorString) = GuidParser.TryParse(taskSolutionId, nameof(taskSolutionId));
             if (errorString != null)
                 return false;
-            var taskSolution = GetTaskSolution(taskSolutionGuid);
+            var taskSolution = taskHandler.GetTaskSolution(taskSolutionGuid);
             if (taskSolution == null)
             {
                 errorString = $"no {nameof(taskSolution)} with such id";
