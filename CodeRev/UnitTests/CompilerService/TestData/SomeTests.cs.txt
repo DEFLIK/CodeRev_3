@@ -1,0 +1,25 @@
+﻿using NUnit.Framework;
+
+namespace CodeRevSolution;
+
+[TestFixture]
+public class SomeTestCode
+{
+    [Test]
+    public void Should_return_129()
+    {
+        var instance = new SomeProg();
+        var result = instance.MethodToCheck();
+        
+        Assert.AreEqual(result, 129);
+    }
+    
+    [Test]
+    public void Should_return_128()
+    {
+        var instance = new SomeProg();
+        var result = instance.MethodToCheck();
+        
+        Assert.AreEqual(result, 128);
+    }
+}

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UserService.DAL;
@@ -10,9 +11,10 @@ using UserService.DAL.Models.Draft;
 namespace UserService.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230522154321_AddField-TestsCode-To-TasksTable")]
+    partial class AddFieldTestsCodeToTasksTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,9 +184,6 @@ namespace UserService.DAL.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int>("RunAttempts")
-                        .HasColumnType("integer");
-
                     b.Property<string>("StartCode")
                         .HasColumnType("text");
 
@@ -213,9 +212,6 @@ namespace UserService.DAL.Migrations
 
                     b.Property<bool>("IsDone")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("RunAttemptsLeft")
-                        .HasColumnType("integer");
 
                     b.Property<Guid>("TaskId")
                         .HasColumnType("uuid");
