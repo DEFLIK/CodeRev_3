@@ -7,7 +7,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { HttpService } from '../global-services/request/http.service';
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { OutputComponent } from './components/output/output.component';
 import { RecordService } from './services/record-service/record.service';
 import { ControlsComponent } from './components/controls/controls.component';
 import { NgxVideoTimelineComponent, NgxVideoTimelineModule } from 'ngx-video-timeline';
@@ -16,7 +16,7 @@ import { PatchedTimelineComponent } from './components/patched-timeline/patched-
 @NgModule({
     declarations: [
         CodeEditorDirective,
-        ToolbarComponent,
+        OutputComponent,
         ControlsComponent,
         CodeEditorComponent,
         PatchedTimelineComponent

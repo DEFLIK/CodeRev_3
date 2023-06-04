@@ -17,6 +17,8 @@ namespace UserService.Helpers.Tasks
         TaskSolutionInfo GetTaskSolutionInfo(Guid taskSolutionId);
         List<TaskSolution> GetTaskSolutions(Guid interviewSolutionId);
         List<TaskSolutionInfoContest> GetTaskSolutionInfosForContest(string interviewSolutionId, out string errorString);
+        Task GetTask(Guid taskId);
+        TaskSolution GetTaskSolution(Guid taskSolutionId);
         TaskSolution GetTaskSolution(string taskSolutionId, out string errorString);
         bool TryPutTaskSolutionGrade(string taskSolutionId, Grade grade, out string errorString);
         bool EndTaskSolution(string taskSolutionId, out string errorString);
@@ -27,14 +29,12 @@ namespace UserService.Helpers.Tasks
     public class TaskHelper : ITaskHelper
     {
         private readonly IDbRepository dbRepository;
-        private readonly ITaskHandler taskHandler;
         private readonly IUserHelper userHelper;
 
-        public TaskHelper(IDbRepository dbRepository, IUserHelper userHelper, ITaskHandler taskHandler)
+        public TaskHelper(IDbRepository dbRepository, IUserHelper userHelper)
         {
             this.dbRepository = dbRepository;
             this.userHelper = userHelper;
-            this.taskHandler = taskHandler;
         }
 
         public TaskSolutionInfo GetTaskSolutionInfo(string taskSolutionId, out string errorString)
@@ -45,7 +45,7 @@ namespace UserService.Helpers.Tasks
 
         public TaskSolutionInfo GetTaskSolutionInfo(Guid taskSolutionId)
         {
-            var taskSolution = taskHandler.GetTaskSolution(taskSolutionId);
+            var taskSolution = GetTaskSolution(taskSolutionId);
             if (taskSolution == null)
                 return null;
             
@@ -100,10 +100,20 @@ namespace UserService.Helpers.Tasks
             return taskInfos;
         }
 
+        public Task GetTask(Guid taskId)
+            => dbRepository
+                .Get<Task>(t => t.Id == taskId)
+                .FirstOrDefault();
+
+        public TaskSolution GetTaskSolution(Guid taskSolutionId)
+            => dbRepository
+                .Get<TaskSolution>(t => t.Id == taskSolutionId)
+                .FirstOrDefault();
+
         public TaskSolution GetTaskSolution(string taskSolutionId, out string errorString)
         {
             (var taskSolutionGuid, errorString) = GuidParser.TryParse(taskSolutionId, nameof(taskSolutionId));
-            return errorString == null ? taskHandler.GetTaskSolution(taskSolutionGuid) : null;
+            return errorString == null ? GetTaskSolution(taskSolutionGuid) : null;
         }
 
         public bool TryPutTaskSolutionGrade(string taskSolutionId, Grade grade, out string errorString)
@@ -111,7 +121,7 @@ namespace UserService.Helpers.Tasks
             (var taskSolutionGuid, errorString) = GuidParser.TryParse(taskSolutionId, nameof(taskSolutionId));
             if (errorString != null)
                 return false;
-            var taskSolution = taskHandler.GetTaskSolution(taskSolutionGuid);
+            var taskSolution = GetTaskSolution(taskSolutionGuid);
             if (taskSolution == null)
             {
                 errorString = $"no {nameof(taskSolution)} with such id";

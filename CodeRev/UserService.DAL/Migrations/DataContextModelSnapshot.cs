@@ -191,9 +191,6 @@ namespace UserService.DAL.Migrations
                     b.Property<string>("TaskText")
                         .HasColumnType("text");
 
-                    b.Property<string>("TestsCode")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.ToTable("Tasks");

@@ -210,10 +210,6 @@ button {
 }
 
 .loader {
-    .loader-abstract(@color-red)
-}
-
-.loader-abstract(@color) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -224,7 +220,7 @@ button {
         display: block;
         border-radius: 50%;
         border: 6px solid white;
-        border-color: @color transparent @color transparent;
+        border-color: #d30000 transparent #d30000 transparent;
         content: " ";
         animation: spin 1.2s linear infinite;
     }

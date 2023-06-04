@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import * as CodeMirror from 'codemirror';
-import { interval, Observable, Subject, takeUntil } from 'rxjs';
+import { interval, Observable } from 'rxjs';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
 import { EditorMode } from '../code-editor/models/editorMode'; 
 import { CompileService } from '../code-editor/services/compile-service/compile-service.service';
@@ -17,14 +17,13 @@ import { TasksListComponent } from './components/tasks-list/tasks-list.component
 import { InterviewSolutionInfo } from './models/interviewSolutionInfo';
 import { TaskSolutionInfo } from './models/taskSolutionInfo';
 import { ContestService } from './services/contest.service';
-import { TestsRunnerService } from '../code-editor/services/tests-runner-service/tests-runner.service';
 
 @Component({
     selector: 'app-contest',
     templateUrl: './contest.component.html',
     styleUrls: ['./contest.component.less']
 })
-export class ContestComponent implements AfterViewInit, OnDestroy {
+export class ContestComponent implements AfterViewInit {
     @Input()
     public editorMode = EditorMode.write;
     @Input()
@@ -80,16 +79,12 @@ export class ContestComponent implements AfterViewInit, OnDestroy {
 
         return this.taskList.tasks.every(task => task.isDone);
     }
-    private _unsubscriber = new Subject<void>();
-
-
     constructor(
         private _contest: ContestService,
         private _saving: SavingService,
         private _review: ReviewService,
         private _route: ActivatedRoute,
-        private _compiler: CompileService,
-        private _testsRunner: TestsRunnerService
+        private _compiler: CompileService
 
     ) { 
     }
@@ -100,33 +95,23 @@ export class ContestComponent implements AfterViewInit, OnDestroy {
             this.comment = this.review.reviewerComment;
 
             if (this.editorMode === EditorMode.review && this.isSyncReview) {
-                this.signalR?.signalR.data$
-                    .pipe(takeUntil(this._unsubscriber))
-                    .subscribe(data => { // todo unsub
-                        if (data.codeUpdate !== undefined) {
-                            this.codeEditor!.codeMirrorCmpt.codeMirror!.setValue(data.codeUpdate);
-                        }
-                        if (data.taskIdUpdate) {
-                            this.taskList.openTask(this.taskList.tasks.filter(task => task.id === data.taskIdUpdate)[0], true);
-                        }
-                        if (data.consoleUpdate) {
-                            this._compiler.emitOutput(data.consoleUpdate);
-                        }
-                        if (data.testsUpdate) {
-                            this._testsRunner.emitOutput(data.testsUpdate);
-                        }
-                    });
+                var sub1 = this.signalR?.signalR.data$.subscribe(data => { // todo unsub
+                    if (data.codeUpdate !== undefined) {
+                        this.codeEditor!.codeMirrorCmpt.codeMirror!.setValue(data.codeUpdate);
+                    }
+                    if (data.taskIdUpdate) {
+                        this.taskList.openTask(this.taskList.tasks.filter(task => task.id === data.taskIdUpdate)[0], true);
+                    }
+                    if (data.outputUpdate) {
+                        this._compiler.emitOutput(data.outputUpdate);
+                    }
+                });
             }
         }
 
         console.log(this);
         
     }
-
-    public ngOnDestroy(): void {
-        this._unsubscriber.next();
-    }
-
 
     public updateCode(code: string): void {
         this.codeEditor?.codeMirrorCmpt.codeMirror?.setValue(code);
@@ -152,32 +137,19 @@ export class ContestComponent implements AfterViewInit, OnDestroy {
         this.taskList.loadInterviewTasks(sln.id);
         this.isSyncWrite = sln.isSynchronous && !this._contest.isSolutionComplete && !this._contest.isSolutionExpired;
 
-        this._contest.taskSelected$
-            .pipe(takeUntil(this._unsubscriber))
-            .subscribe(task => {
-                var meetData = new MeetPeerData();
-                meetData.taskIdUpdate = task.id;
+        var sub3 = this._contest.taskSelected$.subscribe(task => {
+            var meetData = new MeetPeerData();
+            meetData.taskIdUpdate = task.id;
 
-                this.signalR?.sendData(JSON.stringify(meetData));
-            });
+            this.signalR?.sendData(JSON.stringify(meetData));
+        });
 
-        this._compiler.onOutputRefresh$
-            .pipe(takeUntil(this._unsubscriber))
-            .subscribe(output => {
-                var meetData = new MeetPeerData();
-                meetData.consoleUpdate = output;
+        var sub5 = this._compiler.onOutputRefresh$.subscribe(output => {
+            var meetData = new MeetPeerData();
+            meetData.outputUpdate = output;
 
-                this.signalR?.sendData(JSON.stringify(meetData));
-            });
-            
-        this._testsRunner.onOutputRefresh$
-            .pipe(takeUntil(this._unsubscriber))
-            .subscribe(output => {
-                var meetData = new MeetPeerData();
-                meetData.testsUpdate = output;
-
-                this.signalR?.sendData(JSON.stringify(meetData));
-            });
+            this.signalR?.sendData(JSON.stringify(meetData));
+        });
     }
 
     public applyTaskError(task: TaskSolutionInfo): void {
