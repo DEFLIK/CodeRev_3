@@ -4,7 +4,7 @@ import * as CodeMirror from 'codemirror';
 import { interval, Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { ControlsComponent } from './components/controls/controls.component';
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { OutputComponent } from './components/output/output.component';
 import { EditorMode } from './models/editorMode';
 import { ExecutionResult } from './models/executionResult';
 // import { CodeStorageService } from './services/storage-service/code-storage.service';
@@ -32,8 +32,8 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
     public codeMirrorCmpt!: CodemirrorComponent;
     @ViewChild('controls') 
     public controlsCmpt!: ControlsComponent;
-    @ViewChild('toolbar') 
-    public toolbarCmpt!: ToolbarComponent;
+    @ViewChild('output') 
+    public outputCmpt!: OutputComponent;
     @Input()
     public editorMode!: EditorMode;
     @Input()
@@ -118,7 +118,6 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
             
             if (!this.isSync) {
                 this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
-                this.toolbarCmpt.bindToEditor(this.codeMirrorCmpt);
             }
         });
     }
@@ -140,6 +139,6 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
             }
         }
 
-        this.toolbarCmpt.setConsoleOutput(result);
+        this.outputCmpt.setOutput(result);
     }
 }

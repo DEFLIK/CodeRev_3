@@ -10,7 +10,6 @@ namespace UserService.Models.Tasks
         public string StartCode { get; set; }
         [Required]
         public string Name { get; set; }
-        public string TestsCode { get; set; }
         [Required]
         public int RunAttempts { get; set; }
     }

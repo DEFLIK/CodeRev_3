@@ -23,11 +23,11 @@ public interface ICompilerService
 
 public class CompilerService : ICompilerService
 {
-    private static readonly string[] Dependencies =
+    private static readonly string[] _dependencies =
     {
         "System.Private.CoreLib.dll",
         "System.Console.dll",
-        "System.Runtime.dll",
+        "System.Runtime.dll"
     };
 
     private readonly string assemblyPath;
@@ -85,7 +85,7 @@ public class CompilerService : ICompilerService
 
     public ExecutionResult Execute(string code, EntryPoint entryPoint)
     {
-        var compilation = GetCompilation(new [] {code}, GetMetadataReferences(assemblyPath, Dependencies));
+        var compilation = GetCompilation(code);
 
         using var ms = new MemoryStream();
         var emitResult = compilation.Emit(ms);
@@ -106,15 +106,15 @@ public class CompilerService : ICompilerService
         };
     }
 
-    public static CSharpCompilation GetCompilation(IEnumerable<string> codes, IEnumerable<MetadataReference>? metadataReferences = null, string? assemblyName = null) =>
+    private CSharpCompilation GetCompilation(string code) =>
         CSharpCompilation.Create(
-            assemblyName ?? $"{Guid.NewGuid()}",
-            codes.Select(code => CSharpSyntaxTree.ParseText(code)),
-            metadataReferences ?? Array.Empty<MetadataReference>(),
+            Path.GetRandomFileName(),
+            new[] { CSharpSyntaxTree.ParseText(code) },
+            GetMetadataReferences(),
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-    public static IEnumerable<MetadataReference> GetMetadataReferences(string assemblyPath, string[] dependenciesFileNames) =>
-        dependenciesFileNames.Select(refString =>
+    private MetadataReference[] GetMetadataReferences() =>
+        _dependencies.Select(refString =>
                 MetadataReference
                     .CreateFromFile(Path.Combine(assemblyPath, refString)))
             .ToArray<MetadataReference>();

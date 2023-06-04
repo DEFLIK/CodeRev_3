@@ -18,13 +18,11 @@ namespace UserService.Controllers
 
         private readonly ITaskHelper taskHelper;
         private readonly ITaskCreator taskCreator;
-        private readonly ITaskHandler taskHandler;
 
-        public TasksController(ITaskHelper taskHelper, ITaskCreator taskCreator, ITaskHandler taskHandler)
+        public TasksController(ITaskHelper taskHelper, ITaskCreator taskCreator)
         {
             this.taskHelper = taskHelper;
             this.taskCreator = taskCreator;
-            this.taskHandler = taskHandler;
         }
 
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
@@ -42,13 +40,6 @@ namespace UserService.Controllers
             {
                 taskId = taskCreator.Create(taskCreation)
             });
-        }
-        
-        [Authorize(Roles = "Interviewer,HrManager,Admin")]
-        [HttpPost("{id}")]
-        public IActionResult PostTaskTestsCode([Required] [FromRoute(Name = "id")] Guid taskId, [Required] [FromBody] TestsCodeDto testsCodeDto)
-        {
-            return taskHandler.TryChangeTaskTestsCode(taskId, testsCodeDto.TestsCode) ? Ok() : BadRequest();
         }
 
         [Authorize(Roles = "Interviewer,HrManager,Admin")]
