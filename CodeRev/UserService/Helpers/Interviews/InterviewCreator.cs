@@ -22,16 +22,17 @@ namespace UserService.Helpers.Interviews
         private readonly IReviewerDraftCreator reviewerDraftCreator;
         private readonly INotificationsCreator notificationsCreator;
         private readonly IInterviewHelper interviewHelper;
-        private readonly ITaskHelper taskHelper;
+        private readonly ITaskHandler taskHandler;
 
-        public InterviewCreator(IDbRepository dbRepository, ITaskCreator taskCreator, IReviewerDraftCreator reviewerDraftCreator, INotificationsCreator notificationsCreator, IInterviewHelper interviewHelper, ITaskHelper taskHelper)
+        public InterviewCreator(IDbRepository dbRepository, ITaskCreator taskCreator, IReviewerDraftCreator reviewerDraftCreator, INotificationsCreator notificationsCreator,
+            IInterviewHelper interviewHelper, ITaskHandler taskHandler)
         {
             this.dbRepository = dbRepository;
             this.taskCreator = taskCreator;
             this.reviewerDraftCreator = reviewerDraftCreator;
             this.notificationsCreator = notificationsCreator;
             this.interviewHelper = interviewHelper;
-            this.taskHelper = taskHelper;
+            this.taskHandler = taskHandler;
         }
 
         public Guid Create(InterviewCreationDto interviewCreation, Guid creatorId)
@@ -43,7 +44,7 @@ namespace UserService.Helpers.Interviews
             interviewCreation.TaskIds.ForEach(taskId =>
             {
                 CreateLinkToTask(interview.Id, taskId);
-                CreateLinkToLanguage(interview.Id, taskHelper.GetTask(taskId).ProgrammingLanguage);
+                CreateLinkToLanguage(interview.Id, taskHandler.GetTask(taskId).ProgrammingLanguage);
             });
             
             dbRepository.SaveChangesAsync().Wait();

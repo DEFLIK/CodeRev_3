@@ -63,7 +63,7 @@ namespace UserService.Helpers.Tasks
                 Grade = taskSolution.Grade,
                 IsDone = taskSolution.IsDone,
                 RunAttemptsLeft = taskSolution.RunAttemptsLeft,
-                ProgrammingLanguage = GetTask(taskSolution.TaskId).ProgrammingLanguage,
+                ProgrammingLanguage = taskHandler.GetTask(taskSolution.TaskId).ProgrammingLanguage,
             };
         }
 
