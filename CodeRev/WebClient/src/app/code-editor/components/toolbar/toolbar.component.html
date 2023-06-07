@@ -26,7 +26,7 @@
             *ngIf="isTestsRunnable && !isRunningTests && contest.currentTask.runAttemptsLeft > 0">
         <img src="../../../../assets/svg/play-disabled.svg" class="run-btn" alt=">" (click)="runTests()"
             *ngIf="isTestsRunnable && !isRunningTests && contest.currentTask.runAttemptsLeft == 0">
-        <div class="loader-tests" style="width: 1.3em; height: 1.3em" *ngIf="isRunningTests"></div>
+        <div class="loader-tests" *ngIf="isRunningTests"></div>
         <span class="attempts">
             Попыток осталось: {{contest.currentTask!.runAttemptsLeft}}
         </span>
