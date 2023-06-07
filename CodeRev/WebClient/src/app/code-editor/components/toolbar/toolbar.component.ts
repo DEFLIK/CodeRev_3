@@ -1,12 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { ExecutionResult } from '../../models/executionResult';
 import { TestsRunnerService } from '../../services/tests-runner-service/tests-runner.service';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { ContestService } from 'src/app/contest/services/contest.service';
-import { Subject, catchError, of, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { TestsRunResponse } from '../../models/response/testsRun-response';
-import { CompileService } from '../../services/compile-service/compile-service.service';
-import { EditorMode } from '../../models/editorMode';
 
 @Component({
     selector: 'app-toolbar',
@@ -27,7 +25,7 @@ export class ToolbarComponent implements OnDestroy {
     private _bindedEditor?: CodemirrorComponent;
     private _unsubscriber = new Subject<void>();
 
-    constructor(private _testRunner: TestsRunnerService, private _contest: ContestService) { 
+    constructor(public contest: ContestService, private _testRunner: TestsRunnerService) {
         this._testRunner.onOutputRefresh$
             .pipe(takeUntil(this._unsubscriber))
             .subscribe(result => {
@@ -66,15 +64,29 @@ export class ToolbarComponent implements OnDestroy {
     }
 
     public runTests(): void {
+        if (!this.contest.currentTask || this.contest.currentTask.runAttemptsLeft === 0) {
+            return;
+        }
+
         this.isRunningTests = true;
         var code = this._bindedEditor?.codeMirror?.getValue() ?? '';
-        this._testRunner.run(code, this._contest.currentTask?.id ?? 'none');
+        this._testRunner.run(code, this.contest.currentTask.id ?? 'none');
+
+        this._testRunner
+            .reduceTaskSolutionAttempt(this.contest.currentTask.id)
+            .subscribe({
+                next: (resp) => {
+                    if (resp.ok && resp.body) {
+                        this.contest.currentTask!.runAttemptsLeft = resp.body.runAttemptsLeft!;
+                }
+            }
+        });
     }
 
     public bindToEditor(editor: CodemirrorComponent): void {
         this._bindedEditor = editor;
     }
-    
+
     public setTestInfo(testName:string, message: string, isSuccess: boolean): void {
         this.testInfo = `[${testName}]: ${message}`;
         this.isTestInfoSuccess = isSuccess;
