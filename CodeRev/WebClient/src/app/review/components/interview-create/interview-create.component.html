@@ -8,7 +8,7 @@
         <div class="settings-inner">
             <div class="option">
                 <!-- <mat-form-field appearance="fill" class="vacancy">
-                    
+
                     <select matNativeControl>
                         <option [value]="vacancy" *ngFor="let vacancy of vacancies">
                             {{vacancy.name}}
@@ -36,12 +36,14 @@
                     <input matInput type="time" class="time" step="1000" required [(ngModel)]="duration">
                 </mat-form-field>
             </div>
+            <!-- todo пока просто выключил выбор ЯП, нужно добавить фильтрацию задач по нажатию на кнопки
             <div class="option gap">
                 <span class="name">Язык программирования:</span>
                 <div class="language">
                     C#
                 </div>
             </div>
+            -->
             <div class="option welcome-text">
                 <span class="name">Текст приветствия:</span>
                 <textarea class="welcome-text" [(ngModel)]="welcomeText"></textarea>
@@ -53,7 +55,7 @@
 
 <div class="task-list">
     <label class="search" for="card-search" [formGroup]="searchForm">
-        <input id="card-search" type="text" placeholder="Поиск по задачам..." formControlName="serachInput">
+        <input id="card-search" type="text" placeholder="Поиск по задачам..." formControlName="searchInput">
         <img src="../../../../assets/svg/loupe.svg">
     </label>
     <div *ngFor="let task of selectedTasks | tasksFilter : searchCriteria" class="task-item selected" (click)="openTask(task)" [ngClass]="{'showed': task.id === taskToShow?.id}">

@@ -1,3 +1,5 @@
+import { ProgrammingLanguage } from "../programmingLanguage";
+
 export class TaskReviewResponse {
     public taskSolutionId?: string;
     public taskId?: string;
@@ -7,4 +9,5 @@ export class TaskReviewResponse {
     public taskOrder?: string;
     public grade?: number;
     public runAttemptsLeft?: number;
+    public programmingLanguage?: ProgrammingLanguage;
 }

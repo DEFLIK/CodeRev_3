@@ -2,13 +2,13 @@ import { Component, EventEmitter, OnInit, Output, QueryList, ViewChildren } from
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CandidateCardInfo } from '../../models/candidateCardInfo';
-import { CandidateFitlerCriteria } from '../../models/candidateFilterCriteria';
+import { CandidateFilterCriteria } from '../../models/candidateFilterCriteria';
 import { CandidateState } from '../../models/candidateState';
-import { CandidateVacancy } from '../../models/candidateVacancy';
 import { MeetInfo } from '../../models/meetInfo';
 import { ReviewService } from '../../services/review.service';
 import { CandidateCardComponent } from '../candidate-card/candidate-card.component';
-import {MeetFilterCriteria} from "../../models/meetFilterCriteria";
+import { MeetFilterCriteria } from "../../models/meetFilterCriteria";
+import { convertProgrammingLanguageToString, ProgrammingLanguage } from "../../models/programmingLanguage";
 
 @Component({
     selector: 'app-candidates-list',
@@ -25,14 +25,15 @@ export class CandidatesListComponent implements OnInit {
 
     public isShowingMeets: boolean = false;
     public searchForm: FormGroup = new FormGroup({
-        serachInput: new FormControl('')
+        searchInput: new FormControl('')
     });
     public filtersForm: FormGroup = new FormGroup({
         ending: new FormControl(''),
         myMeetsFirst: new FormControl(''),
         date: new FormControl('new'),
         state: new FormArray([]),
-        vacancy: new FormArray([])
+        vacancy: new FormArray([]),
+        language: new FormArray([])
     });
     public states: any[] = [];
     public state = CandidateState;
@@ -41,21 +42,24 @@ export class CandidatesListComponent implements OnInit {
     public get currentTimeMs(): number {
         return Date.now();
     }
+    public programmingLanguages: string[] = [];
     public get searchCriteria(): string {
-        return this.searchForm.get('serachInput')?.value;
+        return this.searchForm.get('searchInput')?.value;
     }
-    public get filterCandidateCriteria(): CandidateFitlerCriteria {
-        return new CandidateFitlerCriteria(
+    public get filterCandidateCriteria(): CandidateFilterCriteria {
+        return new CandidateFilterCriteria(
             this.filtersForm.get('ending')?.value,
             this.filtersForm.get('date')?.value === 'old',
             this.filtersForm.get('state')?.value,
-            this.filtersForm.get('vacancy')?.value
+            this.filtersForm.get('vacancy')?.value,
+            this.filtersForm.get('language')?.value
         );
     }
     public get filterMeetCriteria(): MeetFilterCriteria {
         return new MeetFilterCriteria(
             this.filtersForm.get('vacancy')?.value,
-            this.filtersForm.get('myMeetsFirst')?.value
+            this.filtersForm.get('myMeetsFirst')?.value,
+            this.filtersForm.get('language')?.value
         );
     }
 
@@ -93,6 +97,10 @@ export class CandidatesListComponent implements OnInit {
                     }
                 }
             });
+        this.programmingLanguages = Object.values(ProgrammingLanguage)
+            .map(v => Number(v))
+            .filter(v => !isNaN(v))
+            .map(l => convertProgrammingLanguageToString(l));
         this._review
             .getMeets()
             .subscribe(resp => this.meets = resp);

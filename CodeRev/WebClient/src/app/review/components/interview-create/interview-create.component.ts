@@ -15,7 +15,7 @@ import { ReviewService } from '../../services/review.service';
 })
 export class InterviewCreateComponent{
     public editor: HTMLElement | null = document.getElementById('codeEdtior');
-    @ViewChild('codeMirror') 
+    @ViewChild('codeMirror')
     public codeMirrorCmpt!: CodemirrorComponent;
     public vacancies: any[] = [];
     public duration: string = '10:00';
@@ -34,10 +34,10 @@ export class InterviewCreateComponent{
         // readOnly: 'true'
     };
     public searchForm: FormGroup = new FormGroup({
-        serachInput: new FormControl('')
+        searchInput: new FormControl('')
     });
     public get searchCriteria(): string {
-        return this.searchForm.get('serachInput')?.value ?? '';
+        return this.searchForm.get('searchInput')?.value ?? '';
     }
     public get isSync(): boolean {
         return true;
@@ -101,7 +101,6 @@ export class InterviewCreateComponent{
             this.vacancy,
             this.welcomeText,
             ms,
-            'C#',
             this.isSync,
             this.selectedTasks.map(task => task.id)
         )).subscribe(resp => {

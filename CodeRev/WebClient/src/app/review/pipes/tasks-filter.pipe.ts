@@ -1,8 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { CandidateCardInfo } from '../models/candidateCardInfo';
-import { CandidateFitlerCriteria } from '../models/candidateFilterCriteria';
-import { CandidateStateKeys, CandidateState } from '../models/candidateState';
-import { CandidateVacancy, CandidateVacancyKeys } from '../models/candidateVacancy';
 import { TaskInfo } from '../models/taskInfo';
 
 @Pipe({

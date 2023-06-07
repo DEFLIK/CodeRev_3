@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.Json.Serialization;
+using UserService.DAL.Models.Enums;
 
 namespace UserService.Models.Contest
 {
@@ -13,5 +14,6 @@ namespace UserService.Models.Contest
         public string StartCode { get; set; }
         public bool IsDone { get; set; }
         public int RunAttemptsLeft { get; set; }
+        public ProgrammingLanguage ProgrammingLanguage { get; set; }
     }
 }

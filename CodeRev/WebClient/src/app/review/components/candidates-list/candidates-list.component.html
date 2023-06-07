@@ -20,7 +20,7 @@
                     <div class="option">
                         <label>
                             <mat-checkbox type="checkbox" formControlName="myMeetsFirst"></mat-checkbox>
-                            Мои интервью
+                            Сначала мои интервью
                         </label>
                     </div>
                 </div>
@@ -57,6 +57,16 @@
                 </div>
 
                 <div class="segment">
+                    <span class="title">Язык:</span>
+                    <div *ngFor="let programmingLanguage of programmingLanguages" class="option">
+                        <label>
+                            <mat-checkbox formArrayName="state" type="checkbox" [value]="programmingLanguage" (change)="onCheckboxChange($event, 'language')"></mat-checkbox>
+                            {{programmingLanguage}}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="segment">
                     <span class="title">Вакансия:</span>
                     <div *ngFor="let vacancy of vacancies; let i = index" class="option">
                         <label>
@@ -78,7 +88,7 @@
     <div class="candidates">
         <div class="top">
             <label class="search" for="card-search" [formGroup]="searchForm">
-                <input id="card-search" type="text" placeholder="Поиск..." formControlName="serachInput">
+                <input id="card-search" type="text" placeholder="Поиск..." formControlName="searchInput">
                 <img src="../../../../assets/svg/loupe.svg">
             </label>
             <button class="invite" (click)="invite()">

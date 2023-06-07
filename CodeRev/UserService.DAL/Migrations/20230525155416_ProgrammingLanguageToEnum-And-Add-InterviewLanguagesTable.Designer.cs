@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UserService.DAL;
@@ -10,9 +11,10 @@ using UserService.DAL.Models.Draft;
 namespace UserService.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230525155416_ProgrammingLanguageToEnum-And-Add-InterviewLanguagesTable")]
+    partial class ProgrammingLanguageToEnumAndAddInterviewLanguagesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,9 +208,6 @@ namespace UserService.DAL.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("TaskText")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TestsCode")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
