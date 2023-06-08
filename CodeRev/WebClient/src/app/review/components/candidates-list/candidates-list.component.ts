@@ -8,7 +8,7 @@ import { CandidateVacancy } from '../../models/candidateVacancy';
 import { MeetInfo } from '../../models/meetInfo';
 import { ReviewService } from '../../services/review.service';
 import { CandidateCardComponent } from '../candidate-card/candidate-card.component';
-import {MeetFilterCriteria} from "../../models/meetFilterCriteria";
+import { MeetFilterCriteria } from '../../models/meetFilterCriteria';
 
 @Component({
     selector: 'app-candidates-list',
@@ -108,6 +108,10 @@ export class CandidatesListComponent implements OnInit {
 
     public createInterview(): void {
         this._router.navigateByUrl(`review/create/interview`);
+    }
+
+    public createTask(): void {
+        this._router.navigateByUrl(`review/create/task`);
     }
 
     public invite(): void {

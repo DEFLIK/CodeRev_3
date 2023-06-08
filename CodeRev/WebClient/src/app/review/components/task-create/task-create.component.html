@@ -1,0 +1,55 @@
+<head>
+    <link rel="stylesheet" href="/../../assets/code-themes/coderev.css">
+</head>
+
+<div class="settings">
+    <div class="settings-wrapper">
+        <span class="header">Создание задачи</span>
+        <div class="settings-inner">
+            <div class="option">
+                <mat-form-field class="task-name-wrapper">
+                    <mat-label>Название</mat-label>
+                    <input matInput type="text" class="task-name" step="2" required [(ngModel)]="taskName">
+                </mat-form-field>
+            </div>
+            <div class="option gap">
+                <span class="name">Язык программирования:</span>
+                <div class="language">
+                    C#
+                </div>
+            </div>
+            <div class="option gap">
+                <span class="name">Количество попыток запуска тестов:</span>
+                <span contenteditable="true" class="test-attempts" #testAttempts>1000</span>
+            </div>
+            <div class="option task-text">
+                <span class="name">Условие:</span>
+                <textarea class="task-text" [(ngModel)]="taskText"></textarea>
+            </div>
+        </div>
+    </div>
+    <button class="btn-purple" (click)="create()">Создать задачу</button>
+</div>
+
+<div class="task">
+    <span class="header">
+        Стартовый код
+    </span>
+    <ngx-codemirror
+        class="editor"
+        #codeMirrorTask
+        [options]="options"
+    ></ngx-codemirror>
+</div>
+
+
+<div class="tests">
+    <span class="header">
+        Код тестов
+    </span>
+    <ngx-codemirror
+        class="editor"
+        #codeMirrorTests
+        [options]="options"
+    ></ngx-codemirror>
+</div>

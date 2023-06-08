@@ -106,15 +106,18 @@
         }
 
         .filter-bar {
-            align-items: flex-start;
-            justify-content: center;
+            align-items: center;
+            justify-content: flex-start;
             width: 23%;
             min-width: 200px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
 
             .int-type-selection {
+                width: 100%;
                 height: 36px;
-                margin-bottom: 20px;
                 display: flex;
                 justify-content: space-evenly;
 
@@ -172,18 +175,13 @@
                 }
 
                 .segments {
-                    margin-top: 10px;
                     display: flex;
-                    min-width: 100%;
                     flex-direction: column;
                     justify-content: flex-start;
                     align-items: center;
                     gap: 20px;
-                    max-height: 500px;
                     transition-property: margin, max-height;
                     transition: 0.2s ease;
-                    margin-bottom: 20px;
-                    overflow: hidden;
                 }
 
                 .segment {
@@ -193,23 +191,28 @@
                 .sgm-hidden {
                     display: none;
                 }
+            }
 
-                .create-int {
-                    border: none;
-                    color: @color-purple;
+            .create-int {
+                border: none;
+                display: flex;
+                align-items: center;
+                justify-content:center;
+                gap: 20px;
+                width: 100%;
+                color: @color-purple;
 
-                    &:hover {
-                        background-color: @color-purple;
-                        color: white;
-                    }
+                &:hover {
+                    background-color: @color-purple;
+                    color: white;
+                }
 
-                    &:active {
-                        background-color: darken(@color-purple, 5%);
-                    }
+                &:active {
+                    background-color: darken(@color-purple, 5%);
+                }
 
-                    img {
-                        height: 20px;
-                    }
+                img {
+                    height: 20px;
                 }
             }
         }

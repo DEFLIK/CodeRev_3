@@ -22,6 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { TasksFilterPipe } from './pipes/tasks-filter.pipe'; 
 import { CodeEditorModule } from '../code-editor/code-editor.module';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import { TaskCreateComponent } from './components/task-create/task-create.component';
 
 @NgModule({
     declarations: [
@@ -34,7 +35,8 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
         CandidateInviteComponent,
         MeetCardComponent,
         InterviewCreateComponent,
-        TasksFilterPipe
+        TasksFilterPipe,
+        TaskCreateComponent
     ],
     imports: [
         ReviewRoutingModule,

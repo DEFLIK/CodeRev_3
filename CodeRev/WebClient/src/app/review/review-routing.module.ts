@@ -3,6 +3,7 @@ import { LoadChildren, LoadChildrenCallback, RouterModule, Routes } from '@angul
 import { CandidateGradeComponent } from './components/candidate-grade/candidate-grade.component';
 import { InterviewCreateComponent } from './components/interview-create/interview-create.component';
 import { ReviewComponent } from './review.component';
+import { TaskCreateComponent } from './components/task-create/task-create.component';
 
 const routes: Routes = [
     {
@@ -16,6 +17,10 @@ const routes: Routes = [
     {
         path: 'create/interview',
         component: InterviewCreateComponent
+    },
+    {
+        path: 'create/task',
+        component: TaskCreateComponent
     }
 ];
 

@@ -22,6 +22,7 @@ import { MeetInfoResponse } from '../models/response/meetInfo-response';
 import { NotificationResponse } from '../models/response/notification-response';
 import { TaskInfoResponse } from '../models/response/taskInfo-response';
 import { TaskInfo } from '../models/taskInfo';
+import { TaskCreateRequest } from '../models/request/taskCreate-request';
 
 @Injectable({
     providedIn: 'root'
@@ -163,6 +164,15 @@ export class ReviewService {
     public createInterview(req: InterviewCreateRequest): Observable<HttpResponse<void>> {
         return this._http.request<void, InterviewCreateRequest>({
             url: `${UrlRoutes.user}/api/Interviews`,
+            method: RequestMethodType.post,
+            body: req,
+            auth: true
+        });
+    }
+
+    public createTask(req: TaskCreateRequest): Observable<HttpResponse<void>> {
+        return this._http.request<void, TaskCreateRequest>({
+            url: `${UrlRoutes.user}/api/Tasks`,
             method: RequestMethodType.post,
             body: req,
             auth: true
