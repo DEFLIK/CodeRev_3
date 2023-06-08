@@ -4,7 +4,6 @@ import { map, Observable } from 'rxjs';
 import { SaveChunkResponse } from 'src/app/code-editor/models/response/saveChunk-response';
 import { Draft } from 'src/app/contest/models/draft';
 import { SetDraftRequest } from 'src/app/contest/models/request/setDraftRequest';
-import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
@@ -135,8 +134,6 @@ export class ReviewService {
     }
 
     public setInterviewDraft(draft: SetDraftRequest): Observable<HttpResponse<void>> {
-        console.log(draft);
-        
         return this._http.request<void, SetDraftRequest>({
             url: `${UrlRoutes.user}/api/interviews/solution/draft`,
             method: RequestMethodType.post,

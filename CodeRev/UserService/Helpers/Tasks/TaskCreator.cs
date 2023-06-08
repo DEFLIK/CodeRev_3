@@ -64,6 +64,7 @@ namespace UserService.Helpers.Tasks
                 Name = taskCreation.Name,
                 TestsCode = taskCreation.TestsCode,
                 RunAttempts = taskCreation.RunAttempts >= 0 ? taskCreation.RunAttempts : 0,
+                ProgrammingLanguage = taskCreation.ProgrammingLanguage,
             };
     }
 }

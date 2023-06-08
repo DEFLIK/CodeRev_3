@@ -13,8 +13,6 @@ namespace UserService.Models.Interviews
         [Required]
         public long InterviewDurationMs { get; set; }
         [Required]
-        public string ProgrammingLanguage { get; set; }
-        [Required]
         public bool IsSynchronous { get; set; }
         [Required]
         public List<Guid> TaskIds { get; set; }

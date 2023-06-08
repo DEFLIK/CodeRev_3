@@ -1,5 +1,6 @@
 import { InterviewSolutionReviewResponse } from './response/interviewSolutionReview-response';
 import { TaskReview } from './taskReview';
+import { ProgrammingLanguage } from "./programmingLanguage";
 
 export class InterviewSolutionReview {
     public interviewSolutionId: string;
@@ -16,6 +17,7 @@ export class InterviewSolutionReview {
     public phoneNumber: string;
     public email: string;
     public taskSolutionsInfos: TaskReview[];
+    public programmingLanguages: ProgrammingLanguage[];
 
     constructor(resp: InterviewSolutionReviewResponse) {
         this.interviewSolutionId = resp.interviewSolutionId ?? '';
@@ -32,5 +34,6 @@ export class InterviewSolutionReview {
         this.phoneNumber = resp.phoneNumber ?? 'Отсутствует';
         this.email = resp.email ?? 'Отсутствует';
         this.taskSolutionsInfos = resp.taskSolutionsInfos?.map(task => new TaskReview(task)) ?? [];
+        this.programmingLanguages = resp.programmingLanguages ?? [];
     }
 }

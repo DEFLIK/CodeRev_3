@@ -1,5 +1,5 @@
-import { TaskReview } from '../taskReview';
 import { TaskReviewResponse } from './taskReview-response';
+import { ProgrammingLanguage } from "../programmingLanguage";
 
 export class InterviewSolutionReviewResponse {
     public interviewSolutionId?: string;
@@ -16,4 +16,5 @@ export class InterviewSolutionReviewResponse {
     public phoneNumber?: string;
     public email?: string;
     public taskSolutionsInfos?: TaskReviewResponse[];
-};
+    public programmingLanguages?: ProgrammingLanguage[];
+}

@@ -17,12 +17,14 @@ namespace UserService.Helpers.Interviews
         private readonly IDbRepository dbRepository;
         private readonly IStatusChecker statusChecker;
         private readonly IUserHelper userHelper;
+        private readonly IInterviewHelper interviewHelper;
 
-        public CardHelper(IDbRepository dbRepository, IStatusChecker statusChecker, IUserHelper userHelper)
+        public CardHelper(IDbRepository dbRepository, IStatusChecker statusChecker, IUserHelper userHelper, IInterviewHelper interviewHelper)
         {
             this.dbRepository = dbRepository;
             this.statusChecker = statusChecker;
             this.userHelper = userHelper;
+            this.interviewHelper = interviewHelper;
         }
 
         public List<CardInfo> GetCards()
@@ -34,8 +36,7 @@ namespace UserService.Helpers.Interviews
                 .ToList();
             var cardsInfo = dbRepository.Get<InterviewSolution>()
                 .ToList()
-                .Join(dbRepository.Get<Interview>()
-                    .ToList(),
+                .Join(dbRepository.Get<Interview>().ToList(),
                 interviewSolution => interviewSolution.InterviewId,
                 interview => interview.Id,
                 (interviewSolution, interview) => new CardInfo
@@ -53,15 +54,14 @@ namespace UserService.Helpers.Interviews
                     IsSolutionTimeExpired = statusChecker.IsSolutionTimeExpired(interviewSolution.EndTimeMs),
                     HasReviewerCheckResult = statusChecker.HasReviewerCheckResult(interviewSolution.AverageGrade),
                     HasHrCheckResult = statusChecker.HasHrCheckResult(interviewSolution.InterviewResult),
-                    ProgrammingLanguage = interview.ProgrammingLanguage,
+                    ProgrammingLanguages = interviewHelper.GetInterviewLanguages(interview.Id),
                     IsSynchronous = interview.IsSynchronous,
                 })
                 .Where(card => !card.IsSynchronous || card.IsSubmittedByCandidate)
                 .ToList();
             
             cardsInfo = cardsInfo.Join(
-                dbRepository.Get<User>()
-                    .ToList(), 
+                dbRepository.Get<User>().ToList(), 
                 card => card.UserId, 
                 user => user.Id,
                 (card, user) =>
