@@ -43,7 +43,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
     //     return this.timeline?.nativeElement.offsetWidth ?? 0;
     // }
     private _bindedEditor?: CodemirrorComponent;
-    _currentTask?: TaskSolutionInfo;
+    private _currentTask?: TaskSolutionInfo;
     private _unsubscriber = new Subject<void>();
     private _timeLineUpdateSubscription?: Subscription;
 
@@ -82,7 +82,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
     }
 
     public run(): void {
-        if (!this._currentTask || this._currentTask.runAttemptsLeft === 0) {
+        if (!this._currentTask) {
             return;
         }
 
@@ -93,16 +93,6 @@ export class ControlsComponent implements OnInit, OnDestroy {
                     'CodeRev',
                     'Program',
                     'Main'));
-
-        this._contest
-            .reduceTaskSolutionAttempt(this._currentTask.id)
-            .subscribe({
-                next: (resp) => {
-                    if (resp.ok && resp.body) {
-                        this._currentTask!.runAttemptsLeft = resp.body.runAttemptsLeft!;
-                    }
-                }
-            });
     }
 
     public startRecord(): void {

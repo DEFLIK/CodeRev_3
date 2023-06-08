@@ -5,6 +5,8 @@ import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
 import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { TestsRunResponse } from '../../models/response/testsRun-response';
 import { Observable, Subject } from 'rxjs';
+import { HttpResponse } from "@angular/common/http";
+import { RunAttemptsLeftResponse } from "../../models/response/runAttemptsLeft-response";
 
 @Injectable({
     providedIn: 'root'
@@ -33,6 +35,14 @@ export class TestsRunnerService {
             } else {
                 //todo
             }
+        });
+    }
+
+    public reduceTaskSolutionAttempt(taskSlnId: string): Observable<HttpResponse<RunAttemptsLeftResponse>> {
+        return this._req.request<RunAttemptsLeftResponse>({
+            url: `${UrlRoutes.user}/api/tasks/solution/reduce-attempt?id=${taskSlnId}`,
+            method: RequestMethodType.post,
+            auth: true
         });
     }
 

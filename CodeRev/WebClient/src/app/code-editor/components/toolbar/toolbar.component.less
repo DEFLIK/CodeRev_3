@@ -42,12 +42,13 @@
 
         .bar {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: flex-start;
             gap: 5px;
 
             .run-btn {
                 height: 1.3em;
+                width: 1.3em;
                 cursor: pointer;
             }
 
@@ -58,6 +59,8 @@
 
             .loader-tests {
                 .loader-abstract(@color-green);
+                width: 1.3em;
+                height: 1.3em
             }
         }
 
@@ -89,7 +92,7 @@
                 .failed-test {
                     color: @color-red;
                 }
-    
+
                 .passed-test {
                     color: @color-green;
                 }
@@ -105,7 +108,7 @@
     .output {
         overflow: auto;
         flex: 1;
-    
+
         .lines {
             flex: 1 1 auto;
             padding: 10px;
@@ -114,11 +117,11 @@
             gap: 5px;
         }
     }
-    
+
     .output-success {
         border-top: solid 2px #009460
     }
-    
+
     .output-failure {
         border-top: solid 2px #D33030;
     }
@@ -126,7 +129,7 @@
     .tests-success {
         border-top: solid 2px #009460
     }
-    
+
     .tests-failure {
         border-top: solid 2px #D33030;
     }
@@ -134,7 +137,7 @@
     .test-info-success {
         color: @color-green
     }
-    
+
     .test-info-failure {
         color: @color-red;
     }
