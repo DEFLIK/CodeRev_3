@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth-service/auth.service';
+import { VkSession } from '../../models/vkSession';
 
 @Component({
     selector: 'app-login',
@@ -16,7 +17,7 @@ export class LoginComponent {
         userPassword: new FormControl('', Validators.required)
     });
 
-    constructor(private _auth: AuthService) { 
+    constructor(private _auth: AuthService) {
     }
 
     public submit(): void {
@@ -24,5 +25,20 @@ export class LoginComponent {
             this.loginForm.get('userName')?.value, 
             this.loginForm.get('userPassword')?.value)
             .subscribe();
+    }
+
+    public loginVK(): void {
+        this._auth.getVkSession((vkAns: any) => {
+            this._auth.loginViaVk(
+                vkAns.session.user.id,
+                new VkSession(
+                    vkAns.session.expire,
+                    vkAns.session.mid,
+                    vkAns.session.secret,
+                    vkAns.session.sid,
+                    vkAns.session.sig
+                )
+            );
+        });
     }
 }

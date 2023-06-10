@@ -28,5 +28,19 @@ namespace UserService.Controllers
             
             return Ok();
         }
+        
+        [HttpPost("registerViaVk")]
+        public IActionResult RegisterViaVk(
+            [Required][FromQuery(Name = "invite")] string invitationId, 
+            [Required][FromBody] UserVkRegistration userRegistration)
+        {
+            TokenHelper.IsValidVkSession(userRegistration.VkSession);
+            
+            userCreator.Create(userRegistration, invitationId, out var errorString);
+            if (errorString != null)
+                return BadRequest(errorString);
+            
+            return Ok();
+        }
     }
 }

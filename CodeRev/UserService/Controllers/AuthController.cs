@@ -32,6 +32,27 @@ namespace UserService.Controllers
             });
         }
         
+        [HttpPost("loginViaVk")]
+        public IActionResult LoginViaVk([Required][FromQuery] string vkId, [FromBody] VkSession session)
+        {
+            if (!TokenHelper.IsValidVkSession(session))
+                return Unauthorized();
+            
+            var user = userHelper.Get(new LoginRequest()
+            {
+                Email = vkId,
+                PasswordHash = TokenHelper.VkMockPassHash
+            });
+            
+            if (user == null) 
+                return Unauthorized();
+            
+            return Ok(new
+            {
+                accessToken = TokenHelper.GenerateTokenString(user)
+            });
+        }
+        
         [HttpGet("validate-role")]
         public IActionResult ValidateRole([Required][FromQuery(Name = "token")] string token)
         {
@@ -48,5 +69,9 @@ namespace UserService.Controllers
         [HttpGet("validate")]
         public IActionResult ValidateToken([Required][FromQuery(Name = "token")] string token)
             => TokenHelper.IsValidToken(token) ? Ok() : Unauthorized();
+        
+        [HttpGet("validateVk")]
+        public IActionResult ValidateVkSession([Required][FromBody] VkSession vkSession)
+            => TokenHelper.IsValidVkSession(vkSession) ? Ok() : Unauthorized();
     }
 }

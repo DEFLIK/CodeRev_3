@@ -7,6 +7,8 @@ import { environment } from './environments/environment';
 import 'codemirror/mode/clike/clike';
 import 'codemirror/mode/javascript/javascript';
 
+import '../vkauth';
+
 if (environment.production) {
     enableProdMode();
 }
