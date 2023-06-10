@@ -144,7 +144,7 @@ namespace Core
             services.AddScoped<ITaskCreator, TaskCreator>();
             services.AddScoped<IInvitationValidator, InvitationValidator>();
             services.AddScoped<IInvitationCreator, InvitationCreator>();
-            services.AddScoped<IUserCreator, UserCreatorWithoutUniqueValidations>();
+            services.AddScoped<IUserCreator, UserCreator>();
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IInterviewHelper, InterviewHelper>();
             services.AddScoped<ITaskHelper, TaskHelper>();
