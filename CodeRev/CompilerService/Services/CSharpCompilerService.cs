@@ -10,18 +10,8 @@ using Microsoft.CodeAnalysis.Emit;
 
 namespace CompilerService.Services;
 
-public interface ICompilerService
-{
-    /// <summary>
-    /// Ассинхронно производит выполнение кода
-    /// </summary>
-    /// <param name="code">Код в виде Plain-Text</param>
-    /// <returns>Результат выполнения (подобно консольному выводу/ошибке)</returns>
-    /// <exception cref="ArgumentException">Неверное указана входная точка</exception>
-    public ExecutionResult Execute(string code, EntryPoint entryPoint);
-}
 
-public class CompilerService : ICompilerService
+public class CSharpCompilerService : ICompilerService
 {
     private static readonly string[] Dependencies =
     {
@@ -32,7 +22,7 @@ public class CompilerService : ICompilerService
 
     private readonly string assemblyPath;
 
-    public CompilerService()
+    public CSharpCompilerService()
     {
         assemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location)
                         ?? throw new NullReferenceException(

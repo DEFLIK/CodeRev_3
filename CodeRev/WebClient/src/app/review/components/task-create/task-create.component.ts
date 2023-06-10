@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { InterviewCreateRequest } from '../../models/request/interviewCreate-request';
 import { TaskCreateRequest } from '../../models/request/taskCreate-request';
+import { ProgrammingLanguage } from '../../models/programmingLanguage';
 
 
 @Component({
@@ -15,14 +16,15 @@ import { TaskCreateRequest } from '../../models/request/taskCreate-request';
     styleUrls: ['./task-create.component.less']
 })
 export class TaskCreateComponent implements AfterViewInit {
-    @ViewChild('codeMirrorTask') 
+    @ViewChild('codeMirrorTask')
     public taskCodeMirror!: CodemirrorComponent;
-    @ViewChild('codeMirrorTests') 
+    @ViewChild('codeMirrorTests')
     public testsCodeMirror!: CodemirrorComponent;
     public taskName: string = '';
-    @ViewChild('testAttempts') 
+    @ViewChild('testAttempts')
     public testAttempts!: ElementRef;
     public taskText: string = '';
+    public selectedLanguage: ProgrammingLanguage = ProgrammingLanguage.csharp;
     public options: CodeMirrorOptions = {
         lineNumbers: true,
         theme: 'neat', // 'material',
@@ -41,14 +43,15 @@ export class TaskCreateComponent implements AfterViewInit {
             this.testsCodeMirror?.codeMirror?.setSize('100%', '100%');
         });
     }
-    
+
     public create(): void {
         const request = new TaskCreateRequest(
             this.taskText,
             this.taskCodeMirror?.codeMirror?.getValue() ?? 'NONE',
             this.taskName,
             this.testsCodeMirror?.codeMirror?.getValue() ?? 'NONE',
-            Number.parseInt(this.testAttempts.nativeElement.innerText)
+            Number.parseInt(this.testAttempts.nativeElement.innerText),
+            this.selectedLanguage
         );
 
         this._review.createTask(request).subscribe(resp => {
@@ -57,5 +60,9 @@ export class TaskCreateComponent implements AfterViewInit {
                 this._snackBar.open('Задача успешно создана!', 'Ок');
             }
         });
+    }
+
+    public selectLanguage(language: ProgrammingLanguage): void {
+        this.selectedLanguage = language;
     }
 }

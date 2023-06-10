@@ -112,7 +112,8 @@ namespace Core
 
         private void ConfigureCompilerService(IServiceCollection services)
         {
-            services.AddTransient<ICompilerService, CompilerService.Services.CompilerService>();
+            services.AddTransient<CSharpCompilerService>();
+            services.AddTransient<JsCompilerService>();
             services.AddTransient<AssemblyTestingService>();
         }
 

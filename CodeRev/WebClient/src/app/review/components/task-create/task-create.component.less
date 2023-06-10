@@ -51,25 +51,30 @@
                     flex-direction: column;
                     gap: 5px;
                     align-items: flex-start;
-        
+
                     .task-name-wrapper {
                         text-align: center;
                         width: 100%;
                         font-size: 18px;
                     }
-        
+
                     .task-name {
                         width: 100%;
                     }
-                    
+
                     /deep/ .mat-radio-inner-circle {
                         background-color: @color-purple !important;
                     }
-        
+
                     .name {
                         font-size: 20px;
                     }
-        
+
+                    .language-list {
+                        display: flex;
+                        gap: 5px;
+                    }
+
                     .language {
                         height: 20px;
                         padding-left: 7px;
@@ -79,8 +84,14 @@
                         border-radius: 50px;
                         color: @color-black75;
                         border: solid 1px @color-black75;
+                        cursor: pointer;
+
+                        &-selected {
+                            border-color: @color-purple;
+                            color: @color-purple;
+                        }
                     }
-        
+
                     .task-text {
                         width: calc(100% - 5px);
                         height: 250px;

@@ -8,6 +8,7 @@ import { EntryPoint } from '../../models/entryPoint';
 import { ExecutionRequest } from '../../models/executionRequest';
 import { ExecutionResult } from '../../models/executionResult';
 import { ExecutionResultResponse } from '../../models/response/executionResult-response';
+import { ProgrammingLanguage } from 'src/app/review/models/programmingLanguage';
 
 @Injectable({
     providedIn: 'root'
@@ -23,11 +24,11 @@ export class CompileService {
         private _req: HttpService,
     ) { }
 
-    public execute(code: string, entry: EntryPoint): void {
+    public execute(code: string, entry: EntryPoint, language: ProgrammingLanguage): void {
         this._req.request<ExecutionResult, ExecutionRequest>({
             url: `${UrlRoutes.compiler}/api/compile/execute`,
             method: RequestMethodType.put,
-            body: new ExecutionRequest(code, entry)
+            body: new ExecutionRequest(code, entry, language)
         }).subscribe(resp => {
             if (resp.ok ?? resp.body) {
                 this.emitOutput(resp.body ?? new ExecutionResult(new ExecutionResultResponse()));

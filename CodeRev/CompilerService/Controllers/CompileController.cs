@@ -3,6 +3,7 @@ using CompilerService.Models;
 using CompilerService.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using UserService.DAL.Models.Enums;
 
 namespace CompilerService.Controllers
 {
@@ -11,11 +12,13 @@ namespace CompilerService.Controllers
     [ApiController]
     public class CompileController : ControllerBase
     {
-        private readonly ICompilerService compilerService;
+        private readonly CSharpCompilerService cSharpCompilerService;
+        private readonly JsCompilerService jsCompilerService;
 
-        public CompileController(ICompilerService compilerService)
+        public CompileController(CSharpCompilerService cSharpCompilerService, JsCompilerService jsCompilerService)
         {
-            this.compilerService = compilerService;
+            this.cSharpCompilerService = cSharpCompilerService;
+            this.jsCompilerService = jsCompilerService;
         }
 
         [HttpPut("execute")]
@@ -24,7 +27,12 @@ namespace CompilerService.Controllers
             ExecutionResult res;
             try
             {
-                res = compilerService.Execute(req.Code, req.EntryPoint);
+                res = req.ProgrammingLanguage switch
+                {
+                    ProgrammingLanguage.CSharp => cSharpCompilerService.Execute(req.Code, req.EntryPoint),
+                    ProgrammingLanguage.JavaScript => jsCompilerService.Execute(req.Code, req.EntryPoint),
+                    _ => throw new ArgumentOutOfRangeException($"Unsupported programming language: {req.ProgrammingLanguage}")
+                };
             }
             catch (ArgumentException)
             {

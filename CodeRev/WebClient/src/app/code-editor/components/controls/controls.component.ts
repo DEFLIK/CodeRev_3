@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
-import {interval, Observable, Subject, Subscription, takeUntil} from 'rxjs';
+import { interval, Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { EntryPoint } from 'src/app/code-editor/models/entryPoint';
 // import { CodeStorageService } from 'src/app/code-editor/services/storage-service/code-storage.service';
 import { CompileService } from 'src/app/code-editor/services/compile-service/compile-service.service';
@@ -14,6 +14,7 @@ import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
 import { ReviewService } from 'src/app/review/services/review.service';
 import { SaveChunk } from '../../models/saveChunk';
 import { ContestService } from 'src/app/contest/services/contest.service';
+import { ProgrammingLanguage, convertProgrammingLanguageToString } from 'src/app/review/models/programmingLanguage';
 
 @Component({
     selector: 'app-controls',
@@ -82,7 +83,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
     }
 
     public run(): void {
-        if (!this._currentTask) {
+        if (!this._currentTask || !this._contest.currentTask) {
             return;
         }
 
@@ -92,7 +93,8 @@ export class ControlsComponent implements OnInit, OnDestroy {
                 new EntryPoint(
                     'CodeRev',
                     'Program',
-                    'Main'));
+                    'Main'),
+                this._contest.currentTask.programmingLanguage);
     }
 
     public startRecord(): void {

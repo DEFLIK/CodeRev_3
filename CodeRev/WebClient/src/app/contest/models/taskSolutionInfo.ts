@@ -1,5 +1,5 @@
 import { TaskSolutionInfoResponse } from './response/taskSolutionInfo-response';
-import { ProgrammingLanguage } from "../../review/models/programmingLanguage";
+import { ProgrammingLanguage } from '../../review/models/programmingLanguage';
 
 export class TaskSolutionInfo {
     public id: string;

@@ -3,6 +3,7 @@ import { EditorMode } from 'src/app/code-editor/models/editorMode';
 import { InterviewSolutionInfo } from '../../models/interviewSolutionInfo';
 import { TaskSolutionInfo } from '../../models/taskSolutionInfo';
 import { ContestService } from '../../services/contest.service';
+import { ProgrammingLanguage, convertProgrammingLanguageToString } from 'src/app/review/models/programmingLanguage';
 
 @Component({
     selector: 'app-task',
@@ -19,6 +20,9 @@ export class TaskComponent implements OnInit {
     public get isSolutionComplete(): boolean {
         return this._contest.isSolutionComplete;
     }
+    public get programmingLanguage(): string {
+        return convertProgrammingLanguageToString(this._contest.currentTask?.programmingLanguage ?? ProgrammingLanguage.unknown);
+    }
     public taskInfo?: TaskSolutionInfo;
   	constructor(private _contest: ContestService) { }
     public ngOnInit(): void {
@@ -31,7 +35,7 @@ export class TaskComponent implements OnInit {
         if (!this.taskInfo) {
             return;
         }
-        
+
         this._contest
             .endTask(this.taskInfo?.id)
             .subscribe(resp => {
