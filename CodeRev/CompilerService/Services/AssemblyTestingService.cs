@@ -33,7 +33,7 @@ public class AssemblyTestingService
                        ?? throw new NullReferenceException(
                            "Failed to create AssemblyTestingService instance: unable to get assembly location." +
                            "Make sure to save your assembly if you loading it from bytes array");
-        workingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\";
+        workingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + Path.DirectorySeparatorChar;
     }
     
     public TestsRunResult RunTests(string code, string testsCode)
