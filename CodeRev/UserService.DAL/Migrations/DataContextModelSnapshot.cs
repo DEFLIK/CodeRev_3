@@ -38,15 +38,29 @@ namespace UserService.DAL.Migrations
                     b.Property<bool>("IsSynchronous")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("ProgrammingLanguage")
-                        .HasColumnType("text");
-
                     b.Property<string>("Vacancy")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Interviews");
+                });
+
+            modelBuilder.Entity("UserService.DAL.Entities.InterviewLanguage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("InterviewId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ProgrammingLanguage")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InterviewLanguages");
                 });
 
             modelBuilder.Entity("UserService.DAL.Entities.InterviewSolution", b =>
@@ -182,6 +196,9 @@ namespace UserService.DAL.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<int>("ProgrammingLanguage")
+                        .HasColumnType("integer");
+
                     b.Property<int>("RunAttempts")
                         .HasColumnType("integer");
 
@@ -189,6 +206,9 @@ namespace UserService.DAL.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("TaskText")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TestsCode")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

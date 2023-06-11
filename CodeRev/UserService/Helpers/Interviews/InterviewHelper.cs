@@ -14,7 +14,7 @@ namespace UserService.Helpers.Interviews
 {
     public interface IInterviewHelper
     {
-        IEnumerable<Interview> GetAllInterviews();
+        List<Interview> GetAllInterviews();
         IEnumerable<string> GetAllVacancies();
         string GetVacancy(Guid interviewId);
         bool TryPutInterviewSolutionGrade(string interviewSolutionId, Grade grade, out string errorString);
@@ -28,6 +28,8 @@ namespace UserService.Helpers.Interviews
         InterviewSolutionInfo GetInterviewSolutionInfo(string interviewSolutionId, out string errorString);
         bool StartInterviewSolution(string interviewSolutionId, out string errorString);
         bool EndInterviewSolution(string interviewSolutionId, out string errorString);
+        Dictionary<Guid, List<ProgrammingLanguage>> GetInterviewsWithLanguages();
+        List<ProgrammingLanguage> GetInterviewLanguages(Guid interviewId);
     }
     
     public class InterviewHelper : IInterviewHelper
@@ -47,8 +49,8 @@ namespace UserService.Helpers.Interviews
             this.notificationsCreator = notificationsCreator;
         }
 
-        public IEnumerable<Interview> GetAllInterviews()
-            => dbRepository.Get<Interview>();
+        public List<Interview> GetAllInterviews()
+            => dbRepository.Get<Interview>().ToList();
 
         public IEnumerable<string> GetAllVacancies()
             => dbRepository.Get<Interview>().GroupBy(interview => interview.Vacancy).Select(g => g.Key);
@@ -197,7 +199,7 @@ namespace UserService.Helpers.Interviews
                 AverageGrade = interviewSolution.AverageGrade,
                 InterviewResult = interviewSolution.InterviewResult,
                 IsSubmittedByCandidate = interviewSolution.IsSubmittedByCandidate,
-                ProgrammingLanguage = interview.ProgrammingLanguage,
+                ProgrammingLanguages = GetInterviewLanguages(interview.Id),
             };
             
             var taskSolutionsInfos = taskHelper.GetTaskSolutions(interviewSolution.Id)
@@ -294,5 +296,16 @@ namespace UserService.Helpers.Interviews
             
             return true;
         }
+
+        public Dictionary<Guid, List<ProgrammingLanguage>> GetInterviewsWithLanguages()
+            => dbRepository.Get<InterviewLanguage>().GroupBy(interviewAndLanguage => interviewAndLanguage.Id,
+                    interviewAndLanguage => interviewAndLanguage.ProgrammingLanguage)
+               .ToDictionary(interviewWithLanguage => interviewWithLanguage.Key,
+                    interviewWithLanguage => interviewWithLanguage.ToList());
+
+        public List<ProgrammingLanguage> GetInterviewLanguages(Guid interviewId)
+            => dbRepository.Get<InterviewLanguage>(interviewLanguage => interviewLanguage.InterviewId == interviewId)
+               .Select(interviewLanguage => interviewLanguage.ProgrammingLanguage)
+               .ToList();
     }
 }

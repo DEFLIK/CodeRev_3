@@ -13,7 +13,25 @@
     box-sizing: border-box;
 }
 
+.other-login {
+  background-color: transparent;
+  color: #0077FF;
+  border-color: #0077FF;
+  justify-content: center;
+  gap: 10px;
+
+  img {
+      height: 80%;
+  }
+
+  &:hover {
+      background-color: #0077FF;
+      color: white;
+  }
+}
+
 .loginForm {
+  width: 250px;
   padding: 30px;
   background-color: @color-white;
   border-radius: 20px;
@@ -98,7 +116,7 @@ label{
 	background: #DDDFE2;
 }
 
-button{
+.submit-btn{
     border: 0;
     font-size: 1.25em;
     border-radius: 10px;
@@ -114,4 +132,9 @@ a{
     font-size: 20px;
     text-decoration: none;
     color: #DA2323;
+}
+
+.help {
+  color: @color-black75;
+  font-size: 15px;
 }

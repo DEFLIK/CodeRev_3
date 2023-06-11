@@ -34,7 +34,7 @@
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.less"
             ],
-            "scripts": ["node_modules/simple-peer/simplepeer.min.js"]
+            "scripts": ["node_modules/simple-peer/simplepeer.min.js", "vkauth.js"]
           },
           "configurations": {
             "production": {

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using TaskTestsProvider;
 using TrackerService.DataAccess.Infrastructure;
 using TrackerService.DataAccess.Repositories;
 using TrackerService.EventHandling;
@@ -112,6 +113,7 @@ namespace Core
         private void ConfigureCompilerService(IServiceCollection services)
         {
             services.AddTransient<ICompilerService, CompilerService.Services.CompilerService>();
+            services.AddTransient<AssemblyTestingService>();
         }
 
         private void ConfigureTrackerService(IServiceCollection services)
@@ -134,13 +136,15 @@ namespace Core
             var postgresConnectionString = Configuration.GetConnectionString($"postgres{Environment.EnvironmentName}");
             services.AddDbContext<DataContext>(options => options.UseNpgsql(postgresConnectionString,
                 assembly => assembly.MigrationsAssembly("UserService.DAL")));
+
+            services.AddScoped<ITaskTestsProviderClient, TaskTestsProviderClient>();
             
             services.AddScoped<IDbRepository, DbRepository>();
             services.AddScoped<IInterviewCreator, InterviewCreator>();
             services.AddScoped<ITaskCreator, TaskCreator>();
             services.AddScoped<IInvitationValidator, InvitationValidator>();
             services.AddScoped<IInvitationCreator, InvitationCreator>();
-            services.AddScoped<IUserCreator, UserCreatorWithoutUniqueValidations>();
+            services.AddScoped<IUserCreator, UserCreator>();
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IInterviewHelper, InterviewHelper>();
             services.AddScoped<ITaskHelper, TaskHelper>();
@@ -154,6 +158,7 @@ namespace Core
             services.AddScoped<TelegramBotHelper, TelegramBotHelper>();
             services.AddScoped<NotificationHub, NotificationHub>();
             services.AddScoped<NotificationMassageBuilder, NotificationMassageBuilder>();
+            services.AddScoped<ITaskHandler, TaskHandler>();
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

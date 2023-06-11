@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UserService.DAL.Models.Enums;
 
 namespace UserService.Models.Notifications
@@ -12,6 +13,6 @@ namespace UserService.Models.Notifications
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string Vacancy { get; set; }
-        public string ProgrammingLanguage { get; set; }
+        public IList<ProgrammingLanguage> ProgrammingLanguages { get; set; }
     }
 }

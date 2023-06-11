@@ -73,7 +73,25 @@
 
 @import (reference) "/src/styles.less";
 
+.other-login {
+    background-color: transparent;
+    color: #0077FF;
+    border-color: #0077FF;
+    justify-content: center;
+    gap: 10px;
+
+    img {
+        height: 80%;
+    }
+
+    &:hover {
+        background-color: #0077FF;
+        color: white;
+    }
+}
+
 .registrationComponent {
+    align-items: center;
     display: flex;
     margin: auto;
     margin-top: 100px;
@@ -82,7 +100,7 @@
     border-radius: 20px;
     background-color: @color-white;
     box-sizing: border-box;
-    row-gap: 32px;
+    row-gap: 20px;
     padding-top: 3%;
     padding-bottom: 3%;
 }
@@ -103,10 +121,11 @@
 }
 
 .registrationForm {
-   display: flex;
-   flex-flow: column;
-   align-items: center;
-   row-gap: 16px;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    row-gap: 16px;
  }
 
 .formChild {
@@ -132,7 +151,7 @@
     font-family: Jost-Regular;
 }
 
-.button {
+.submit-btn {
     border: 0;
     font-size: 1.25em;
     border-radius: 10px;

@@ -1,4 +1,5 @@
 import { InterviewSolutionInfoResposne } from './response/interviewSolutionInfo-response';
+import { ProgrammingLanguage } from "../../review/models/programmingLanguage";
 
 export class InterviewSolutionInfo {
     public id: string;
@@ -9,7 +10,7 @@ export class InterviewSolutionInfo {
     public startTimeMs: number;
     public endTimeMs: number;
     public isSubmittedByCandidate: boolean;
-    public programmingLanguage: string;
+    public programmingLanguages: ProgrammingLanguage[];
     public isSynchronous: boolean;
 
     constructor(resp: InterviewSolutionInfoResposne) {
@@ -21,7 +22,7 @@ export class InterviewSolutionInfo {
         this.startTimeMs = resp.startTimeMs ?? -1;
         this.endTimeMs = resp.endTimeMs ?? -1;
         this.isSubmittedByCandidate = resp.isSubmittedByCandidate ?? false;
-        this.programmingLanguage = resp.programmingLanguage ?? 'no language';
+        this.programmingLanguages = resp.programmingLanguages ?? [];
         this.isSynchronous = resp.isSynchronous ?? false;
     }
 }

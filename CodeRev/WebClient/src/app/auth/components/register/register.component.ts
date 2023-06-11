@@ -58,4 +58,8 @@ export class RegisterComponent implements OnInit {
                 }
             });
     }
+
+    public registerVK(): void {
+        this._auth.registerViaVk(this.inviteToken);
+    }
 }

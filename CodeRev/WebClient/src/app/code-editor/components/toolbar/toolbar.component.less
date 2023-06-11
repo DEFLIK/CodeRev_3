@@ -1,0 +1,144 @@
+@import (reference) "/src/styles.less";
+
+:host {
+    display: flex;
+    flex-direction: column;
+
+    .selection {
+        align-self: center;
+        width: 100% - 5px;
+        padding: 5px;
+        padding-left: 0;
+        padding-right: 0;
+        border-top: solid 2px @color-gray;
+        gap: 5px;
+        display: flex;
+
+        button {
+            border: none;
+            color: @color-black;
+
+            &:hover {
+                background-color: @color-black10;
+            }
+
+            &:active {
+                background-color: @color-black25;
+            }
+        }
+
+        .selected-btn {
+            background-color: @color-black10;
+        }
+    }
+
+    .tests-runner {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        flex: 1 1;
+        overflow: auto;
+        gap: 5px;
+
+        .bar {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 5px;
+
+            .run-btn {
+                height: 1.3em;
+                width: 1.3em;
+                cursor: pointer;
+            }
+
+            .no-run {
+                height: 1.3em;
+                transform: rotate(45deg);
+            }
+
+            .loader-tests {
+                .loader-abstract(@color-green);
+                width: 1.3em;
+                height: 1.3em
+            }
+        }
+
+        .info {
+            display: flex;
+            gap: 10px;
+            overflow: auto;
+            height: 100%;
+
+            .tests-list-placeholder {
+                align-self: center;
+            }
+
+            .tests-list {
+                width: 40%;
+                border-right: solid 2px @color-gray;
+                overflow: auto;
+
+                .test-case {
+                    cursor: pointer;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+
+                    &:hover {
+                        background-color: @color-black10;
+                    }
+                }
+
+                .failed-test {
+                    color: @color-red;
+                }
+
+                .passed-test {
+                    color: @color-green;
+                }
+            }
+
+            .test-info {
+                flex: 1;
+                overflow: auto;
+            }
+        }
+    }
+
+    .output {
+        overflow: auto;
+        flex: 1;
+
+        .lines {
+            flex: 1 1 auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+    }
+
+    .output-success {
+        border-top: solid 2px #009460
+    }
+
+    .output-failure {
+        border-top: solid 2px #D33030;
+    }
+
+    .tests-success {
+        border-top: solid 2px #009460
+    }
+
+    .tests-failure {
+        border-top: solid 2px #D33030;
+    }
+
+    .test-info-success {
+        color: @color-green
+    }
+
+    .test-info-failure {
+        color: @color-red;
+    }
+}

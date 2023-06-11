@@ -1,3 +1,5 @@
+import { ProgrammingLanguage } from "../../../review/models/programmingLanguage";
+
 export class InterviewSolutionInfoResposne {
     public id?: string;
     public vacancy?: string;
@@ -7,6 +9,6 @@ export class InterviewSolutionInfoResposne {
     public startTimeMs?: number;
     public endTimeMs?: number;
     public isSubmittedByCandidate?: boolean;
-    public programmingLanguage?: string;
+    public programmingLanguages?: ProgrammingLanguage[];
     public isSynchronous?: boolean;
 }

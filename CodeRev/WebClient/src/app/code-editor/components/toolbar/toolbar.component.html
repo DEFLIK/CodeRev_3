@@ -1,0 +1,84 @@
+<div
+    *ngIf="selectedBar === 'console'"
+    class="output"
+    [ngClass]="{
+        'output-success': isCompilationSuccess,
+        'output-failure': !isCompilationSuccess && isCompilationSuccess !== undefined
+    }"
+>
+    <div class="lines">
+        <a *ngFor="let line of consoleOutput">
+            {{ line }}
+        </a>
+    </div>
+</div>
+
+<div
+    *ngIf="selectedBar === 'tests' && contest.currentTask"
+    class="tests-runner"
+    [ngClass]="{
+        'test-success': isTestsSuccess,
+        'tests-failure': !isTestsSuccess && isTestsSuccess !== undefined
+    }"
+>
+    <div class="bar">
+        <img src="../../../../assets/svg/play.svg" class="run-btn" alt=">" (click)="runTests()"
+            *ngIf="isTestsRunnable && !isRunningTests && contest.currentTask.runAttemptsLeft > 0">
+        <img src="../../../../assets/svg/play-disabled.svg" class="run-btn" alt=">" (click)="runTests()"
+            *ngIf="isTestsRunnable && !isRunningTests && contest.currentTask.runAttemptsLeft == 0">
+        <div class="loader-tests" *ngIf="isRunningTests"></div>
+        <span class="attempts">
+            Попыток осталось: {{contest.currentTask!.runAttemptsLeft}}
+        </span>
+        <img src="../../../../assets/svg/plus-gray.svg" class="no-run" alt="x" *ngIf="!isTestsRunnable && !isRunningTests">
+    </div>
+
+    <div class="info">
+        <div class="tests-list" *ngIf="testsRunResult">
+            <div
+                *ngFor="let failedTestCase of testsRunResult.failedTestCases | keyvalue"
+                class="failed-test test-case"
+                (click)="setTestInfo(failedTestCase.key, failedTestCase.value, false)">
+                    {{failedTestCase.key}}
+            </div>
+            <div
+                *ngFor="let passedTestCase of testsRunResult.passedTestCases"
+                class="passed-test test-case"
+                (click)="setTestInfo(passedTestCase, 'Test passed', true)"
+                >
+                {{passedTestCase}}
+            </div>
+        </div>
+        <div class="tests-list" *ngIf="!testsRunResult">Тесты не запущены</div>
+        <div
+            class="test-info"
+            [ngClass]="{
+                'test-info-success': isTestInfoSuccess,
+                'test-info-failure': !isTestInfoSuccess && isTestInfoSuccess !== undefined
+            }"
+        >
+            {{testInfo ?? "Для просмотра сообщения следует выбрать тест"}}
+        </div>
+    </div>
+</div>
+
+<div class="selection">
+    <button
+        (click)="selectBar('console')"
+        class="selection-btn"
+        [ngClass]="{
+            'selected-btn': selectedBar === 'console'
+        }"
+    >
+        Консоль
+    </button>
+    <button
+        (click)="selectBar('tests')"
+        class="selection-btn"
+        [ngClass]="{
+            'selected-btn': selectedBar === 'tests'
+        }"
+    >
+        Тесты
+    </button>
+</div>

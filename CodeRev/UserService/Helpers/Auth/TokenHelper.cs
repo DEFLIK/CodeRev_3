@@ -6,11 +6,15 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
+using UserService.Models.Auth;
 
 namespace UserService.Helpers.Auth
 {
     public static class TokenHelper
     {
+        public const string VkMockPassHash = "none(VkIntegration)";
+        private const string AppSharedSecret = "A1Y3EJr6cvczEw0cUrqu";
+
         public static bool IsValidToken(string token)
         {
             try
@@ -33,6 +37,23 @@ namespace UserService.Helpers.Auth
             }
 
             return true;
+        }
+        
+        public static bool IsValidVkSession(VkSession vkSession)
+        {
+            var sign = "expire" + "=" + vkSession.Expire + 
+                       "mid" + "=" + vkSession.Mid + 
+                       "secret" + "=" + vkSession.Secret + 
+                       "sid" + "=" + vkSession.Sid + 
+                       AppSharedSecret;
+            
+            using var md5 = System.Security.Cryptography.MD5.Create();
+            var vkSecretBytes = System.Text.Encoding.ASCII.GetBytes(sign);
+            var vkSecretHash = md5.ComputeHash(vkSecretBytes);
+
+            var secretSig = Convert.ToHexString(vkSecretHash);
+
+            return string.Equals(secretSig, vkSession.Sig, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public static string GenerateTokenString(User user)

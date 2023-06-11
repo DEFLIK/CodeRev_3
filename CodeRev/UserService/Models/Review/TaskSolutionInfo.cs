@@ -13,5 +13,6 @@ namespace UserService.Models.Review
         public bool IsDone { get; set; }
         public Grade Grade { get; set; }
         public int RunAttemptsLeft { get; set; }
+        public ProgrammingLanguage ProgrammingLanguage { get; set; }
     }
 }

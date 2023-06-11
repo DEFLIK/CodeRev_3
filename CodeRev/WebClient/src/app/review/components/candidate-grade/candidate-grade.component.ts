@@ -2,16 +2,11 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, interval, of, Subject, takeUntil, takeWhile } from 'rxjs';
-import { RecordInfo } from 'src/app/code-editor/models/codeRecord';
 import { EditorMode } from 'src/app/code-editor/models/editorMode';
-import { SaveChunk } from 'src/app/code-editor/models/saveChunk';
 import { SavingService } from 'src/app/code-editor/services/saving-service/saving.service';
-import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
 import { ContestService } from 'src/app/contest/services/contest.service';
 import { CandidateCardInfo } from '../../models/candidateCardInfo';
 import { InterviewSolutionReview } from '../../models/interviewSolutionReview';
-import { InterviewSolutionReviewResponse } from '../../models/response/interviewSolutionReview-response';
-import { TaskReview } from '../../models/taskReview';
 import { ReviewService } from '../../services/review.service';
 export type FormControlType = { [key: string]: AbstractControl };
 
@@ -77,7 +72,7 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
             .getSolutionReview(this._solutionId)
             .subscribe({
                 next: (resp) => {
-                    if (resp.ok && resp.body) {                   
+                    if (resp.ok && resp.body) {
                         this.slnReview = new InterviewSolutionReview(resp.body);
                         this.gradesForm = new FormGroup(this.getControls(this.slnReview));
                         this.gradesForm.get('resultComment')?.setValue(this.slnReview.reviewerComment);
@@ -116,7 +111,7 @@ export class CandidateGradeComponent implements OnInit, OnDestroy {
         this.startTaskId = taskId;
         this.isWatching = true;
     }
-    
+
     public saveComment(): void {
         const com = this.gradesForm.get('resultComment')?.value ?? '';
 

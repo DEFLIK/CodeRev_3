@@ -21,6 +21,11 @@
     <div class='registrationComponentHeader'>
         <h1>Регистрация</h1>
     </div>
+
+    <button class='formChild other-login' (click)="registerVK()">Создать с помощью <img src="../../../../assets/svg/vk-logo.svg"></button>
+
+    <span>или</span>
+
     <form [formGroup]="regForm" class='registrationForm'>
         <div class='inputDiv formChild'>
             <input type="text" class='input' placeholder="Фамилия" formControlName="userSurname" required/>
@@ -40,6 +45,6 @@
         <div class='inputDiv formChild'>
             <input type="password" class='input' placeholder="Повторите пароль" required/>
         </div>
-        <button type="submit" class='formChild button color-red' (click)="submit()">Продолжить</button>
+        <button type="submit" class='formChild submit-btn color-red' (click)="submit()">Продолжить</button>
     </form>
 </div>

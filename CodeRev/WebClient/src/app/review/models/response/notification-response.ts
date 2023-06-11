@@ -1,4 +1,5 @@
 import { NotificationType } from '../notificationType';
+import { ProgrammingLanguage } from "../programmingLanguage";
 
 export class NotificationResponse {
     public userId?: string;
@@ -7,5 +8,5 @@ export class NotificationResponse {
     public firstName?: string;
     public surname?: string;
     public vacancy?: string;
-    public programmingLanguage?: string;
+    public programmingLanguages?: ProgrammingLanguage[];
 }

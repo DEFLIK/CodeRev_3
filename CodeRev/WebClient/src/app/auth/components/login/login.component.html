@@ -2,19 +2,18 @@
     <img class="logo" src="../../../../assets/svg/logo.svg">
 
     <form class="loginForm" [formGroup] = "loginForm">
-        <h1>Вход</h1>
+        <button class='formChild other-login' (click)="loginVK()">Войти с помощью <img src="../../../../assets/svg/vk-logo.svg"></button>
+
+        <span>или</span>
+
         <div class='inputDiv formChild'>
             <input type="text" class='input' placeholder="Почта" formControlName="userName"/>
         </div>
         <div class='inputDiv formChild'>
             <input type="password" class='input' placeholder="Пароль" formControlName="userPassword"/>
         </div>
-        <div class="contCB">
-            <input class="checkbox" type="checkbox" id="rememberPW">
-            <label for="rememberPW">Запомнить пароль</label>
-        </div>
-        <button class='formChild button color-red' (click)="submit()">Войти</button>
-        <a href="#">Не удается войти в систему?</a>
+        <button class='formChild submit-btn color-red' (click)="submit()">Войти</button>
+        <a href="#" class="help">Не удается войти в систему?</a>
     </form>
 </div>
 

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using Newtonsoft.Json;
 using UserService.DAL.Models.Enums;
 using UserService.Models.Notifications;
@@ -17,9 +18,9 @@ public class NotificationMassageBuilder
         {
             sb.AppendLine($"Вакансия: {notificationDto.Vacancy}");
         }
-        if (notificationDto.ProgrammingLanguage != null)
+        if (notificationDto.ProgrammingLanguages != null)
         {
-            sb.AppendLine($"Язык программирования: {notificationDto.ProgrammingLanguage}");
+            sb.AppendLine($"Языки программирования: {string.Join(", ", notificationDto.ProgrammingLanguages.Select(l => l.ToReadableString()))}");
         }
 
         return sb.ToString();

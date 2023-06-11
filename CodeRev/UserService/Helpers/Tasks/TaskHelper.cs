@@ -17,24 +17,24 @@ namespace UserService.Helpers.Tasks
         TaskSolutionInfo GetTaskSolutionInfo(Guid taskSolutionId);
         List<TaskSolution> GetTaskSolutions(Guid interviewSolutionId);
         List<TaskSolutionInfoContest> GetTaskSolutionInfosForContest(string interviewSolutionId, out string errorString);
-        Task GetTask(Guid taskId);
-        TaskSolution GetTaskSolution(Guid taskSolutionId);
         TaskSolution GetTaskSolution(string taskSolutionId, out string errorString);
         bool TryPutTaskSolutionGrade(string taskSolutionId, Grade grade, out string errorString);
         bool EndTaskSolution(string taskSolutionId, out string errorString);
-        IEnumerable<Task> GetAllTasks();
+        List<Task> GetAllTasks();
         bool TryReduceTaskSolutionAttempt(string taskSolutionId, out string errorString, out int runAttemptsLeft);
     }
 
     public class TaskHelper : ITaskHelper
     {
         private readonly IDbRepository dbRepository;
+        private readonly ITaskHandler taskHandler;
         private readonly IUserHelper userHelper;
 
-        public TaskHelper(IDbRepository dbRepository, IUserHelper userHelper)
+        public TaskHelper(IDbRepository dbRepository, IUserHelper userHelper, ITaskHandler taskHandler)
         {
             this.dbRepository = dbRepository;
             this.userHelper = userHelper;
+            this.taskHandler = taskHandler;
         }
 
         public TaskSolutionInfo GetTaskSolutionInfo(string taskSolutionId, out string errorString)
@@ -45,7 +45,7 @@ namespace UserService.Helpers.Tasks
 
         public TaskSolutionInfo GetTaskSolutionInfo(Guid taskSolutionId)
         {
-            var taskSolution = GetTaskSolution(taskSolutionId);
+            var taskSolution = taskHandler.GetTaskSolution(taskSolutionId);
             if (taskSolution == null)
                 return null;
             
@@ -63,6 +63,7 @@ namespace UserService.Helpers.Tasks
                 Grade = taskSolution.Grade,
                 IsDone = taskSolution.IsDone,
                 RunAttemptsLeft = taskSolution.RunAttemptsLeft,
+                ProgrammingLanguage = taskHandler.GetTask(taskSolution.TaskId).ProgrammingLanguage,
             };
         }
 
@@ -88,6 +89,7 @@ namespace UserService.Helpers.Tasks
                         StartCode = t.StartCode,
                         IsDone = tSln.IsDone,
                         RunAttemptsLeft = tSln.RunAttemptsLeft,
+                        ProgrammingLanguage = t.ProgrammingLanguage,
                     })
                 .OrderBy(t => t.TaskId)
                 .Select(t =>
@@ -100,20 +102,10 @@ namespace UserService.Helpers.Tasks
             return taskInfos;
         }
 
-        public Task GetTask(Guid taskId)
-            => dbRepository
-                .Get<Task>(t => t.Id == taskId)
-                .FirstOrDefault();
-
-        public TaskSolution GetTaskSolution(Guid taskSolutionId)
-            => dbRepository
-                .Get<TaskSolution>(t => t.Id == taskSolutionId)
-                .FirstOrDefault();
-
         public TaskSolution GetTaskSolution(string taskSolutionId, out string errorString)
         {
             (var taskSolutionGuid, errorString) = GuidParser.TryParse(taskSolutionId, nameof(taskSolutionId));
-            return errorString == null ? GetTaskSolution(taskSolutionGuid) : null;
+            return errorString == null ? taskHandler.GetTaskSolution(taskSolutionGuid) : null;
         }
 
         public bool TryPutTaskSolutionGrade(string taskSolutionId, Grade grade, out string errorString)
@@ -121,7 +113,7 @@ namespace UserService.Helpers.Tasks
             (var taskSolutionGuid, errorString) = GuidParser.TryParse(taskSolutionId, nameof(taskSolutionId));
             if (errorString != null)
                 return false;
-            var taskSolution = GetTaskSolution(taskSolutionGuid);
+            var taskSolution = taskHandler.GetTaskSolution(taskSolutionGuid);
             if (taskSolution == null)
             {
                 errorString = $"no {nameof(taskSolution)} with such id";
@@ -172,8 +164,8 @@ namespace UserService.Helpers.Tasks
             return true;
         }
 
-        public IEnumerable<Task> GetAllTasks()
-            => dbRepository.Get<Task>();
+        public List<Task> GetAllTasks()
+            => dbRepository.Get<Task>().ToList();
 
         public bool TryReduceTaskSolutionAttempt(string taskSolutionId, out string errorString, out int runAttemptsLeft)
         {
@@ -181,7 +173,7 @@ namespace UserService.Helpers.Tasks
             (var taskSolutionGuid, errorString) = GuidParser.TryParse(taskSolutionId, nameof(taskSolutionId));
             if (errorString != null)
                 return false;
-            var taskSolution = GetTaskSolution(taskSolutionGuid);
+            var taskSolution = taskHandler.GetTaskSolution(taskSolutionGuid);
             if (taskSolution == null)
             {
                 errorString = $"no {nameof(taskSolution)} with such id";

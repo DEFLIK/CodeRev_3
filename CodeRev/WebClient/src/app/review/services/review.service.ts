@@ -4,7 +4,6 @@ import { map, Observable } from 'rxjs';
 import { SaveChunkResponse } from 'src/app/code-editor/models/response/saveChunk-response';
 import { Draft } from 'src/app/contest/models/draft';
 import { SetDraftRequest } from 'src/app/contest/models/request/setDraftRequest';
-import { TaskSolutionInfo } from 'src/app/contest/models/taskSolutionInfo';
 import { HttpService } from 'src/app/global-services/request/http.service';
 import { RequestMethodType } from 'src/app/global-services/request/models/request-method';
 import { UrlRoutes } from 'src/app/global-services/request/models/url-routes';
@@ -22,6 +21,7 @@ import { MeetInfoResponse } from '../models/response/meetInfo-response';
 import { NotificationResponse } from '../models/response/notification-response';
 import { TaskInfoResponse } from '../models/response/taskInfo-response';
 import { TaskInfo } from '../models/taskInfo';
+import { TaskCreateRequest } from '../models/request/taskCreate-request';
 
 @Injectable({
     providedIn: 'root'
@@ -134,8 +134,6 @@ export class ReviewService {
     }
 
     public setInterviewDraft(draft: SetDraftRequest): Observable<HttpResponse<void>> {
-        console.log(draft);
-        
         return this._http.request<void, SetDraftRequest>({
             url: `${UrlRoutes.user}/api/interviews/solution/draft`,
             method: RequestMethodType.post,
@@ -163,6 +161,15 @@ export class ReviewService {
     public createInterview(req: InterviewCreateRequest): Observable<HttpResponse<void>> {
         return this._http.request<void, InterviewCreateRequest>({
             url: `${UrlRoutes.user}/api/Interviews`,
+            method: RequestMethodType.post,
+            body: req,
+            auth: true
+        });
+    }
+
+    public createTask(req: TaskCreateRequest): Observable<HttpResponse<void>> {
+        return this._http.request<void, TaskCreateRequest>({
+            url: `${UrlRoutes.user}/api/Tasks`,
             method: RequestMethodType.post,
             body: req,
             auth: true
