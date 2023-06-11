@@ -29,8 +29,8 @@ public class AssemblyTestingServiceTest
 
     private static IEnumerable<(string UserCode, string TestCode, bool ExpectedResult, string ExpectedResultText)> GetCases()
     {
-        yield return (File.ReadAllText(Path.Combine(TestContext.CurrentContext.TestDirectory, "CompilerService/TestData/SomeUserCode.cs.txt")), 
-            File.ReadAllText(Path.Combine(TestContext.CurrentContext.TestDirectory, "CompilerService/TestData/SomeTests.cs.txt")), 
+        yield return (File.ReadAllText(Path.Combine(TestContext.CurrentContext.TestDirectory, "CSharpCompilerService/TestData/SomeUserCode.cs.txt")), 
+            File.ReadAllText(Path.Combine(TestContext.CurrentContext.TestDirectory, "CSharpCompilerService/TestData/SomeTests.cs.txt")), 
             true, "");
     }
 }

@@ -15,6 +15,7 @@ import { PlayerService } from './services/player-service/player.service';
 import { ContestService } from '../contest/services/contest.service';
 import { ReviewService } from '../review/services/review.service';
 import { ActivatedRoute } from '@angular/router';
+import { ProgrammingLanguage } from '../review/models/programmingLanguage';
 
 export type CodeMirrorOptions = {[key: string]: any};
 
@@ -28,11 +29,11 @@ export type CodeMirrorOptions = {[key: string]: any};
 })
 export class CodeEditorComponent implements AfterViewInit, OnDestroy {
     public editor: HTMLElement | null = document.getElementById('codeEdtior');
-    @ViewChild('codeMirror') 
+    @ViewChild('codeMirror')
     public codeMirrorCmpt!: CodemirrorComponent;
-    @ViewChild('controls') 
+    @ViewChild('controls')
     public controlsCmpt!: ControlsComponent;
-    @ViewChild('toolbar') 
+    @ViewChild('toolbar')
     public toolbarCmpt!: ToolbarComponent;
     @Input()
     public editorMode!: EditorMode;
@@ -59,14 +60,15 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
         private _player: PlayerService,
         private _record: RecordService,
         private _compiler: CompileService,
-        private _route: ActivatedRoute
-    ) { 
+        private _route: ActivatedRoute,
+        private _contest: ContestService
+    ) {
         this.isSync = this._route.snapshot.paramMap.get('state') === 'sync';
     }
     public ngOnDestroy(): void {
         this._unsubscriber.next();
     }
-    public ngAfterViewInit(): void { 
+    public ngAfterViewInit(): void {
         this._player.pageOpen
             .pipe(takeUntil(this._unsubscriber))
             .subscribe(() => this.isHidden = false);
@@ -80,13 +82,31 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
             });
 
         this.options['readOnly'] = this.editorMode === EditorMode.review;
-        
+
         this._compiler
             .onOutputRefresh$
             .pipe(takeUntil(this._unsubscriber))
             .subscribe((result: ExecutionResult) => {
                 this._record.recordExecute(result);
                 this.applyExecution(result);
+            });
+
+        this._contest.taskSelected$
+            .pipe(takeUntil(this._unsubscriber))
+            .subscribe((task) => {
+                let mode = 'text/x-csharp';
+                switch (task.programmingLanguage) {
+                    case ProgrammingLanguage.csharp:
+                        mode = 'text/x-csharp';
+                        break;
+                    case ProgrammingLanguage.javaScript:
+                        mode = 'javascript';
+                        break;
+                }
+
+                console.log('set mode', mode, this.codeMirrorCmpt.codeMirror);
+
+                this.codeMirrorCmpt.codeMirror?.setOption('mode', mode);
             });
 
         setTimeout(() => { // Закидываю в конец очереди, чтобы дать модулю CodeMirror подгрузить библиотеку
@@ -103,7 +123,7 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     'Left': () => {},
                     // eslint-disable-next-line @typescript-eslint/naming-convention
-                    'Up': () => {}, 
+                    'Up': () => {},
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     'Down': () => {}
                 });
@@ -115,7 +135,7 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
             });
 
             this.codeMirrorCmpt.codeMirror.setSize('100%', '100%');
-            
+
             if (!this.isSync) {
                 this.controlsCmpt.bindToEditor(this.codeMirrorCmpt);
                 this.toolbarCmpt.bindToEditor(this.codeMirrorCmpt);
@@ -134,7 +154,7 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
                 this.codeMirrorCmpt
                     .codeMirror
                     ?.markText(
-                        { line: error.startLine , ch:error.startChar }, 
+                        { line: error.startLine , ch:error.startChar },
                         { line: error.endLine , ch: error.endChar },
                         { css: 'background-color: #D33030' });
             }

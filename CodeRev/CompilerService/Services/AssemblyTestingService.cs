@@ -38,10 +38,10 @@ public class AssemblyTestingService
     
     public TestsRunResult RunTests(string code, string testsCode)
     {
-        var dotNetRefs = CompilerService.GetMetadataReferences(assemblyPath, DotNetDependencies).ToArray();
-        var additionalRefs = CompilerService.GetMetadataReferences(workingPath, AdditionalDependencies).ToArray();
+        var dotNetRefs = CSharpCompilerService.GetMetadataReferences(assemblyPath, DotNetDependencies).ToArray();
+        var additionalRefs = CSharpCompilerService.GetMetadataReferences(workingPath, AdditionalDependencies).ToArray();
         var testCodeMetadataReferences = dotNetRefs.Concat(additionalRefs);
-        var testCodeCompilation = CompilerService.GetCompilation(new [] {code, testsCode}, testCodeMetadataReferences);
+        var testCodeCompilation = CSharpCompilerService.GetCompilation(new [] {code, testsCode}, testCodeMetadataReferences);
         
         using var ms = new MemoryStream();
         var result = testCodeCompilation.Emit(ms);

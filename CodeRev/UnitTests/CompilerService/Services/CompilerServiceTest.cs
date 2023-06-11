@@ -12,19 +12,19 @@ namespace UnitTests.CompilerService.Services
             ClassName = "Program",
             MethodName = "Main"
         };
-        private global::CompilerService.Services.CompilerService compilerService;
+        private global::CompilerService.Services.CSharpCompilerService cSharpCompilerService;
 
         [SetUp]
         public void SetUp()
         {
-            compilerService = new global::CompilerService.Services.CompilerService();
+            cSharpCompilerService = new global::CompilerService.Services.CSharpCompilerService();
         }
 
         [TestCase("hi")]
         [TestCase("Привет бобикам!")]
         public void Compile_ConsoleWriteLine_ShouldReturnText(string text)
         {
-            var actual = compilerService.Execute(@"
+            var actual = cSharpCompilerService.Execute(@"
                 using System;
                 namespace CodeRevSolution
                 {
@@ -46,7 +46,7 @@ namespace UnitTests.CompilerService.Services
         {
             var expected = "CS0246";
 
-            var actual = compilerService.Execute(@"
+            var actual = cSharpCompilerService.Execute(@"
                 using System123;
                 namespace CodeRevSolution
                 {
@@ -67,7 +67,7 @@ namespace UnitTests.CompilerService.Services
         {
             var expected = "CS0103";
 
-            var actual = compilerService.Execute(@"
+            var actual = cSharpCompilerService.Execute(@"
                 using System;
                 namespace CodeRevSolution
                 {

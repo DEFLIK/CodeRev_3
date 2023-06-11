@@ -1,4 +1,8 @@
 <div *ngIf="taskInfo else noTask" class="task">
+    <div class="language">
+        {{programmingLanguage}}
+    </div>
+
     <span class="text-top">
         Задача {{taskInfo.taskOrder}}
     </span>
