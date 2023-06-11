@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coderev-deployment
+  namespace: coderev
+  labels:
+    app: coderev
+    env: Production
+    owner: BuaCodeRev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coderev-pod
+  template:
+    metadata:
+      labels:
+        app: coderev-pod
+    spec:
+      containers:
+      - name: coderev-container
+        image: hub.66bit.ru/urfu/coding-interview-3458:latest
+        ports:
+        - name: pod-port
+          containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Production
+      imagePullSecrets:
+      - name: coderevcred
