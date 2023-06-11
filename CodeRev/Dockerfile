@@ -20,6 +20,7 @@ COPY ./TrackerService.Contracts ./TrackerService.Contracts
 COPY ./TrackerService.DataAccess ./TrackerService.DataAccess
 COPY ./UserService ./UserService
 COPY ./UserService.DAL ./UserService.DAL
+COPY ./TaskTestsProvider ./TaskTestsProvider
 WORKDIR "/src/Core"
 RUN dotnet restore "Core.csproj"
 RUN dotnet publish "Core.csproj" -c Release -o /app/publish
