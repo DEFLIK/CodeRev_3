@@ -12,7 +12,7 @@ namespace UserService.Helpers.Interviews
     public interface IInterviewCreator
     {
         Guid Create(InterviewCreationDto interviewCreation, Guid creatorId);
-        Guid CreateSolution(Guid userGuid, Guid interviewGuid, Guid invitingUserId);
+        Guid CreateSolution(Guid userGuid, Guid interviewGuid, Guid invitingUserId, bool isSynchronous);
     }
 
     public class InterviewCreator : IInterviewCreator
@@ -52,7 +52,7 @@ namespace UserService.Helpers.Interviews
             return interview.Id;
         }
 
-        public Guid CreateSolution(Guid userGuid, Guid interviewGuid, Guid invitingUserId)
+        public Guid CreateSolution(Guid userGuid, Guid interviewGuid, Guid invitingUserId, bool isSynchronous)
         {
             var interviewSolutionGuid = Guid.NewGuid();
             var reviewerDraftId = reviewerDraftCreator.Create(interviewSolutionGuid);
@@ -71,6 +71,7 @@ namespace UserService.Helpers.Interviews
                 InterviewResult = InterviewResult.NotChecked,
                 IsSubmittedByCandidate = false,
                 InvitedBy = invitingUserId,
+                IsSynchronous = isSynchronous,
             }).Wait();
 
             var interviewTasks = dbRepository
@@ -109,7 +110,6 @@ namespace UserService.Helpers.Interviews
                 Vacancy = interviewCreation.Vacancy,
                 InterviewText = interviewCreation.InterviewText,
                 InterviewDurationMs = interviewCreation.InterviewDurationMs,
-                IsSynchronous = interviewCreation.IsSynchronous,
                 CreatedBy = creatorId,
             };
     }

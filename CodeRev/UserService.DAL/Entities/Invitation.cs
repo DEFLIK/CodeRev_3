@@ -9,5 +9,6 @@ namespace UserService.DAL.Entities
         public Guid InterviewId { get; set; }
         public long ExpiredAt { get; set; }
         public Guid CreatedBy { get; set; }
+        public bool IsSynchronous { get; set; }
     }
 }

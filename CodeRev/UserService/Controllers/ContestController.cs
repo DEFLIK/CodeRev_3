@@ -57,7 +57,7 @@ namespace UserService.Controllers
                 IsStarted = (interviewSolution.StartTimeMs >= 0),
                 IsSubmittedByCandidate = interviewSolution.IsSubmittedByCandidate,
                 ProgrammingLanguages = interviewHelper.GetInterviewLanguages(interview.Id),
-                IsSynchronous = interview.IsSynchronous,
+                IsSynchronous = interviewSolution.IsSynchronous,
             });
         }
         

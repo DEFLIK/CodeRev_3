@@ -7,5 +7,6 @@ namespace UserService.Models.Users
         [Required]
         public string Role { get; set; }
         public string InterviewId { get; set; }
+        public bool IsSynchronous { get; set; }
     }
 }

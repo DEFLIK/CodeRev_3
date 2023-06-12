@@ -16,5 +16,6 @@ namespace UserService.DAL.Entities
         public InterviewResult InterviewResult { get; set; }
         public bool IsSubmittedByCandidate { get; set; }
         public Guid InvitedBy { get; set; }
+        public bool IsSynchronous { get; set; }
     }
 }

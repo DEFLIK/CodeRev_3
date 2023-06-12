@@ -35,6 +35,7 @@ namespace UserService.Helpers.Interviews
                 .GroupBy(taskSolution => taskSolution.InterviewSolutionId)
                 .ToList();
             var cardsInfo = dbRepository.Get<InterviewSolution>()
+                .Where(interviewSolution => !interviewSolution.IsSynchronous || interviewSolution.IsSubmittedByCandidate)
                 .ToList()
                 .Join(dbRepository.Get<Interview>().ToList(),
                 interviewSolution => interviewSolution.InterviewId,
@@ -55,9 +56,8 @@ namespace UserService.Helpers.Interviews
                     HasReviewerCheckResult = statusChecker.HasReviewerCheckResult(interviewSolution.AverageGrade),
                     HasHrCheckResult = statusChecker.HasHrCheckResult(interviewSolution.InterviewResult),
                     ProgrammingLanguages = interviewHelper.GetInterviewLanguages(interview.Id),
-                    IsSynchronous = interview.IsSynchronous,
+                    IsSynchronous = interviewSolution.IsSynchronous,
                 })
-                .Where(card => !card.IsSynchronous || card.IsSubmittedByCandidate)
                 .ToList();
             
             cardsInfo = cardsInfo.Join(

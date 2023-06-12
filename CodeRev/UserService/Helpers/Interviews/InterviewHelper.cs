@@ -256,7 +256,7 @@ namespace UserService.Helpers.Interviews
             interviewSolution.TimeToCheckMs = nowTime + TimeToCheckInterviewSolutionMs;
             dbRepository.SaveChangesAsync().Wait();
 
-            var notificationType = interview.IsSynchronous
+            var notificationType = interviewSolution.IsSynchronous
                 ? NotificationType.MeetStarted
                 : NotificationType.InterviewSolutionStarted;
             notificationsCreator.Create(interviewSolution.UserId, interviewSolution.Id, notificationType);
