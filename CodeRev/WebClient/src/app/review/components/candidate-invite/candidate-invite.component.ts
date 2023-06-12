@@ -54,7 +54,7 @@ export class CandidateInviteComponent implements OnInit, OnDestroy {
 
     public create(int: InterviewInfo): void {
         this._review
-            .createInvite(new Invitation('candidate', int.id))
+            .createInvite(new Invitation('candidate', int.id, false)) //todo проставлять isSynchronous
             .subscribe(invResp => {
                 if (invResp.ok && invResp.body) {
                     this.links.set(int.id, invResp.body.invitation);
