@@ -6,19 +6,52 @@
 >
     <div class="invite">
         <span class="close" (click)="close()">X</span>
-        <span class="welcome">Приглашения на интервью</span>
+        <div class="settings">
+            <div class="top">Пригласить кандидата</div>
+            <form class="segments" [formGroup]="form">
+
+                <div class="segment">
+                    <mat-radio-group formControlName="interviewType">
+                        <div class="option">
+                            <label>
+                                <mat-radio-button type="radio" value="async" id="async"></mat-radio-button>
+                                Асинхронное
+                            </label>
+                        </div>
+                        <div class="option">
+                            <label>
+                                <mat-radio-button  type="radio" value="sync" id="sync"></mat-radio-button>
+                                Синхронное
+                            </label>
+                        </div>
+                    </mat-radio-group>
+                    <div class="date-picker" *ngIf="isSync">
+                        <input type="date" formControlName="startDate">
+                        <input type="time" formControlName="startTime">
+                    </div>
+                </div>
+
+
+
+            </form>
+        </div>
         <div class="interviews" *ngIf="interviews">
-            <div class="int" *ngFor="let int of interviews">
+            <div class="interview" *ngFor="let int of interviews">
                 <span class="vacancy">
                     {{ int.vacancy }}
                 </span>
                 <span class="text">
                     {{ int.interviewText }}
                 </span> 
-                <button class="create" (click)="create(int)" *ngIf="!getInvitation(int.id)">
-                    Создать
-                </button>
-                <textarea class="link" *ngIf="getInvitation(int.id)">{{getInvitation(int.id)}}</textarea>
+                <div class="bottom">
+                    <div class="tags">
+                        <div class="tag" *ngFor="let language of int.interviewLanguages">{{convertProgrammingLanguageToString(language)}}</div>
+                    </div>
+                    <button class="create btn-green" (click)="create(int)" *ngIf="!getInvitation(int.id)">
+                        Создать
+                    </button>
+                    <textarea class="link" *ngIf="getInvitation(int.id)">{{getInvitation(int.id)}}</textarea>
+                </div>
             </div>
         </div>
     </div>

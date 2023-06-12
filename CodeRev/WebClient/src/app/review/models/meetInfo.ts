@@ -1,5 +1,5 @@
 import { MeetInfoResponse } from './response/meetInfo-response';
-import { ProgrammingLanguage } from "./programmingLanguage";
+import { ProgrammingLanguage } from './programmingLanguage';
 
 export class MeetInfo{
     public userId: string;

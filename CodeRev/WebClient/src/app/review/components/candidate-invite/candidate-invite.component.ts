@@ -3,7 +3,10 @@ import { Subscription } from 'rxjs';
 import { InterviewInfo } from '../../models/interviewInfo';
 import { Invitation } from '../../models/invitation';
 import { ReviewService } from '../../services/review.service';
-import { UrlRoutes } from "../../../global-services/request/models/url-routes";
+import { UrlRoutes } from '../../../global-services/request/models/url-routes';
+import { ProgrammingLanguage, convertProgrammingLanguageToString } from '../../models/programmingLanguage';
+import { FormGroup, FormControl, FormArray, AbstractControl } from '@angular/forms';
+import { CandidateState } from '../../models/candidateState';
 
 @Component({
     selector: 'app-candidate-invite',
@@ -18,6 +21,15 @@ export class CandidateInviteComponent implements OnInit, OnDestroy {
     public isOpen = false;
     public interviews?: InterviewInfo[];
     public links = new Map<string, string | undefined>();
+    public form: FormGroup = new FormGroup({
+        interviewType: new FormControl('async'),
+        startDate: new FormControl('2023-01-01'),
+        startTime: new FormControl('13:00')
+    });
+    public get isSync(): boolean {
+        return this.form.get('interviewType')?.value === 'sync';
+    }
+
     private _openSub?: Subscription;
 
     constructor(private _review: ReviewService) { }
@@ -53,12 +65,18 @@ export class CandidateInviteComponent implements OnInit, OnDestroy {
     }
 
     public create(int: InterviewInfo): void {
+        console.log(this.form.get('startTime')?.value, this.form.get('startDate')?.value); // TODO
+        
         this._review
-            .createInvite(new Invitation('candidate', int.id, false)) //todo проставлять isSynchronous
+            .createInvite(new Invitation('candidate', int.id, this.isSync))
             .subscribe(invResp => {
                 if (invResp.ok && invResp.body) {
                     this.links.set(int.id, invResp.body.invitation);
                 }
             });
+    }
+
+    public convertProgrammingLanguageToString(p: ProgrammingLanguage): string {
+        return convertProgrammingLanguageToString(p);
     }
 }
