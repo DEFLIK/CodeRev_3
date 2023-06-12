@@ -18,13 +18,15 @@ namespace UserService.Helpers.Interviews
         private readonly IStatusChecker statusChecker;
         private readonly IUserHelper userHelper;
         private readonly IInterviewHelper interviewHelper;
+        private readonly IInterviewLanguageHandler interviewLanguageHandler;
 
-        public CardHelper(IDbRepository dbRepository, IStatusChecker statusChecker, IUserHelper userHelper, IInterviewHelper interviewHelper)
+        public CardHelper(IDbRepository dbRepository, IStatusChecker statusChecker, IUserHelper userHelper, IInterviewHelper interviewHelper, IInterviewLanguageHandler interviewLanguageHandler)
         {
             this.dbRepository = dbRepository;
             this.statusChecker = statusChecker;
             this.userHelper = userHelper;
             this.interviewHelper = interviewHelper;
+            this.interviewLanguageHandler = interviewLanguageHandler;
         }
 
         public List<CardInfo> GetCards()
@@ -55,7 +57,7 @@ namespace UserService.Helpers.Interviews
                     IsSolutionTimeExpired = statusChecker.IsSolutionTimeExpired(interviewSolution.EndTimeMs),
                     HasReviewerCheckResult = statusChecker.HasReviewerCheckResult(interviewSolution.AverageGrade),
                     HasHrCheckResult = statusChecker.HasHrCheckResult(interviewSolution.InterviewResult),
-                    ProgrammingLanguages = interviewHelper.GetInterviewLanguages(interview.Id),
+                    ProgrammingLanguages = interviewLanguageHandler.GetInterviewLanguages(interview.Id),
                     IsSynchronous = interviewSolution.IsSynchronous,
                 })
                 .ToList();

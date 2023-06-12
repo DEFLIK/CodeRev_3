@@ -17,12 +17,14 @@ namespace UserService.Controllers
         private readonly IUserHelper userHelper;
         private readonly IInterviewHelper interviewHelper;
         private readonly ITaskHelper taskHelper;
+        private readonly IInterviewLanguageHandler interviewLanguageHandler;
 
-        public ContestController(IUserHelper userHelper, IInterviewHelper interviewHelper, ITaskHelper taskHelper)
+        public ContestController(IUserHelper userHelper, IInterviewHelper interviewHelper, ITaskHelper taskHelper, IInterviewLanguageHandler interviewLanguageHandler)
         {
             this.userHelper = userHelper;
             this.interviewHelper = interviewHelper;
             this.taskHelper = taskHelper;
+            this.interviewLanguageHandler = interviewLanguageHandler;
         }
         
         [Authorize]
@@ -56,7 +58,7 @@ namespace UserService.Controllers
                 EndTimeMs = interviewSolution.EndTimeMs,
                 IsStarted = (interviewSolution.StartTimeMs >= 0),
                 IsSubmittedByCandidate = interviewSolution.IsSubmittedByCandidate,
-                ProgrammingLanguages = interviewHelper.GetInterviewLanguages(interview.Id),
+                ProgrammingLanguages = interviewLanguageHandler.GetInterviewLanguages(interview.Id),
                 IsSynchronous = interviewSolution.IsSynchronous,
             });
         }

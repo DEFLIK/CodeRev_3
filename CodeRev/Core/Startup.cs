@@ -160,6 +160,7 @@ namespace Core
             services.AddScoped<NotificationHub, NotificationHub>();
             services.AddScoped<NotificationMassageBuilder, NotificationMassageBuilder>();
             services.AddScoped<ITaskHandler, TaskHandler>();
+            services.AddScoped<IInterviewLanguageHandler, InterviewLanguageHandler>();
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

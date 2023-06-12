@@ -21,12 +21,14 @@ namespace UserService.Helpers.Notifications
         private readonly IDbRepository dbRepository;
         private readonly IUserHelper userHelper;
         private readonly IInterviewHelper interviewHelper;
+        private readonly IInterviewLanguageHandler interviewLanguageHandler;
 
-        public NotificationsHelper(IDbRepository dbRepository, IUserHelper userHelper, IInterviewHelper interviewHelper)
+        public NotificationsHelper(IDbRepository dbRepository, IUserHelper userHelper, IInterviewHelper interviewHelper, IInterviewLanguageHandler interviewLanguageHandler)
         {
             this.dbRepository = dbRepository;
             this.userHelper = userHelper;
             this.interviewHelper = interviewHelper;
+            this.interviewLanguageHandler = interviewLanguageHandler;
         }
 
         public List<NotificationDto> GetReadableNotifications(IList<NotificationType> types)
@@ -53,7 +55,7 @@ namespace UserService.Helpers.Notifications
                 FirstName = firstName,
                 Surname = surname,
                 Vacancy = interview.Vacancy,
-                ProgrammingLanguages = interviewHelper.GetInterviewLanguages(interviewId),
+                ProgrammingLanguages = interviewLanguageHandler.GetInterviewLanguages(interviewId),
             };
         }
     }
