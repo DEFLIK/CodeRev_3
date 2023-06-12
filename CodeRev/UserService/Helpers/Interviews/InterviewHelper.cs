@@ -7,6 +7,7 @@ using UserService.DAL.Models.Interfaces;
 using UserService.Helpers.Auth;
 using UserService.Helpers.Notifications;
 using UserService.Helpers.Tasks;
+using UserService.Models.Interviews;
 using UserService.Models.Review;
 using static System.String;
 
@@ -14,7 +15,7 @@ namespace UserService.Helpers.Interviews
 {
     public interface IInterviewHelper
     {
-        List<Interview> GetAllInterviews();
+        List<InterviewDto> GetAllInterviews();
         IEnumerable<string> GetAllVacancies();
         string GetVacancy(Guid interviewId);
         bool TryPutInterviewSolutionGrade(string interviewSolutionId, Grade grade, out string errorString);
@@ -49,8 +50,16 @@ namespace UserService.Helpers.Interviews
             this.interviewLanguageHandler = interviewLanguageHandler;
         }
 
-        public List<Interview> GetAllInterviews()
-            => dbRepository.Get<Interview>().ToList();
+        public List<InterviewDto> GetAllInterviews()
+            => dbRepository.Get<Interview>().ToList().Select(interview => new InterviewDto
+            {
+                Id = interview.Id,
+                Vacancy = interview.Vacancy,
+                InterviewText = interview.InterviewText,
+                InterviewDurationMs = interview.InterviewDurationMs,
+                CreatedBy = interview.CreatedBy,
+                InterviewLanguages = interviewLanguageHandler.GetInterviewLanguages(interview.Id),
+            }).ToList();
 
         public IEnumerable<string> GetAllVacancies()
             => dbRepository.Get<Interview>().GroupBy(interview => interview.Vacancy).Select(g => g.Key);
