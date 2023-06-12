@@ -41,11 +41,12 @@ namespace UserService.Helpers.Interviews
             interview.Id = Guid.NewGuid();
 
             dbRepository.Add(interview).Wait();
-            interviewCreation.TaskIds.ForEach(taskId =>
-            {
-                CreateLinkToTask(interview.Id, taskId);
-                CreateLinkToLanguage(interview.Id, taskHandler.GetTask(taskId).ProgrammingLanguage);
-            });
+            interviewCreation.TaskIds.ForEach(taskId => CreateLinkToTask(interview.Id, taskId));
+            interviewCreation.TaskIds
+               .Select(taskId => taskHandler.GetTask(taskId).ProgrammingLanguage)
+               .Distinct()
+               .ToList()
+               .ForEach(programmingLanguage => CreateLinkToLanguage(interview.Id, programmingLanguage));
             
             dbRepository.SaveChangesAsync().Wait();
 
