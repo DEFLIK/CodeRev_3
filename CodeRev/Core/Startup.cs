@@ -104,8 +104,8 @@ namespace Core
             {
                 spa.Options.SourcePath = "../WebClient";
 
-                if (isDevEnv)
-                    spa.UseAngularCliServer("start");
+                // if (isDevEnv)
+                spa.UseAngularCliServer("start");
             });
 
         }
