@@ -19,7 +19,6 @@
             display: flex;
             flex-direction: row;
             overflow: hidden;
-            align-items: center;
             // border: solid 1px @color-main;
             box-shadow: 0 3px 5px 0 #7e7e7e;
             border-radius: 10px;
@@ -27,122 +26,188 @@
             width: 700px;
             height: 400px;
             background-color: #F3F3F3;
-    
-            .close {
-                cursor: pointer;
-                position: absolute;
-                top: 5px;
-                right: 5px;
-                padding: 5px;
-                color: #5f5f5f;
-                padding-bottom: 2px;
-                padding-top: 2px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: bolder;
-                font-size: 20px;
-                align-self: flex-end;
-            }
+            align-items: flex-start;
 
-            .settings {
+            .left {
+                display: flex;
+                flex-direction: column;
                 width: 45%;
-                height: calc(100% - 20px);
-                gap: 10px;
-                background-color: white;
-                border-radius: 10px;
-                display: flex;
-                flex-direction: column;
-                padding-top: 20px;
-                overflow: auto;
                 align-items: center;
+                justify-content: space-between;
+                height: 100%;
 
-                .top {
-                    font-family: Raleway-Bold;
-                    font-size: 20px;
-                }
-
-                .title {
-                    color: @color-black75;
-                    font-size: 20px;
-                }
-
-                .date-picker {
-                    display: flex;
-                    gap: 5px;
-                }
-
-                .segments {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: flex-start;
-                    align-items: center;
-                    gap: 20px;
-                    transition-property: margin, max-height;
-                    transition: 0.2s ease;
-                }
-
-                .segment {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 5px;
-                    width: 100%;
-                }
-            }
-
-            .interviews {
-                width: 55%;
-                display: flex;
-                gap: 12px;
-                flex-direction: column;
-                overflow: auto;
-                height: calc(100% - 20px);
-                padding-top: 10px;
-                padding-bottom: 10px;
-
-                .interview {
-                    gap: 5px;
-                    padding: 10px;
-                    border-radius: 5px;
-                    display: flex;
-                    flex-direction: column;
+                .settings {
+                    gap: 10px;
                     background-color: white;
-
-                    .vacancy {
+                    border-bottom-left-radius: 10px;
+                    border-bottom-right-radius: 10px;
+                    display: flex;
+                    flex-direction: column;
+                    padding-top: 20px;
+                    padding-bottom: 20px;
+                    width: 100%;
+                    align-items: center;
+    
+                    .top {
+                        font-family: Raleway-Bold;
+                        font-size: 20px;
+                    }
+    
+                    .title {
+                        color: @color-black75;
                         font-size: 20px;
                     }
 
-                    .text {
-                        color: #939393;
+                    .date-text {
+                        color: @color-black75;
                     }
-
-                    .bottom {
+    
+                    .date-picker {
                         display: flex;
-                        justify-content: space-between;
+                        gap: 5px;
+                    }
+    
+                    .segments {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: flex-start;
+                        align-items: center;
+                        gap: 20px;
+                        transition-property: margin, max-height;
+                        transition: 0.2s ease;
+                    }
+    
+                    .segment {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 5px;
+                        width: 100%;
+                    }
+                }
 
-                        .tags {
-                            display: flex;
-                            gap: 5px;
+                img {
+                    width: 90%
+                }
 
-                            .tag {
-                                height: 20px;
-                                padding: 1px 6px;
-                                font-size: 14px;
-                                text-align: center;
-                                border-radius: 8px;
-                                color: @color-black75;
-                                border: solid 1px @color-black75;
+                .invite-text {
+                    font-family: Raleway-Bold;
+                    padding-bottom: 20px;
+                    text-align: center;
+                    color: @color-red;
+                }
+            }
+
+            .right {
+                display: flex;
+                flex-direction: column;
+                width: 55%;
+                height: 100%;
+                gap: 5px;
+
+                .right-top {
+                    display: flex;
+
+                    .search {
+                        display: flex;
+                        justify-content: center;
+                        background-color: #FFFFFF;
+                        padding: 5px;
+                        padding-left: 15px;
+                        padding-right: 15px;
+                        border-bottom-left-radius: 10px;
+                        border-bottom-right-radius: 10px;
+                        align-items: center;
+                        gap: 10px;
+                        flex: 1 0 25px;
+    
+                        input {
+                            width: 100%;
+                            font-size: 15px;
+                            background-color: inherit;
+                            border: none;
+    
+                            &:focus {
+                                outline: none;
                             }
                         }
-
-                        .create {
-                            align-self: center;
+    
+                        img {
+                            height: 70%;
                         }
-                        
-                        .link {
-                            resize: none;
-                            border: solid 1px @color-green;
-                            border-radius: 5px;
+                    }
+
+                    .close {
+                        cursor: pointer;
+                        // position: absolute;
+                        // top: 5px;
+                        // right: 5px;
+                        padding: 10px;
+                        color: #5f5f5f;
+                        padding-bottom: 2px;
+                        padding-top: 2px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bolder;
+                        font-size: 20px;
+                    }
+                }
+
+                .interviews {
+                    height: 100%;
+                    width: 100%;
+                    display: flex;
+                    gap: 12px;
+                    flex-direction: column;
+                    overflow: auto;
+                    height: calc(100% - 20px);
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+    
+                    .interview {
+                        gap: 5px;
+                        padding: 10px;
+                        border-radius: 5px;
+                        display: flex;
+                        flex-direction: column;
+                        background-color: white;
+    
+                        .vacancy {
+                            font-size: 20px;
+                        }
+    
+                        .text {
+                            color: #939393;
+                        }
+    
+                        .bottom {
+                            display: flex;
+                            justify-content: space-between;
+    
+                            .tags {
+                                display: flex;
+                                gap: 5px;
+    
+                                .tag {
+                                    height: 20px;
+                                    padding: 1px 6px;
+                                    font-size: 14px;
+                                    text-align: center;
+                                    border-radius: 8px;
+                                    color: @color-black75;
+                                    border: solid 1px @color-black75;
+                                }
+                            }
+    
+                            .create {
+                                align-self: center;
+                            }
+                            
+                            .link {
+                                resize: none;
+                                border: solid 1px @color-green;
+                                border-radius: 5px;
+                            }
                         }
                     }
                 }

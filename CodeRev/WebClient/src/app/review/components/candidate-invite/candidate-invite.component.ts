@@ -26,6 +26,12 @@ export class CandidateInviteComponent implements OnInit, OnDestroy {
         startDate: new FormControl('2023-01-01'),
         startTime: new FormControl('13:00')
     });
+    public searchForm: FormGroup = new FormGroup({
+        searchInput: new FormControl('')
+    });
+    public get searchCriteria(): string {
+        return this.searchForm.get('searchInput')?.value;
+    }
     public get isSync(): boolean {
         return this.form.get('interviewType')?.value === 'sync';
     }
