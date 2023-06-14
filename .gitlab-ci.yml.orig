@@ -1,0 +1,62 @@
+stages:
+  - build
+#  - test  до лучших времен
+  - deploy
+
+variables:
+  TAG_LATEST: $CI_REGISTRY_IMAGE:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+
+build:
+  stage: build
+  image: docker:latest
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - cd CodeRev/
+    - docker build --pull -t $TAG_LATEST .
+    - docker push $TAG_LATEST
+  after_script:
+    - docker logout $CI_REGISTRY
+  when: manual
+  only:
+    - merge_request
+    - main
+
+check:
+  stage: deploy
+  image: hub.66bit.ru/shared/stk8s:1.26.2
+  script:
+    - kubectl get pods -n coderev
+<<<<<<< HEAD
+    - kubectl logs coderev-deployment-67964769c9-95kl2 -n coderev
+=======
+    - kubectl logs coderev-deployment-67964769c9-fctml -n coderev
+>>>>>>> origin/main
+    #- kubectl get svc -n coderev
+    #- kubectl get ingress -n coderev
+    #- kubectl get secrets -n codrev
+    #- kubectl get ingress --all-namespaces
+  when: manual
+
+k8s_deploy_cube_persistent:
+  stage: deploy
+  image: hub.66bit.ru/shared/stk8s:1.26.2
+  script:
+    - cd ci/
+    - kubectl delete -f cube-persistent-deployment.yaml
+    - kubectl apply -f cube-persistent-deployment.yaml
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+
+k8s_deploy_back:
+  stage: deploy
+  image: hub.66bit.ru/shared/stk8s:1.26.2
+  script:
+    - cd ci/
+    - kubectl delete -f cube-deployment.yaml
+    - kubectl apply -f cube-deployment.yaml
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
