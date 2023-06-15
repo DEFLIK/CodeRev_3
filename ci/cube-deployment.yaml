@@ -28,3 +28,7 @@ spec:
           value: Production
       imagePullSecrets:
       - name: coderevcred
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "2"
