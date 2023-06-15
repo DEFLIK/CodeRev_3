@@ -40,7 +40,7 @@ k8s_deploy_cube_persistent:
   image: hub.66bit.ru/shared/stk8s:1.26.2
   script:
     - cd ci/
-    - kubectl delete -f cube-persistent-deployment.yaml
+    #- kubectl delete -f cube-persistent-deployment.yaml
     - kubectl apply -f cube-persistent-deployment.yaml
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
