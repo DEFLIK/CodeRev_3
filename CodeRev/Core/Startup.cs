@@ -109,6 +109,7 @@ namespace Core
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseWebSockets();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<SignalRtcHub>("/signalrtc");
