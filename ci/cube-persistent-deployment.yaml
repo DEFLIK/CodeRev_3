@@ -26,6 +26,10 @@ metadata:
     nginx.org/client-max-body-size: "50m"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+       proxy_http_version 1.1;
+       proxy_set_header Upgrade "websocket";
+       proxy_set_header Connection "Upgrade";
 spec:
   ingressClassName: nginx
   rules:
