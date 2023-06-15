@@ -40,7 +40,9 @@ export class SignalrService{
         this.hubConnection = new signalR.HubConnectionBuilder()
             .withUrl(`${UrlRoutes.tracker}/signalrtc`)
             .build();
+        console.log(this.hubConnection);
 
+        console.log('Wait for connection started');
         await this.hubConnection.start();
         console.log('Connection started');
 
