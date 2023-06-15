@@ -5,9 +5,9 @@
         <button class='formChild vk-login' (click)="loginVK()">Войти с помощью <img src="../../../../assets/svg/vk-logo.svg"></button>
         <form class="formInner" [formGroup] = "loginForm">
             <!-- <div class='formChild vk-login' (click)="loginVK()" type="AAA">Войти с помощью <img src="../../../../assets/svg/vk-logo.svg"></div> -->
-    
+
             <span>или</span>
-    
+
             <div class='inputDiv formChild'>
                 <input type="text" class='input' placeholder="Почта" formControlName="userName"/>
             </div>
@@ -15,7 +15,7 @@
                 <input type="password" class='input' placeholder="Пароль" formControlName="userPassword"/>
             </div>
             <button class='formChild submit-btn color-red' (click)="submit()" (keydown.enter)="submit()" type="submit" (submit)="submit()">Войти</button>
-            <a href="#" class="help">Не удается войти в систему?</a>
+<!--            <a href="#" class="help">Не удается войти в систему?</a>-->
         </form>
     </div>
 </div>
