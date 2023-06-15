@@ -7,6 +7,7 @@ using UserService.DAL.Models.Interfaces;
 using UserService.Helpers.Auth;
 using UserService.Helpers.Notifications;
 using UserService.Helpers.Tasks;
+using UserService.Models.Interviews;
 using UserService.Models.Review;
 using static System.String;
 
@@ -14,7 +15,7 @@ namespace UserService.Helpers.Interviews
 {
     public interface IInterviewHelper
     {
-        List<Interview> GetAllInterviews();
+        List<InterviewDto> GetAllInterviews();
         IEnumerable<string> GetAllVacancies();
         string GetVacancy(Guid interviewId);
         bool TryPutInterviewSolutionGrade(string interviewSolutionId, Grade grade, out string errorString);
@@ -28,8 +29,6 @@ namespace UserService.Helpers.Interviews
         InterviewSolutionInfo GetInterviewSolutionInfo(string interviewSolutionId, out string errorString);
         bool StartInterviewSolution(string interviewSolutionId, out string errorString);
         bool EndInterviewSolution(string interviewSolutionId, out string errorString);
-        Dictionary<Guid, List<ProgrammingLanguage>> GetInterviewsWithLanguages();
-        List<ProgrammingLanguage> GetInterviewLanguages(Guid interviewId);
     }
     
     public class InterviewHelper : IInterviewHelper
@@ -40,17 +39,27 @@ namespace UserService.Helpers.Interviews
         private readonly IUserHelper userHelper;
         private readonly ITaskHelper taskHelper;
         private readonly INotificationsCreator notificationsCreator;
+        private readonly IInterviewLanguageHandler interviewLanguageHandler;
 
-        public InterviewHelper(IDbRepository dbRepository, IUserHelper userHelper, ITaskHelper taskHelper, INotificationsCreator notificationsCreator)
+        public InterviewHelper(IDbRepository dbRepository, IUserHelper userHelper, ITaskHelper taskHelper, INotificationsCreator notificationsCreator, IInterviewLanguageHandler interviewLanguageHandler)
         {
             this.dbRepository = dbRepository;
             this.userHelper = userHelper;
             this.taskHelper = taskHelper;
             this.notificationsCreator = notificationsCreator;
+            this.interviewLanguageHandler = interviewLanguageHandler;
         }
 
-        public List<Interview> GetAllInterviews()
-            => dbRepository.Get<Interview>().ToList();
+        public List<InterviewDto> GetAllInterviews()
+            => dbRepository.Get<Interview>().ToList().Select(interview => new InterviewDto
+            {
+                Id = interview.Id,
+                Vacancy = interview.Vacancy,
+                InterviewText = interview.InterviewText,
+                InterviewDurationMs = interview.InterviewDurationMs,
+                CreatedBy = interview.CreatedBy,
+                InterviewLanguages = interviewLanguageHandler.GetInterviewLanguages(interview.Id),
+            }).ToList();
 
         public IEnumerable<string> GetAllVacancies()
             => dbRepository.Get<Interview>().GroupBy(interview => interview.Vacancy).Select(g => g.Key);
@@ -199,7 +208,7 @@ namespace UserService.Helpers.Interviews
                 AverageGrade = interviewSolution.AverageGrade,
                 InterviewResult = interviewSolution.InterviewResult,
                 IsSubmittedByCandidate = interviewSolution.IsSubmittedByCandidate,
-                ProgrammingLanguages = GetInterviewLanguages(interview.Id),
+                ProgrammingLanguages = interviewLanguageHandler.GetInterviewLanguages(interview.Id),
             };
             
             var taskSolutionsInfos = taskHelper.GetTaskSolutions(interviewSolution.Id)
@@ -256,7 +265,7 @@ namespace UserService.Helpers.Interviews
             interviewSolution.TimeToCheckMs = nowTime + TimeToCheckInterviewSolutionMs;
             dbRepository.SaveChangesAsync().Wait();
 
-            var notificationType = interview.IsSynchronous
+            var notificationType = interviewSolution.IsSynchronous
                 ? NotificationType.MeetStarted
                 : NotificationType.InterviewSolutionStarted;
             notificationsCreator.Create(interviewSolution.UserId, interviewSolution.Id, notificationType);
@@ -296,16 +305,5 @@ namespace UserService.Helpers.Interviews
             
             return true;
         }
-
-        public Dictionary<Guid, List<ProgrammingLanguage>> GetInterviewsWithLanguages()
-            => dbRepository.Get<InterviewLanguage>().GroupBy(interviewAndLanguage => interviewAndLanguage.Id,
-                    interviewAndLanguage => interviewAndLanguage.ProgrammingLanguage)
-               .ToDictionary(interviewWithLanguage => interviewWithLanguage.Key,
-                    interviewWithLanguage => interviewWithLanguage.ToList());
-
-        public List<ProgrammingLanguage> GetInterviewLanguages(Guid interviewId)
-            => dbRepository.Get<InterviewLanguage>(interviewLanguage => interviewLanguage.InterviewId == interviewId)
-               .Select(interviewLanguage => interviewLanguage.ProgrammingLanguage)
-               .ToList();
     }
 }

@@ -1,20 +1,23 @@
 <div class="wrapper">
     <img class="logo" src="../../../../assets/svg/logo.svg">
 
-    <form class="loginForm" [formGroup] = "loginForm">
-        <button class='formChild other-login' (click)="loginVK()">Войти с помощью <img src="../../../../assets/svg/vk-logo.svg"></button>
+    <div class="loginForm">
+        <button class='formChild vk-login' (click)="loginVK()">Войти с помощью <img src="../../../../assets/svg/vk-logo.svg"></button>
+        <form class="formInner" [formGroup] = "loginForm">
+            <!-- <div class='formChild vk-login' (click)="loginVK()" type="AAA">Войти с помощью <img src="../../../../assets/svg/vk-logo.svg"></div> -->
 
-        <span>или</span>
+            <span>или</span>
 
-        <div class='inputDiv formChild'>
-            <input type="text" class='input' placeholder="Почта" formControlName="userName"/>
-        </div>
-        <div class='inputDiv formChild'>
-            <input type="password" class='input' placeholder="Пароль" formControlName="userPassword"/>
-        </div>
-        <button class='formChild submit-btn color-red' (click)="submit()">Войти</button>
-        <a href="#" class="help">Не удается войти в систему?</a>
-    </form>
+            <div class='inputDiv formChild'>
+                <input type="text" class='input' placeholder="Почта" formControlName="userName"/>
+            </div>
+            <div class='inputDiv formChild'>
+                <input type="password" class='input' placeholder="Пароль" formControlName="userPassword"/>
+            </div>
+            <button class='formChild submit-btn color-red' (click)="submit()" (keydown.enter)="submit()" type="submit" (submit)="submit()">Войти</button>
+<!--            <a href="#" class="help">Не удается войти в систему?</a>-->
+        </form>
+    </div>
 </div>
 
 

@@ -1,19 +1,24 @@
 @import (reference) "/src/styles.less";
 
+:host {
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+
 .wrapper{
     font-family: 'Raleway', sans-serif;
     display: flex;
     gap: 30px;
-    margin: auto;
-    margin-top: 10%;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 400px;
+    width: 100%;
+    height: 100%;
     box-sizing: border-box;
 }
 
-.other-login {
+.vk-login {
   background-color: transparent;
   color: #0077FF;
   border-color: #0077FF;
@@ -39,6 +44,12 @@
   flex-flow: column;
   align-items: center;
   row-gap: 16px;
+}
+
+.formInner {
+  .loginForm();
+  width: 100%;
+  padding: 0;
 }
 
 .formChild {

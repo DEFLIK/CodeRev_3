@@ -7,8 +7,8 @@ import { CandidateState } from '../../models/candidateState';
 import { MeetInfo } from '../../models/meetInfo';
 import { ReviewService } from '../../services/review.service';
 import { CandidateCardComponent } from '../candidate-card/candidate-card.component';
-import { MeetFilterCriteria } from "../../models/meetFilterCriteria";
-import { convertProgrammingLanguageToString, ProgrammingLanguage } from "../../models/programmingLanguage";
+import { MeetFilterCriteria } from '../../models/meetFilterCriteria';
+import { convertProgrammingLanguageToString, ProgrammingLanguage } from '../../models/programmingLanguage';
 
 @Component({
     selector: 'app-candidates-list',

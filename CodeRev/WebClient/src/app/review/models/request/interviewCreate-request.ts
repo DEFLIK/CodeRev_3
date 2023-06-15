@@ -3,7 +3,6 @@ export class InterviewCreateRequest {
         public vacancy: string,
         public interviewText: string,
         public interviewDurationMs: number,
-        public isSynchronous: boolean,
         public taskIds: string[]
     ) {
 

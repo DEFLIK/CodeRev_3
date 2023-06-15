@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { CandidateCardInfo } from '../models/candidateCardInfo';
 import { CandidateFilterCriteria } from '../models/candidateFilterCriteria';
 import { CandidateStateKeys, CandidateState } from '../models/candidateState';
-import { convertProgrammingLanguageToString } from "../models/programmingLanguage";
+import { convertProgrammingLanguageToString } from '../models/programmingLanguage';
 
 @Pipe({
     name: 'candidateFilter'
@@ -18,7 +18,7 @@ export class CandidateFilterPipe implements PipeTransform {
                     || card.programmingLanguages.map(language => convertProgrammingLanguageToString(language))
                         .includes(searchCriteria.toLocaleLowerCase()))
                 && (filterCriteria.programmingLanguages.every(lang =>
-                        card.programmingLanguages.map(lang => convertProgrammingLanguageToString(lang)).includes(lang)))
+                    card.programmingLanguages.map(lang2 => convertProgrammingLanguageToString(lang2)).includes(lang)))
                 && (filterCriteria.vacancies.some(vacan => vacan === card.vacancy)
                     || filterCriteria.vacancies.length === 0)
                 && (filterCriteria.states.some(state => CandidateState[state as CandidateStateKeys] === card.getState())

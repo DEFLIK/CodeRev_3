@@ -22,7 +22,6 @@ export class InterviewCreateComponent{
     public vacancy: string = '';
     public taskToShow?: TaskInfo;
     public welcomeText: string = '';
-    public selectedMode: string = 'async';
     public selectedTasks: TaskInfo[] = [];
     public tasks: TaskInfo[] = [];
     public options: CodeMirrorOptions = {
@@ -38,9 +37,6 @@ export class InterviewCreateComponent{
     });
     public get searchCriteria(): string {
         return this.searchForm.get('searchInput')?.value ?? '';
-    }
-    public get isSync(): boolean {
-        return true;
     }
 
     constructor(private _review: ReviewService, private _router: Router, private _snackBar: MatSnackBar) {
@@ -101,7 +97,6 @@ export class InterviewCreateComponent{
             this.vacancy,
             this.welcomeText,
             ms,
-            this.isSync,
             this.selectedTasks.map(task => task.id)
         )).subscribe(resp => {
             if (resp.ok) {

@@ -23,8 +23,11 @@
   <div>
     <video #ourVideoPlayer width="220" height="140" class="webcam"></video>
   </div>
-  <div>
+  <div *ngIf="otherUser">
     <video #otherVideoPlayer width="220" height="140" class="webcam"></video>
+  </div>
+  <div *ngIf="!otherUser">
+    <img class="webcam" width="220" height="140" src="../../../assets/gif/lainich.gif">
   </div>
 
 </div>

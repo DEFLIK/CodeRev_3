@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {SignalrComponent} from "./components/signalr.component";
+import { SignalrComponent } from './components/signalr.component';
 
 const routes: Routes = [
     {

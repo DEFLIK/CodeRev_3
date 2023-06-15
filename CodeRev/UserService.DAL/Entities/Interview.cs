@@ -7,7 +7,6 @@ namespace UserService.DAL.Entities
         public string Vacancy { get; set; }
         public string InterviewText { get; set; }
         public long InterviewDurationMs { get; set; }
-        public bool IsSynchronous { get; set; }
         public Guid CreatedBy { get; set; }
     }
 }

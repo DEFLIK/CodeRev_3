@@ -7,7 +7,7 @@ import { CandidateCardInfo } from '../../models/candidateCardInfo';
 import { CandidateState, CandidateStateKeys } from '../../models/candidateState';
 import { ReviewService } from '../../services/review.service';
 import { FormControlType } from '../candidate-grade/candidate-grade.component';
-import { convertProgrammingLanguageToString, ProgrammingLanguage } from "../../models/programmingLanguage";
+import { convertProgrammingLanguageToString, ProgrammingLanguage } from '../../models/programmingLanguage';
 
 @Component({
     selector: 'app-candidate-card',

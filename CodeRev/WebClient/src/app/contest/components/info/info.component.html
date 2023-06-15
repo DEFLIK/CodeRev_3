@@ -15,16 +15,19 @@
 <div class="timespan">
     <div class="start">
         <span class="label">Начало</span>
-        <div class="inner">
-            <span class="time">{{review.startTimeMs | date:'shortTime'}}</span>
+        <div class="inner" >
+            <span class="time">{{review.startTimeMs | date: 'HH:mm:ss'}}</span>
             <span class="date">{{review.startTimeMs | date:'longDate'}}</span>
+        </div>
+        <div class="inner" *ngIf="!review.startTimeMs">
+            Интервью еще не начато
         </div>
     </div>
 
     <div class="end">
         <span class="label">Конец</span>
         <div class="inner">
-            <span class="time">{{review.endTimeMs | date:'shortTime'}}</span>
+            <span class="time">{{review.endTimeMs | date:'HH:mm:ss'}}</span>
             <span class="date">{{review.endTimeMs | date:'longDate'}}</span>
         </div>
     </div>

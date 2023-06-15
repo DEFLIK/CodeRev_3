@@ -18,13 +18,15 @@ namespace UserService.Helpers.Interviews
         private readonly IStatusChecker statusChecker;
         private readonly IUserHelper userHelper;
         private readonly IInterviewHelper interviewHelper;
+        private readonly IInterviewLanguageHandler interviewLanguageHandler;
 
-        public CardHelper(IDbRepository dbRepository, IStatusChecker statusChecker, IUserHelper userHelper, IInterviewHelper interviewHelper)
+        public CardHelper(IDbRepository dbRepository, IStatusChecker statusChecker, IUserHelper userHelper, IInterviewHelper interviewHelper, IInterviewLanguageHandler interviewLanguageHandler)
         {
             this.dbRepository = dbRepository;
             this.statusChecker = statusChecker;
             this.userHelper = userHelper;
             this.interviewHelper = interviewHelper;
+            this.interviewLanguageHandler = interviewLanguageHandler;
         }
 
         public List<CardInfo> GetCards()
@@ -35,6 +37,7 @@ namespace UserService.Helpers.Interviews
                 .GroupBy(taskSolution => taskSolution.InterviewSolutionId)
                 .ToList();
             var cardsInfo = dbRepository.Get<InterviewSolution>()
+                .Where(interviewSolution => !interviewSolution.IsSynchronous || interviewSolution.IsSubmittedByCandidate)
                 .ToList()
                 .Join(dbRepository.Get<Interview>().ToList(),
                 interviewSolution => interviewSolution.InterviewId,
@@ -54,10 +57,9 @@ namespace UserService.Helpers.Interviews
                     IsSolutionTimeExpired = statusChecker.IsSolutionTimeExpired(interviewSolution.EndTimeMs),
                     HasReviewerCheckResult = statusChecker.HasReviewerCheckResult(interviewSolution.AverageGrade),
                     HasHrCheckResult = statusChecker.HasHrCheckResult(interviewSolution.InterviewResult),
-                    ProgrammingLanguages = interviewHelper.GetInterviewLanguages(interview.Id),
-                    IsSynchronous = interview.IsSynchronous,
+                    ProgrammingLanguages = interviewLanguageHandler.GetInterviewLanguages(interview.Id),
+                    IsSynchronous = interviewSolution.IsSynchronous,
                 })
-                .Where(card => !card.IsSynchronous || card.IsSubmittedByCandidate)
                 .ToList();
             
             cardsInfo = cardsInfo.Join(

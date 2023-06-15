@@ -35,9 +35,6 @@ namespace UserService.DAL.Migrations
                     b.Property<string>("InterviewText")
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsSynchronous")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Vacancy")
                         .HasColumnType("text");
 
@@ -85,6 +82,9 @@ namespace UserService.DAL.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsSubmittedByCandidate")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSynchronous")
                         .HasColumnType("boolean");
 
                     b.Property<string>("ReviewerComment")
@@ -138,6 +138,9 @@ namespace UserService.DAL.Migrations
 
                     b.Property<Guid>("InterviewId")
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("IsSynchronous")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Role")
                         .HasColumnType("integer");

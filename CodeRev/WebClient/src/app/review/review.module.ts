@@ -23,6 +23,7 @@ import { TasksFilterPipe } from './pipes/tasks-filter.pipe';
 import { CodeEditorModule } from '../code-editor/code-editor.module';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { TaskCreateComponent } from './components/task-create/task-create.component';
+import { InterviewFilterPipe } from './pipes/interview-filter.pipe';
 
 @NgModule({
     declarations: [
@@ -36,7 +37,8 @@ import { TaskCreateComponent } from './components/task-create/task-create.compon
         MeetCardComponent,
         InterviewCreateComponent,
         TasksFilterPipe,
-        TaskCreateComponent
+        TaskCreateComponent,
+        InterviewFilterPipe
     ],
     imports: [
         ReviewRoutingModule,

@@ -17,69 +17,213 @@
         .invite {
             transform: translateY(5px);
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px;
+            flex-direction: row;
+            overflow: hidden;
             // border: solid 1px @color-main;
             box-shadow: 0 3px 5px 0 #7e7e7e;
             border-radius: 10px;
-            width: 350px;
-            height: 300px;
-            background-color: white;
-    
-            .close {
-                cursor: pointer;
-                padding: 5px;
-                color: white;
-                padding-bottom: 2px;
-                padding-top: 2px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: #C3C3C3;
-                border-radius: 5px;
-                align-self: flex-end;
-            }
+            gap: 10px;
+            width: 700px;
+            height: 400px;
+            background-color: #F3F3F3;
+            align-items: flex-start;
 
-            .welcome {
-                color: @color-red;
-                font-size: 20px;
-            }
-
-            .interviews {
-                padding: 10px;
+            .left {
                 display: flex;
-                gap: 12px;
                 flex-direction: column;
-                overflow: auto;
+                width: 45%;
+                align-items: center;
+                justify-content: space-between;
+                height: 100%;
 
-                .int {
-                    gap: 5px;
-                    padding: 10px;
-                    box-shadow: 0 0 3px 0 #7e7e7e;
-                    border-radius: 5px;
+                .settings {
+                    gap: 10px;
+                    background-color: white;
+                    border-bottom-left-radius: 10px;
+                    border-bottom-right-radius: 10px;
                     display: flex;
                     flex-direction: column;
-
-                    .vacancy {
+                    padding: 20px;
+    
+                    .top {
+                        font-family: Raleway-Bold;
+                        font-size: 20px;
+                    }
+    
+                    .title {
+                        color: @color-black75;
                         font-size: 20px;
                     }
 
-                    .text {
-                        color: #939393;
+                    .date-text {
+                        color: @color-black75;
+                    }
+    
+                    .date-picker {
+                        display: flex;
+                        gap: 5px;
+                    }
+    
+                    .segments {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: flex-start;
+                        align-items: center;
+                        gap: 20px;
+                        transition-property: margin, max-height;
+                        transition: 0.2s ease;
+                    }
+    
+                    .segment {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 5px;
+                        width: 100%;
+                    }
+                }
+
+                .settings-info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    width: 100%;
+                    align-items: center;
+
+                    img {
+                        width: 90%
                     }
 
-                    .create {
-                        align-self: center;
-                    }
-
-                    .link {
-                        resize: none;
-                        border: solid 1px #009460;
-                        border-radius: 5px;
+                    .invite-text {
+                        font-family: Raleway-Bold;
+                        padding-bottom: 20px;
+                        text-align: center;
+                        color: @color-red;
                     }
                 }
             }
+
+            .right {
+                display: flex;
+                flex-direction: column;
+                width: 55%;
+                height: 100%;
+                gap: 5px;
+
+                .right-top {
+                    display: flex;
+
+                    .search {
+                        display: flex;
+                        justify-content: center;
+                        background-color: #FFFFFF;
+                        padding: 5px;
+                        padding-left: 15px;
+                        padding-right: 15px;
+                        border-bottom-left-radius: 10px;
+                        border-bottom-right-radius: 10px;
+                        align-items: center;
+                        gap: 10px;
+                        flex: 1 0 25px;
+    
+                        input {
+                            width: 100%;
+                            font-size: 15px;
+                            background-color: inherit;
+                            border: none;
+    
+                            &:focus {
+                                outline: none;
+                            }
+                        }
+    
+                        img {
+                            height: 70%;
+                        }
+                    }
+
+                    .close {
+                        cursor: pointer;
+                        // position: absolute;
+                        // top: 5px;
+                        // right: 5px;
+                        padding: 10px;
+                        color: #5f5f5f;
+                        padding-bottom: 2px;
+                        padding-top: 2px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bolder;
+                        font-size: 20px;
+                    }
+                }
+
+                .interviews {
+                    height: 100%;
+                    width: 100%;
+                    display: flex;
+                    gap: 12px;
+                    flex-direction: column;
+                    overflow: auto;
+                    height: calc(100% - 20px);
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+    
+                    .interview {
+                        width: 93%;
+                        gap: 5px;
+                        padding: 10px;
+                        border-radius: 5px;
+                        display: flex;
+                        flex-direction: column;
+                        background-color: white;
+    
+                        .vacancy {
+                            font-size: 20px;
+                        }
+    
+                        .text {
+                            color: #939393;
+                        }
+    
+                        .bottom {
+                            display: flex;
+                            justify-content: space-between;
+    
+                            .tags {
+                                display: flex;
+                                gap: 5px;
+    
+                                .tag {
+                                    height: 20px;
+                                    padding: 1px 6px;
+                                    font-size: 14px;
+                                    text-align: center;
+                                    border-radius: 8px;
+                                    color: @color-black75;
+                                    border: solid 1px @color-black75;
+                                }
+                            }
+    
+                            .create {
+                                align-self: center;
+                            }
+                            
+                            .link {
+                                resize: none;
+                                border: solid 1px @color-green;
+                                border-radius: 5px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .mat-checkbox-checked.mat-accent {
+        /deep/ .mat-checkbox-background {
+            background-color: transparent;
         }
     }
     

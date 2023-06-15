@@ -18,12 +18,14 @@ namespace UserService.Helpers
         private readonly IDbRepository dbRepository;
         private readonly IUserHelper userHelper;
         private readonly IInterviewHelper interviewHelper;
+        private readonly IInterviewLanguageHandler interviewLanguageHandler;
 
-        public MeetsHelper(IDbRepository dbRepository, IUserHelper userHelper, IInterviewHelper interviewHelper)
+        public MeetsHelper(IDbRepository dbRepository, IUserHelper userHelper, IInterviewHelper interviewHelper, IInterviewLanguageHandler interviewLanguageHandler)
         {
             this.dbRepository = dbRepository;
             this.userHelper = userHelper;
             this.interviewHelper = interviewHelper;
+            this.interviewLanguageHandler = interviewLanguageHandler;
         }
 
         public IEnumerable<MeetInfoDto> GetMeets(string requestingUserId)
@@ -38,10 +40,9 @@ namespace UserService.Helpers
                 .Select(group => (group.Key, group.Count()));
             
             var meets = dbRepository.Get<InterviewSolution>()
-                .Where(interviewSolution => !interviewSolution.IsSubmittedByCandidate)
+                .Where(interviewSolution => !interviewSolution.IsSubmittedByCandidate && interviewSolution.IsSynchronous)
                 .ToList()
                 .Join(dbRepository.Get<Interview>()
-                    .Where(interview => interview.IsSynchronous)
                     .ToList(),
                 interviewSolution => interviewSolution.InterviewId,
                 interview => interview.Id,
@@ -51,7 +52,7 @@ namespace UserService.Helpers
                     InterviewSolutionId = interviewSolution.Id,
                     InterviewId = interview.Id,
                     Vacancy = interview.Vacancy,
-                    ProgrammingLanguages = interviewHelper.GetInterviewLanguages(interview.Id),
+                    ProgrammingLanguages = interviewLanguageHandler.GetInterviewLanguages(interview.Id),
                     IsOwnerMeet = interviewSolution.InvitedBy.Equals(requestingUser.Id),
                 });
             

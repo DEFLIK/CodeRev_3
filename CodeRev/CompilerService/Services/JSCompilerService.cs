@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CompilerService.Models;
 using Jint;
 
@@ -9,9 +10,9 @@ public class JsCompilerService: ICompilerService
 
     public ExecutionResult Execute(string code, EntryPoint entryPoint)
     {
-        var output = "";
+        var output = new List<string>();
         var engine = new Engine()
-           .SetValue("log", new Action<object>(obj => output = obj.ToString()));
+           .SetValue("log", new Action<object>(obj => output.Add(obj.ToString() ?? "null")));
 
         try
         {
@@ -37,7 +38,7 @@ public class JsCompilerService: ICompilerService
         return new ExecutionResult
         {
             Success = true,
-            Output = new[] { output }
+            Output = output
         };
     }
 }

@@ -48,7 +48,7 @@ namespace UserService.Helpers.Auth.Invitations
             }
 
             var invitation = dbRepository
-                .Get<Invitation>(i => i.Role == roleEnum && i.InterviewId == interviewGuid)
+                .Get<Invitation>(i => i.Role == roleEnum && i.InterviewId == interviewGuid && i.IsSynchronous == invitationParams.IsSynchronous)
                 .FirstOrDefault();
 
             if (invitation == null)
@@ -60,6 +60,7 @@ namespace UserService.Helpers.Auth.Invitations
                     InterviewId = interviewGuid,
                     ExpiredAt = DateTimeOffset.Now.ToUnixTimeMilliseconds() + InvitationDurationMs,
                     CreatedBy = creatorId,
+                    IsSynchronous = invitationParams.IsSynchronous,
                 };
                 dbRepository.Add(invitation).Wait();
             }
