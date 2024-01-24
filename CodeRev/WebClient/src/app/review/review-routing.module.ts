@@ -4,6 +4,7 @@ import { CandidateGradeComponent } from './components/candidate-grade/candidate-
 import { InterviewCreateComponent } from './components/interview-create/interview-create.component';
 import { ReviewComponent } from './review.component';
 import { TaskCreateComponent } from './components/task-create/task-create.component';
+import { ControlPanelComponent } from './components/control-panel/control-panel.component';
 
 const routes: Routes = [
     {
@@ -13,6 +14,10 @@ const routes: Routes = [
     {
         path: 'grade/:solutionId/:state',
         component: CandidateGradeComponent
+    },
+    {
+        path: 'control-panel',
+        component: ControlPanelComponent
     },
     {
         path: 'create/interview',

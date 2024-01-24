@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.IdentityModel.Tokens;
 using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 using UserService.DAL.Models.Interfaces;
@@ -29,6 +30,8 @@ namespace UserService.Helpers.Interviews
         InterviewSolutionInfo GetInterviewSolutionInfo(string interviewSolutionId, out string errorString);
         bool StartInterviewSolution(string interviewSolutionId, out string errorString);
         bool EndInterviewSolution(string interviewSolutionId, out string errorString);
+        Task[] GetInterviewTasks(Guid interviewId);
+        System.Threading.Tasks.Task UpdateInterview(Guid interviewId, InterviewDto updatedInfo);
     }
     
     public class InterviewHelper : IInterviewHelper
@@ -59,6 +62,7 @@ namespace UserService.Helpers.Interviews
                 InterviewDurationMs = interview.InterviewDurationMs,
                 CreatedBy = interview.CreatedBy,
                 InterviewLanguages = interviewLanguageHandler.GetInterviewLanguages(interview.Id),
+                Tasks = GetInterviewTasks(interview.Id)
             }).ToList();
 
         public IEnumerable<string> GetAllVacancies()
@@ -304,6 +308,58 @@ namespace UserService.Helpers.Interviews
             notificationsCreator.Create(interviewSolution.UserId, interviewSolution.Id, NotificationType.InterviewSolutionSubmitted);
             
             return true;
+        }
+
+        public Task[] GetInterviewTasks(Guid interviewId)
+        { 
+            var taskIds = dbRepository.Get<InterviewTask>(intTask => intTask.InterviewId == interviewId)
+                                      .Select(link => link.TaskId)
+                                      .ToHashSet();
+
+            return dbRepository.Get<Task>(task => taskIds.Contains(task.Id)).ToArray();
+        }
+
+        public async System.Threading.Tasks.Task UpdateInterview(Guid interviewId, InterviewDto updatedInfo)
+        {
+            var interview = dbRepository.Get<Interview>(interview => interview.Id == interviewId).FirstOrDefault();
+
+            if (updatedInfo.Vacancy != null)
+                interview.Vacancy = updatedInfo.Vacancy;
+
+            if (updatedInfo.InterviewText != null)
+                interview.InterviewText = updatedInfo.InterviewText;
+
+            await dbRepository.Update(interview);
+
+            if (updatedInfo.Tasks == null)
+            {
+                await dbRepository.SaveChangesAsync();
+                return;
+            }
+
+            var intTasksLinks = dbRepository.Get<InterviewTask>(intTask => intTask.InterviewId == interviewId);
+            await dbRepository.RemoveRange(intTasksLinks);
+
+            var newInterviewTaskLinks = updatedInfo.Tasks.Select(task => new InterviewTask()
+            {
+                Id = Guid.NewGuid(),
+                InterviewId = interviewId,
+                TaskId = task.Id
+            });
+            await dbRepository.AddRange(newInterviewTaskLinks);
+
+            var languages = dbRepository.Get<InterviewLanguage>(intLang => intLang.InterviewId == interviewId).ToArray();
+            await dbRepository.RemoveRange(languages);
+
+            var newLanguages = updatedInfo.Tasks.Select(task => task.ProgrammingLanguage).Distinct();
+            await dbRepository.AddRange(newLanguages.Select(lang => new InterviewLanguage()
+            {
+                Id = Guid.NewGuid(),
+                InterviewId = interviewId,
+                ProgrammingLanguage = lang
+            }));
+            
+            await dbRepository.SaveChangesAsync();
         }
     }
 }

@@ -1,0 +1,145 @@
+<div class="wrapper">
+    <div class="filter-bar">
+        <div class="panel-selection">
+            <button [ngClass]="{'btn-selected': controlPanelPage === 0}" (click)="selectControlPanelPage(0)">Пользователи</button>
+            <button [ngClass]="{'btn-selected': controlPanelPage === 1}" (click)="selectControlPanelPage(1)">Задачи и интервью</button>
+            <!-- <button [ngClass]="{'btn-selected': controlPanelPage === 2}" (click)="selectControlPanelPage(2)">Задачи</button> -->
+        </div>
+
+        <button class="control-panel-btn" *ngIf="controlPanelPage === 1" (click)="createTask()">
+            <img src="../../../../assets/svg/plus-purple.svg">
+            Создать новую задачу
+        </button>
+
+        <button class="control-panel-btn" *ngIf="controlPanelPage === 1" (click)="createInterview()">
+            <img src="../../../../assets/svg/plus-purple.svg">
+            Создать новое интервью
+        </button>
+    </div>
+
+    <div class="cards-list">
+        <div class="top">
+            <label class="search" for="card-search" [formGroup]="searchForm">
+                <input id="card-search" type="text" placeholder="Поиск..." formControlName="searchInput">
+                <img src="../../../../assets/svg/loupe.svg">
+            </label>
+        </div>
+
+        <div class="list" *ngIf="allUsers && controlPanelPage === 0">
+            <div class="user-card" *ngFor="let user of allUsers">
+                <span class="name card-title">{{user.fullName}}</span>
+                <span class="role additional-info">{{getRoleString(user.role)}}</span>
+                <span class="email additional-info">{{user.email}}</span>
+                <span class="phone additional-info">{{user.phoneNumber}}</span>
+                <div class="controls">
+                    <button class="edit-btn" (click)="openUserEditPanel(user)"><img src="../../../../assets/svg/pencil.svg"></button>
+                    <button class="delete-btn" (click)="openUserDeletePanel(user)"><img src="../../../../assets/svg/trash-can.svg"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="list" *ngIf="allInterviews && controlPanelPage === 1">
+            <div class="interview-card" *ngFor="let interview of allInterviews">
+                <div class="interview-card-top">
+                    <span class="card-title">
+                        {{interview.vacancy}}
+                    </span>
+                    <div class="language-list">
+                        <div *ngFor="let lang of interview.interviewLanguages" class="language">
+                            {{convertProgrammingLanguageToString(lang)}}
+                        </div>
+                    </div>
+                </div>
+
+                <span class="interview-text additional-info">{{interview.interviewText}}</span>
+                <div class="controls">
+                    <button class="edit-btn" (click)="openInterviewEditPanel(interview)"><img src="../../../../assets/svg/pencil.svg"></button>
+                    <button class="delete-btn" (click)="openInterviewDeletePanel(interview)"><img src="../../../../assets/svg/trash-can.svg"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="edit-panel-wrapper" *ngIf="isEditing">
+    <div class="edit-panel" *ngIf="controlPanelPage === 0">
+        <span class="edit-title">Редактирование пользователя</span>
+
+        <div>
+            <mat-form-field class="user-name">
+                <input matInput type="text" class="user-name" step="2" required [(ngModel)]="currentUserPrepare!.fullName">
+            </mat-form-field>
+        </div>
+
+        <div class="user-role">
+            <span class="role-title">Права доступа</span>
+            <mat-radio-group [(ngModel)]="currentUserPrepare!.role" class="user-roles-list">
+                <mat-radio-button [value]="0">
+                    Кандидат
+                </mat-radio-button>
+                <mat-radio-button [value]="1">
+                    Проверяющий
+                </mat-radio-button>
+                <mat-radio-button [value]="2">
+                    HR Специалист
+                </mat-radio-button>
+                <mat-radio-button [value]="3">
+                    Администратор
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div class="control-btns">
+            <button class="btn-green" (click)="editUser()">Сохранить</button>
+            <button (click)="closeEditPanel()">Закрыть</button>
+        </div>
+    </div>
+
+    <div class="interview-edit-panel" *ngIf="controlPanelPage === 1">
+        <span class="edit-title">Редактирование интервью</span>
+
+        <div class="interview-edit">
+            <div class="left">
+                <div>
+                    <div class="vacancy">
+                        <span class="text-title">Вакансия</span>
+                        <mat-form-field class="vacancy-input">
+                            <input matInput type="text" class="vacancy" step="2" required [(ngModel)]="currentInterviewPrepare!.vacancy">
+                        </mat-form-field>
+                    </div>
+            
+                    <div>
+                        <span class="text-title">Текст приветствия</span>
+                        <textarea class="welcome-text" [(ngModel)]="currentInterviewPrepare!.interviewText"></textarea>
+                    </div>
+                </div>
+        
+                <div class="control-btns">
+                    <button class="btn-green" (click)="editInterview()">Сохранить</button>
+                    <button (click)="closeEditPanel()">Закрыть</button>
+                </div>
+            </div>
+
+            <app-task-selection #taskSelection></app-task-selection>
+        </div>
+
+
+    </div>
+</div>
+
+<div class="edit-panel-wrapper" *ngIf="isDeleting">
+    <div class="edit-panel" *ngIf="controlPanelPage === 0">
+        <span class="edit-title">Удалить пользователя?</span>
+        <div class="control-btns">
+            <button class="btn-green" (click)="deleteUser()">Удалить</button>
+            <button (click)="closeDeletePanel()">Отменить</button>
+        </div>
+    </div>
+    <div class="edit-panel" *ngIf="controlPanelPage === 1">
+        <span class="edit-title">Удалить интервью?</span>
+        <div class="control-btns">
+            <button class="btn-green" (click)="deleteInterview()">Удалить</button>
+            <button (click)="closeDeletePanel()">Отменить</button>
+        </div>
+    </div>
+</div>

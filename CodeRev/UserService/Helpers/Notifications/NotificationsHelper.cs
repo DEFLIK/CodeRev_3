@@ -14,6 +14,7 @@ namespace UserService.Helpers.Notifications
     {
         List<NotificationDto> GetReadableNotifications(IList<NotificationType> types);
         List<Notification> GetNotifications(IList<NotificationType> types);
+        System.Threading.Tasks.Task DeleteUserNotifications(Guid userId);
     }
     
     public class NotificationsHelper : INotificationsHelper
@@ -38,6 +39,13 @@ namespace UserService.Helpers.Notifications
             => dbRepository
                 .Get<Notification>(notification => types.Contains(notification.NotificationType))
                 .ToList();
+
+        public async System.Threading.Tasks.Task DeleteUserNotifications(Guid userId)
+        {
+            var userNtfs = dbRepository.Get<Notification>(ntf => ntf.UserId == userId);
+            await dbRepository.RemoveRange(userNtfs);
+            await dbRepository.SaveChangesAsync();
+        }
 
         private NotificationDto MapNotificationToDto(Notification notification)
         {

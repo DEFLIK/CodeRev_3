@@ -8,11 +8,6 @@
     padding-bottom: 30px;
     padding-top: 30px;
 
-    .nothing {
-        font-size: 23px;
-        color: @color-black25
-    }
-
     .header {
         width: 100%;
         text-align: center;
@@ -20,7 +15,7 @@
         font-size: 20px;
     }
 
-    .settings-wrapper, .task-inner {
+    .settings-wrapper { // .task-inner
         padding: 15px;
         gap: 5px;
         display: flex;
@@ -123,145 +118,145 @@
         }
     }
 
-    .task {
-        display: flex;
-        flex-direction: column;
-        flex: 1 1 auto;
-        gap: 10px;
-        align-items: center;
-        justify-content: center;
-        overflow: auto;
+    // .task {
+    //     display: flex;
+    //     flex-direction: column;
+    //     flex: 1 1 auto;
+    //     gap: 10px;
+    //     align-items: center;
+    //     justify-content: center;
+    //     overflow: auto;
 
-        .task-inner {
-            gap: 10px;
-            padding: 0;
-            padding-top: 15px;
-            padding-bottom: 15px;
-            width: 100%;
-            flex: 1 1 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow: auto;
+    //     .task-inner {
+    //         gap: 10px;
+    //         padding: 0;
+    //         padding-top: 15px;
+    //         padding-bottom: 15px;
+    //         width: 100%;
+    //         flex: 1 1 auto;
+    //         display: flex;
+    //         flex-direction: column;
+    //         align-items: center;
+    //         overflow: auto;
 
-            .task-text {
-                width: 90%;
-                flex: 0 1 auto;
-                resize: none;
-                background-color: transparent;
-                border: none;
-                font-size: 18px;
-                outline: none;
-                overflow: auto;
-            }
-        }
+    //         .task-text {
+    //             width: 90%;
+    //             flex: 0 1 auto;
+    //             resize: none;
+    //             background-color: transparent;
+    //             border: none;
+    //             font-size: 18px;
+    //             outline: none;
+    //             overflow: auto;
+    //         }
+    //     }
 
-        .editor {
-            flex: 1 0 60%;
-            width: 100%;
-            border-radius: 10px;
-            overflow: auto;
-        }
-    }
+    //     .editor {
+    //         flex: 1 0 60%;
+    //         width: 100%;
+    //         border-radius: 10px;
+    //         overflow: auto;
+    //     }
+    // }
 
-    .task-list {
-        flex: 0 0 30%;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        overflow: auto;
+    // .task-list {
+    //     flex: 0 0 30%;
+    //     display: flex;
+    //     flex-direction: column;
+    //     gap: 20px;
+    //     overflow: auto;
 
-        .selected {
-            border-left: solid 10px @color-green;
-        }
+    //     .selected {
+    //         border-left: solid 10px @color-green;
+    //     }
 
-        .showed {
-            border-left: solid 10px @color-black75;
-        }
+    //     .showed {
+    //         border-left: solid 10px @color-black75;
+    //     }
 
-        .search, .task-item {
-            background-color: white;
-            border-radius: 10px;
-        }
+    //     .search, .task-item {
+    //         background-color: white;
+    //         border-radius: 10px;
+    //     }
 
-        .search {
-            display: flex;
-            justify-content: center;
-            padding: 5px;
-            padding-left: 15px;
-            padding-right: 15px;
-            align-items: center;
-            gap: 10px;
+    //     .search {
+    //         display: flex;
+    //         justify-content: center;
+    //         padding: 5px;
+    //         padding-left: 15px;
+    //         padding-right: 15px;
+    //         align-items: center;
+    //         gap: 10px;
 
-            input {
-                width: 100%;
-                font-size: 15px;
-                background-color: inherit;
-                border: none;
+    //         input {
+    //             width: 100%;
+    //             font-size: 15px;
+    //             background-color: inherit;
+    //             border: none;
     
-                &:focus {
-                    outline: none;
-                }
-            }
+    //             &:focus {
+    //                 outline: none;
+    //             }
+    //         }
     
-            img {
-                height: 70%;
-            }
-        }
+    //         img {
+    //             height: 70%;
+    //         }
+    //     }
 
-        .no-select {
-            align-self: center;
-            font-family: Raleway-Bold;
-            color: #959595
-        }
+    //     .no-select {
+    //         align-self: center;
+    //         font-family: Raleway-Bold;
+    //         color: #959595
+    //     }
 
-        .line {
-            width: 80%;
-            align-self: center;
-            border-bottom: dashed 2px #959595;
-        }
+    //     .line {
+    //         width: 80%;
+    //         align-self: center;
+    //         border-bottom: dashed 2px #959595;
+    //     }
 
-        .task-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            padding: 10px;
-            padding-left: 15px;
-            padding-right: 15px;
+    //     .task-item {
+    //         display: flex;
+    //         justify-content: space-between;
+    //         align-items: center;
+    //         gap: 20px;
+    //         padding: 10px;
+    //         padding-left: 15px;
+    //         padding-right: 15px;
 
-            .name {
-                font-family: Raleway-Bold;
-                overflow: hidden;
-                white-space: nowrap; /* Don't forget this one */
-                text-overflow: ellipsis;
-            }
+    //         .name {
+    //             font-family: Raleway-Bold;
+    //             overflow: hidden;
+    //             white-space: nowrap; /* Don't forget this one */
+    //             text-overflow: ellipsis;
+    //         }
 
-            .add-btn {
-                flex: 0 0 auto;
-                font-size: 15px;
+    //         .add-btn {
+    //             flex: 0 0 auto;
+    //             font-size: 15px;
 
-                img {
-                    height: 15px;
-                }
-            }
+    //             img {
+    //                 height: 15px;
+    //             }
+    //         }
 
-            .remove-btn {
-                img {
-                    height: 15px;
-                    transform: rotate(45deg);
-                }
+    //         .remove-btn {
+    //             img {
+    //                 height: 15px;
+    //                 transform: rotate(45deg);
+    //             }
                 
-                border-color: #959595;
+    //             border-color: #959595;
 
-                &:hover {
-                    background-color: #959595;
-                }
+    //             &:hover {
+    //                 background-color: #959595;
+    //             }
 
-                &:active {
-                    background-color: #616161;
-                }
-            }
-        }
-    }
+    //             &:active {
+    //                 background-color: #616161;
+    //             }
+    //         }
+    //     }
+    // }
 }

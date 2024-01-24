@@ -1,0 +1,34 @@
+<div class="task-list">
+    <label class="search" for="card-search" [formGroup]="searchForm">
+        <input id="card-search" type="text" placeholder="Поиск по задачам..." formControlName="searchInput">
+        <img src="../../../../assets/svg/loupe.svg">
+    </label>
+    <div *ngFor="let task of selectedTasks | tasksFilter : searchCriteria" class="task-item selected" (click)="openTask(task)" [ngClass]="{'showed': task.id === taskToShow?.id}">
+        <span class="name">{{task.name}}</span>
+        <button class="remove-btn" (click)="removeTask(task)"><img src="../../../../assets/svg/plus-gray.svg"></button>
+    </div>
+    <span class="no-select" *ngIf="selectedTasks.length === 0">Нет выбранных задач</span>
+    <div class="line"></div>
+    <div *ngFor="let task of tasks | tasksFilter : searchCriteria" class="task-item" (click)="openTask(task)" [ngClass]="{'showed': task.id === taskToShow?.id}">
+        <span class="name">{{task.name}}</span>
+        <button class="btn-green add-btn" (click)="selectTask(task)"><img src="../../../../assets/svg/plus-green.svg"></button>
+    </div>
+</div>
+
+<div class="task">
+    <ng-container *ngIf="taskToShow">
+        <div class="task-inner">
+            <span class="header">{{taskToShow.name}}</span>
+            <span class="task-text">{{taskToShow.taskText}}</span>
+        </div>
+        <ngx-codemirror
+            class="editor"
+            #codeMirror
+            [(ngModel)]="editor"
+            [options]="options"
+        ></ngx-codemirror>
+    </ng-container>
+    <ng-container *ngIf="!taskToShow">
+        <span class="nothing">Выбери любую задачку из списка</span>
+    </ng-container>
+</div>

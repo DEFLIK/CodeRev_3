@@ -3,12 +3,14 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 using UserService.Helpers;
 using UserService.Helpers.Auth;
 using UserService.Helpers.Interviews;
 using UserService.Models.Interviews;
 using UserService.Models.Review;
+using Task = System.Threading.Tasks.Task;
 
 namespace UserService.Controllers
 {
@@ -37,6 +39,15 @@ namespace UserService.Controllers
         public IActionResult GetInterviews()
         {
             return Ok(interviewHelper.GetAllInterviews());
+        }
+        
+        [Authorize(Roles = "Interviewer,HrManager,Admin")]
+        [HttpPut]
+        public async Task UpdateInterview(
+            [Required][FromQuery(Name = "interviewId")] Guid interviewId,
+            [FromBody] InterviewDto updatedInfo)
+        {
+            await interviewHelper.UpdateInterview(interviewId, updatedInfo);
         }
 
         [Authorize(Roles = "Interviewer,HrManager,Admin")]

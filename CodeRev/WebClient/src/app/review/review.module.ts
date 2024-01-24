@@ -24,6 +24,8 @@ import { CodeEditorModule } from '../code-editor/code-editor.module';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { TaskCreateComponent } from './components/task-create/task-create.component';
 import { InterviewFilterPipe } from './pipes/interview-filter.pipe';
+import { ControlPanelComponent } from './components/control-panel/control-panel.component';
+import { TaskSelectionComponent } from './components/task-selection/task-selection.component';
 
 @NgModule({
     declarations: [
@@ -38,7 +40,9 @@ import { InterviewFilterPipe } from './pipes/interview-filter.pipe';
         InterviewCreateComponent,
         TasksFilterPipe,
         TaskCreateComponent,
-        InterviewFilterPipe
+        InterviewFilterPipe,
+        ControlPanelComponent,
+        TaskSelectionComponent
     ],
     imports: [
         ReviewRoutingModule,

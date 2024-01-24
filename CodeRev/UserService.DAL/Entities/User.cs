@@ -1,4 +1,5 @@
-﻿using UserService.DAL.Models.Enums;
+﻿using System.Text.Json.Serialization;
+using UserService.DAL.Models.Enums;
 
 namespace UserService.DAL.Entities
 {
@@ -8,6 +9,7 @@ namespace UserService.DAL.Entities
         public Role Role { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
+        [JsonIgnore]
         public string PasswordHash { get; set; }
     }
 }

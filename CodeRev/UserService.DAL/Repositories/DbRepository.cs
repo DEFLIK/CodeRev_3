@@ -66,6 +66,11 @@ namespace UserService.DAL.Repositories
         {
             return await context.SaveChangesAsync();
         }
+        
+        public int SaveChanges()
+        {
+            return context.SaveChanges();
+        }
 
         public IQueryable<T> GetAll<T>() where T : class, IEntity
         {

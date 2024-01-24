@@ -91,9 +91,9 @@ export class ControlsComponent implements OnInit, OnDestroy {
             .execute(
                 this._bindedEditor?.codeMirror?.getValue() ?? '',
                 new EntryPoint(
-                    'CodeRev',
+                    'CodeRevSolution',
                     'Program',
-                    'Main'),
+                    'TestMethod'),
                 this._contest.currentTask.programmingLanguage);
     }
 

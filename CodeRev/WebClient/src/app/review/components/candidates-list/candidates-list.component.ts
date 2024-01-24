@@ -114,12 +114,8 @@ export class CandidatesListComponent implements OnInit {
         this._router.navigateByUrl(`review/grade/${meet.interviewSolutionId}/sync`);
     }
 
-    public createInterview(): void {
-        this._router.navigateByUrl(`review/create/interview`);
-    }
-
-    public createTask(): void {
-        this._router.navigateByUrl(`review/create/task`);
+    public openControlPanel(): void {
+        this._router.navigateByUrl(`review/control-panel`);
     }
 
     public invite(): void {

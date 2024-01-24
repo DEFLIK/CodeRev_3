@@ -67,27 +67,27 @@ namespace Core
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext context)
         {
             var isDevEnv = Environment.IsDevelopment();
-            context.Database.Migrate();
-            context.Database.ExecuteSqlRaw(@"truncate ""InterviewLanguages"";
-                truncate ""Interviews"";
-                truncate ""InterviewSolutions"";
-                truncate ""InterviewTasks"";
-                truncate ""Invitations"";
-                truncate ""Notifications"";
-                truncate ""ReviewerDrafts"";
-                truncate ""Tasks"";
-                truncate ""TaskSolutions"";
-                truncate ""Users"";
-                DO $$
-                    BEGIN
-                        IF NOT EXISTS(select * from ""Users"" where ""Id"" in ('3be266fc-ecbc-11ec-8ea0-0242ac120002', 'e762634c-3e41-11eb-b897-0862660ccbd5')) THEN 
-                            insert into ""Users"" values
-                                ('3be266fc-ecbc-11ec-8ea0-0242ac120002','Алиса Менеджерова',2,'88888888888','hr@email.ru','1a1dc91c907325c69271ddf0c944bc72'), 
-                                ('e762634c-3e41-11eb-b897-0862660ccbd5','Алиса Проверяющева',1,'99999999999','reviewer@email.com','1a1dc91c907325c69271ddf0c944bc72');
-                        END IF;
-                    END;
-                $$"
-            );
+            // context.Database.Migrate();
+            // context.Database.ExecuteSqlRaw(@"truncate ""InterviewLanguages"";
+            //     truncate ""Interviews"";
+            //     truncate ""InterviewSolutions"";
+            //     truncate ""InterviewTasks"";
+            //     truncate ""Invitations"";
+            //     truncate ""Notifications"";
+            //     truncate ""ReviewerDrafts"";
+            //     truncate ""Tasks"";
+            //     truncate ""TaskSolutions"";
+            //     truncate ""Users"";
+            //     DO $$
+            //         BEGIN
+            //             IF NOT EXISTS(select * from ""Users"" where ""Id"" in ('3be266fc-ecbc-11ec-8ea0-0242ac120002', 'e762634c-3e41-11eb-b897-0862660ccbd5')) THEN 
+            //                 insert into ""Users"" values
+            //                     ('3be266fc-ecbc-11ec-8ea0-0242ac120002','Алиса Менеджерова',2,'88888888888','hr@email.ru','1a1dc91c907325c69271ddf0c944bc72'), 
+            //                     ('e762634c-3e41-11eb-b897-0862660ccbd5','Алиса Проверяющева',1,'99999999999','reviewer@email.com','1a1dc91c907325c69271ddf0c944bc72');
+            //             END IF;
+            //         END;
+            //     $$"
+            // );
             
             if (isDevEnv)
             {

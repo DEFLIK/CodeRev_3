@@ -7,6 +7,7 @@ import { CodeMirrorOptions } from 'src/app/code-editor/code-editor.component';
 import { InterviewCreateRequest } from '../../models/request/interviewCreate-request';
 import { TaskInfo } from '../../models/taskInfo';
 import { ReviewService } from '../../services/review.service';
+import { TaskSelectionComponent } from '../task-selection/task-selection.component';
 
 @Component({
     selector: 'app-interview-create',
@@ -14,16 +15,19 @@ import { ReviewService } from '../../services/review.service';
     styleUrls: ['./interview-create.component.less']
 })
 export class InterviewCreateComponent{
-    public editor: HTMLElement | null = document.getElementById('codeEdtior');
-    @ViewChild('codeMirror')
-    public codeMirrorCmpt!: CodemirrorComponent;
+    // public editor: HTMLElement | null = document.getElementById('codeEdtior');
+    // @ViewChild('codeMirror')
+    // public codeMirrorCmpt!: CodemirrorComponent;
+
+    @ViewChild('taskSelection')
+    public taskSelectionComponent!: TaskSelectionComponent;
     public vacancies: any[] = [];
     public duration: string = '10:00';
     public vacancy: string = '';
-    public taskToShow?: TaskInfo;
+    // public taskToShow?: TaskInfo;
     public welcomeText: string = '';
-    public selectedTasks: TaskInfo[] = [];
-    public tasks: TaskInfo[] = [];
+    // public selectedTasks: TaskInfo[] = [];
+    // public tasks: TaskInfo[] = [];
     public options: CodeMirrorOptions = {
         lineNumbers: true,
         theme: 'neat', // 'material',
@@ -32,12 +36,12 @@ export class InterviewCreateComponent{
         autofocus: false,
         // readOnly: 'true'
     };
-    public searchForm: FormGroup = new FormGroup({
-        searchInput: new FormControl('')
-    });
-    public get searchCriteria(): string {
-        return this.searchForm.get('searchInput')?.value ?? '';
-    }
+    // public searchForm: FormGroup = new FormGroup({
+    //     searchInput: new FormControl('')
+    // });
+    // public get searchCriteria(): string {
+    //     return this.searchForm.get('searchInput')?.value ?? '';
+    // }
 
     constructor(private _review: ReviewService, private _router: Router, private _snackBar: MatSnackBar) {
         this._review
@@ -53,39 +57,39 @@ export class InterviewCreateComponent{
                 }
             });
 
-        this._review
-            .getAllTasks()
-            .subscribe(resp => {
-                if (resp.ok && resp.body) {
-                    for (const task of resp.body) {
-                        this.tasks.push(new TaskInfo(task));
-                    }
-                }
+        // this._review
+        //     .getAllTasks()
+        //     .subscribe(resp => {
+        //         if (resp.ok && resp.body) {
+        //             for (const task of resp.body) {
+        //                 this.tasks.push(new TaskInfo(task));
+        //             }
+        //         }
 
-                this.tasks = [...this.tasks];
-            });
+        //         this.tasks = [...this.tasks];
+        //     });
     }
 
-    public selectTask(task: TaskInfo): void {
-        this.tasks = this.tasks.filter(t => t.id !== task.id);
-        this.selectedTasks.push(task);
-        this.selectedTasks = [...this.selectedTasks];
-    }
+    // public selectTask(task: TaskInfo): void {
+    //     this.tasks = this.tasks.filter(t => t.id !== task.id);
+    //     this.selectedTasks.push(task);
+    //     this.selectedTasks = [...this.selectedTasks];
+    // }
 
-    public removeTask(task: TaskInfo): void {
-        this.selectedTasks = this.selectedTasks.filter(t => t.id !== task.id);
-        this.tasks.push(task);
-        this.tasks = [...this.tasks];
-    }
+    // public removeTask(task: TaskInfo): void {
+    //     this.selectedTasks = this.selectedTasks.filter(t => t.id !== task.id);
+    //     this.tasks.push(task);
+    //     this.tasks = [...this.tasks];
+    // }
 
-    public openTask(task: TaskInfo): void {
-        this.taskToShow = task;
-        setTimeout(() => {
-            this.codeMirrorCmpt?.codeMirror?.setSize('100%', '100%');
+    // public openTask(task: TaskInfo): void {
+    //     this.taskToShow = task;
+    //     setTimeout(() => {
+    //         this.codeMirrorCmpt?.codeMirror?.setSize('100%', '100%');
 
-            return this.codeMirrorCmpt?.codeMirror?.setValue(task.startCode);
-        });
-    }
+    //         return this.codeMirrorCmpt?.codeMirror?.setValue(task.startCode);
+    //     });
+    // }
 
     public create(): void {
         var time = this.duration.split(':').map(s => Number.parseInt(s));
@@ -97,7 +101,7 @@ export class InterviewCreateComponent{
             this.vacancy,
             this.welcomeText,
             ms,
-            this.selectedTasks.map(task => task.id)
+            this.taskSelectionComponent.getSelectedTasks().map(task => task.id)
         )).subscribe(resp => {
             if (resp.ok) {
                 this._router.navigateByUrl('/review');

@@ -22,6 +22,9 @@ import { NotificationResponse } from '../models/response/notification-response';
 import { TaskInfoResponse } from '../models/response/taskInfo-response';
 import { TaskInfo } from '../models/taskInfo';
 import { TaskCreateRequest } from '../models/request/taskCreate-request';
+import { User } from '../models/response/user-response';
+import { UserRole } from 'src/app/auth/models/userRole';
+import { InterviewInfo } from '../models/interviewInfo';
 
 @Injectable({
     providedIn: 'root'
@@ -167,6 +170,15 @@ export class ReviewService {
         });
     }
 
+    public editInterview(interviewId: string, newInterviewInfo: InterviewInfo): Observable<HttpResponse<void>> {
+        return this._http.request<void, InterviewInfo>({
+            url: `${UrlRoutes.user}/api/Interviews?interviewId=${interviewId}`,
+            method: RequestMethodType.put,
+            body: newInterviewInfo,
+            auth: true
+        });
+    }
+
     public createTask(req: TaskCreateRequest): Observable<HttpResponse<void>> {
         return this._http.request<void, TaskCreateRequest>({
             url: `${UrlRoutes.user}/api/Tasks`,
@@ -180,6 +192,30 @@ export class ReviewService {
         return this._http.request<NotificationResponse[]>({
             url: `${UrlRoutes.user}/api/Notifications`,
             method: RequestMethodType.get,
+            auth: true
+        });
+    }
+
+    public getAllUsers(): Observable<HttpResponse<User[]>> {
+        return this._http.request<User[]>({
+            url: `${UrlRoutes.user}/api/Users/all`,
+            method: RequestMethodType.get,
+            auth: true
+        });
+    }
+
+    public editUser(userEmail: string, userName: string, role: UserRole): Observable<HttpResponse<void>> {
+        return this._http.request<void>({
+            url: `${UrlRoutes.user}/api/Users?userEmail=${userEmail}&userName=${userName}&userRole=${role}`,
+            method: RequestMethodType.put,
+            auth: true
+        });
+    }
+
+    public deleteUser(user: User): Observable<HttpResponse<void>> {
+        return this._http.request<void>({
+            url: `${UrlRoutes.user}/api/Users?userEmail=${user.email}`,
+            method: RequestMethodType.delete,
             auth: true
         });
     }

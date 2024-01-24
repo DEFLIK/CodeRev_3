@@ -22,6 +22,8 @@ namespace UserService.DAL.Models.Interfaces
         Task Update<T>(T entity) where T : class, IEntity;
         Task UpdateRange<T>(IEnumerable<T> entities) where T : class, IEntity;
 
-        Task<int> SaveChangesAsync(); 
+        Task<int> SaveChangesAsync();
+        [Obsolete]
+        int SaveChanges();
     }
 }

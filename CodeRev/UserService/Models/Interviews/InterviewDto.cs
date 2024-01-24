@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UserService.DAL.Entities;
 using UserService.DAL.Models.Enums;
 
 namespace UserService.Models.Interviews;
@@ -12,4 +13,5 @@ public class InterviewDto
     public long InterviewDurationMs { get; set; }
     public Guid CreatedBy { get; set; }
     public List<ProgrammingLanguage> InterviewLanguages { get; set; }
+    public Task[] Tasks { get; set; }
 }
